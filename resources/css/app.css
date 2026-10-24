@@ -174,7 +174,9 @@ body {
 /* Project cards: 3D carousel + tilt */
 [data-project-card] {
     transition: transform 0.25s ease-out;
-    transform-style: preserve-3d;
+    cursor: pointer;
+    /* No preserve-3d: a tilted card must never slip behind its container,
+       otherwise clicks land on the container instead of the project link. */
 }
 [data-project-card] .card {
     transition: transform 0.3s ease-out, border-color 0.3s;

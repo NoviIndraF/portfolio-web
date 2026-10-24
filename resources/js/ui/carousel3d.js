@@ -7,9 +7,20 @@ export function initCarousel3d({ reduced }) {
 
     // Name the clicked card's phone and title so the browser morphs them into the detail page.
     cards.forEach((card) => {
-        card.querySelector('[data-project-link]')?.addEventListener('click', () => {
+        const link = card.querySelector('[data-project-link]');
+        if (!link) return;
+        link.addEventListener('click', () => {
             card.querySelector('.phone')?.style.setProperty('view-transition-name', 'project-phone');
-            card.querySelector('[data-project-link]')?.style.setProperty('view-transition-name', 'project-title');
+            link.style.setProperty('view-transition-name', 'project-title');
+        });
+        // The whole card opens the project (the rail cancels this click after a drag).
+        card.addEventListener('click', (e) => {
+            if (e.defaultPrevented || e.target.closest('a')) return;
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) {
+                window.open(link.href, '_blank', 'noopener');
+            } else {
+                link.click();
+            }
         });
     });
     window.addEventListener('pageshow', () => {
