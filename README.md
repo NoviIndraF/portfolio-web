@@ -2,9 +2,23 @@
 
 Laravel 13 portfolio for a Mobile App Developer, aimed at recruiters: the key message (role, stats, Download CV / Contact Me) is on the first screen, each project has an interactive 3D phone with a themed scene, and all content is edited in an admin panel.
 
-**Stack:** Laravel 13 · Blade · Vite 8 · Tailwind CSS 4 · Filament 5 (admin) · Three.js · GSAP + ScrollTrigger · Lenis · simple-icons · SQLite (MySQL-ready)
+![Home page](docs/images/home-desktop.png)
+
+| Project page | All projects (mobile) | Admin |
+|---|---|---|
+| ![Project page](docs/images/project-desktop.png) | ![All projects](docs/images/projects-mobile.png) | ![Admin](docs/images/admin-projects.png) |
+
+**Stack:** Laravel 13 · Blade · Vite 8 · Tailwind CSS 4 · Filament 5 (admin) · Three.js · GSAP + ScrollTrigger · Lenis · simple-icons · SQLite / MySQL
 
 **Lighthouse (mobile, with gzip + caching):** Performance 98–100 · Accessibility 100 · Best Practices 100 · SEO 100
+
+## Documentation
+
+| Guide | For |
+|---|---|
+| [User guide](docs/user-guide.md) | Website visitors (English) |
+| [Panduan admin](docs/panduan-admin.md) | Mengelola isi website lewat `/admin` (Bahasa Indonesia) |
+| [Technical documentation](docs/technical/README.md) | Architecture, data model, backend, frontend & 3D, admin panel, testing, operations (English) |
 
 ---
 
@@ -14,7 +28,7 @@ Requirements: PHP 8.3+ (with `gd`, `pdo_sqlite`, `intl`, `zip`), Composer 2, Nod
 
 ```bash
 composer install
-cp .env.example .env              # then set ADMIN_EMAIL and ADMIN_PASSWORD
+cp .env.example .env              # set ADMIN_EMAIL (and ADMIN_PASSWORD, or one is generated)
 php artisan key:generate
 touch database/database.sqlite
 php artisan migrate --seed        # imports data/content.json and seed/ images
@@ -25,7 +39,7 @@ php artisan serve
 ```
 
 - Website: http://127.0.0.1:8000
-- Admin: http://127.0.0.1:8000/admin (log in with `ADMIN_EMAIL` / `ADMIN_PASSWORD`)
+- Admin: http://127.0.0.1:8000/admin (log in with `ADMIN_EMAIL` and `ADMIN_PASSWORD`, or the random password printed by `migrate --seed`)
 - Tests: `php artisan test`
 
 > `npm run build` downloads the font (Plus Jakarta Sans) once and serves it from your own site. It needs internet during the build only.
@@ -48,6 +62,7 @@ database/
   migrations/              All portfolio tables
   seeders/                 DatabaseSeeder (admin user + guard), PortfolioSeeder (imports content.json)
 deploy/nginx.conf          Example production Nginx config (gzip, caching, uploads)
+docs/                      User guide, admin guide (Indonesian), technical documentation
 lang/en/site.php           All interface text (copy to lang/<locale>/ for another language)
 resources/
   css/app.css              Theme (colors from Settings), phone frame, 3D/motion styles

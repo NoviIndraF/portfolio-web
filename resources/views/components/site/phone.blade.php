@@ -34,7 +34,7 @@
                     @foreach ($interactive ? $screens : $screens->take(1) as $i => $s)
                         <img src="{{ $s['url'] }}" @if (! empty($s['srcset'])) srcset="{{ $s['srcset'] }}" sizes="{{ $width }}" @endif
                              alt="{{ $s['caption'] ?? '' }}"
-                             class="h-full w-full shrink-0 snap-center object-cover object-top"
+                             class="h-full w-full shrink-0 snap-center object-contain object-top"
                              @if ($i > 0 || ! $interactive) loading="lazy" @else fetchpriority="high" @endif
                              decoding="async" draggable="false">
                     @endforeach

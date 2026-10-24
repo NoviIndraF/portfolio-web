@@ -8,10 +8,10 @@ export function loadScreen(url, screenAspect, renderer) {
     return new Promise((resolve, reject) => {
         loader.load(
             url,
-            (tex) => {
-                tex.colorSpace = THREE.SRGBColorSpace;
+            (img) => {
+                const tex = fitWidthTop(img.image, screenAspect);
                 tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-                fitCoverTop(tex, screenAspect);
+                img.dispose();
                 resolve(tex);
             },
             undefined,
@@ -20,15 +20,24 @@ export function loadScreen(url, screenAspect, renderer) {
     });
 }
 
-function fitCoverTop(tex, screenAspect) {
-    const a = tex.image.width / tex.image.height;
-    if (a > screenAspect) {
-        tex.repeat.set(screenAspect / a, 1);
-        tex.offset.set((1 - screenAspect / a) / 2, 0);
-    } else {
-        tex.repeat.set(1, a / screenAspect);
-        tex.offset.set(0, 1 - a / screenAspect); // keep the top of the screenshot
-    }
+/**
+ * Full width, aligned to the top (like CSS "object-fit: contain; object-position: top").
+ * Nothing is cut off at the sides: taller screenshots lose only the bottom,
+ * shorter ones (older 16:9 phones) get the dark screen color below.
+ */
+function fitWidthTop(image, screenAspect) {
+    const w = Math.min(image.width, 1080);
+    const h = Math.round(w / screenAspect);
+    const c = document.createElement('canvas');
+    c.width = w;
+    c.height = h;
+    const g = c.getContext('2d');
+    g.fillStyle = '#05070d';
+    g.fillRect(0, 0, w, h);
+    g.drawImage(image, 0, 0, w, Math.round((image.height * w) / image.width));
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
 }
 
 /** Animated placeholder: app name + sensor gauges (hydroponic etc.) or neutral bars (analytics). */
