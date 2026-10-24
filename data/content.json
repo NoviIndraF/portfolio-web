@@ -1,0 +1,554 @@
+{
+  "profile": {
+    "name": "Novi Indra Fanani",
+    "tagline": "Mobile App Developer | Flutter & Android | Clean, maintainable code",
+    "bio": "Application developer with 4+ years of experience building mobile applications. Has designed, built and tested 10+ applications to required standards. Enthusiastic about programming, problem solving and learning new things, and enjoys writing clean, structured, readable and maintainable code.",
+    "stats": [
+      {
+        "label": "Years of experience",
+        "value": "4+"
+      },
+      {
+        "label": "Apps built",
+        "value": "10+"
+      },
+      {
+        "label": "Featured projects",
+        "value": "7"
+      }
+    ],
+    "email": "novi.indra1453@gmail.com",
+    "github": "https://github.com/NoviIndraF",
+    "linkedin": null,
+    "phone": null,
+    "photo": "seed/profile/photo.jpg",
+    "cv_pdf": "seed/profile/cv.pdf (TO ADD by owner; if missing, hide the Download CV button)"
+  },
+  "projects": [
+    {
+      "slug": "codelytic",
+      "title": "Codelytic",
+      "type": "mobile+web",
+      "order": 1,
+      "scene_type": "learning",
+      "accent_color": "#4C8DFF",
+      "impact_line": "Problem-based online learning for teachers and students, on mobile and web.",
+      "short_description": "Online learning application using a problem-based learning approach to improve critical thinking skills, for teachers and students to learn anywhere, anytime.",
+      "features": [
+        {
+          "title": "Content",
+          "description": "Structured learning materials created by the teacher, delivered dynamically with text, images and video links."
+        },
+        {
+          "title": "Assignments",
+          "description": "Students see assignments made by the teacher and submit them before the deadline."
+        },
+        {
+          "title": "Quiz",
+          "description": "Practice material comprehension with dynamic quizzes built from the teacher's content."
+        },
+        {
+          "title": "Discussion",
+          "description": "Students discuss directly on topics set by the teacher."
+        }
+      ],
+      "tech": [
+        "Flutter",
+        "Bloc",
+        "Flutter Bloc",
+        "Dio",
+        "Dartz",
+        "Equatable",
+        "Get It",
+        "Lottie",
+        "Webview Flutter",
+        "Shared Preferences",
+        "Clean Architecture",
+        "REST API"
+      ],
+      "links": [
+        {
+          "label": "Web",
+          "url": "https://codelytic.my.id/"
+        },
+        {
+          "label": "Mobile",
+          "url": "https://github.com/NoviIndraF/codelytic_flutter"
+        },
+        {
+          "label": "Backend",
+          "url": "https://github.com/NoviIndraF/codelytic"
+        }
+      ],
+      "images": [
+        {
+          "file": "seed/codelytic/01_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Login"
+        },
+        {
+          "file": "seed/codelytic/02_web.png",
+          "kind": "web",
+          "caption": "Web landing page"
+        },
+        {
+          "file": "seed/codelytic/03_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Home dashboard"
+        },
+        {
+          "file": "seed/codelytic/04_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Assignments"
+        },
+        {
+          "file": "seed/codelytic/05_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Learning content"
+        },
+        {
+          "file": "seed/codelytic/06_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Quiz"
+        },
+        {
+          "file": "seed/codelytic/07_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Discussion"
+        },
+        {
+          "file": "seed/codelytic/08_web.png",
+          "kind": "web",
+          "caption": "Web app features"
+        },
+        {
+          "file": "seed/codelytic/09_admin.png",
+          "kind": "admin",
+          "caption": "Web admin dashboard"
+        },
+        {
+          "file": "seed/codelytic/10_admin.png",
+          "kind": "admin",
+          "caption": "Web admin data table"
+        }
+      ]
+    },
+    {
+      "slug": "donice-app",
+      "title": "Donice App",
+      "type": "mobile",
+      "order": 2,
+      "scene_type": "donation",
+      "accent_color": "#E8553D",
+      "impact_line": "Connects donors, nearby merchants and donation makers with transparent transactions.",
+      "short_description": "An application that connects people who want to donate, merchants, and donation makers, making donation and buy-sell transactions more efficient and transparent.",
+      "features": [
+        {
+          "title": "Donation",
+          "description": "Donate money, drinks or food, depending on the donation type that is open."
+        },
+        {
+          "title": "Transaction",
+          "description": "Donation transactions with visible status for transparency."
+        },
+        {
+          "title": "Nearby merchants",
+          "description": "Connected to the Donice Merchant app, where merchants provide food or drinks as donations."
+        },
+        {
+          "title": "Top Up",
+          "description": "Top up deposit via transfer for donation purposes."
+        }
+      ],
+      "tech": [
+        "Flutter",
+        "Bloc",
+        "Flutter Bloc",
+        "Dio",
+        "Dartz",
+        "Equatable",
+        "Get It",
+        "Lottie",
+        "Clean Architecture",
+        "REST API"
+      ],
+      "links": [],
+      "images": [
+        {
+          "file": "seed/donice-app/01_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Home"
+        },
+        {
+          "file": "seed/donice-app/02_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Donation detail"
+        },
+        {
+          "file": "seed/donice-app/03_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Merchant products"
+        },
+        {
+          "file": "seed/donice-app/04_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Order confirmation"
+        },
+        {
+          "file": "seed/donice-app/05_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Top up"
+        }
+      ]
+    },
+    {
+      "slug": "shamo-apps",
+      "title": "Shamo Apps",
+      "type": "mobile",
+      "order": 3,
+      "scene_type": "shoe-store",
+      "accent_color": "#6C5CE7",
+      "impact_line": "Online shoe store with real-time chat to sellers and transaction tracking.",
+      "short_description": "Online shoe sales application with many shoe types and prices, with chat and online purchase transactions.",
+      "features": [
+        {
+          "title": "Message",
+          "description": "Chat with sellers directly from the app."
+        },
+        {
+          "title": "Shopping",
+          "description": "Purchase shoes online with a transparent transaction flow."
+        },
+        {
+          "title": "Notification",
+          "description": "Get notified when a transaction is being processed by the seller."
+        },
+        {
+          "title": "Categories",
+          "description": "Browse many shoe categories and types."
+        }
+      ],
+      "tech": [
+        "Flutter",
+        "Provider",
+        "Firebase Core",
+        "Cloud Firestore",
+        "Http",
+        "Carousel Slider",
+        "REST API",
+        "JSON"
+      ],
+      "links": [
+        {
+          "label": "Mobile",
+          "url": "https://github.com/NoviIndraF/shamo_apps"
+        },
+        {
+          "label": "Backend",
+          "url": "https://github.com/NoviIndraF/shamo-backend"
+        }
+      ],
+      "images": [
+        {
+          "file": "seed/shamo-apps/01_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Home"
+        },
+        {
+          "file": "seed/shamo-apps/02_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Product detail"
+        },
+        {
+          "file": "seed/shamo-apps/03_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Chat with seller"
+        },
+        {
+          "file": "seed/shamo-apps/04_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Message support"
+        },
+        {
+          "file": "seed/shamo-apps/05_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Favorite shoes"
+        }
+      ]
+    },
+    {
+      "slug": "chat-apps",
+      "title": "Chat Apps",
+      "type": "mobile",
+      "order": 4,
+      "scene_type": "chat",
+      "accent_color": "#43A047",
+      "impact_line": "Real-time chat application built with Flutter, Laravel Echo and Pusher.",
+      "short_description": "A simple chat application that works in real time.",
+      "features": [
+        {
+          "title": "Real-time messaging",
+          "description": "Messages are delivered instantly between users."
+        },
+        {
+          "title": "User search",
+          "description": "Find other users by email to start a conversation."
+        }
+      ],
+      "tech": [
+        "Flutter Bloc",
+        "Hydrated Bloc",
+        "Dash Chat 2",
+        "Laravel Echo",
+        "Pusher Client",
+        "Dio",
+        "Freezed",
+        "Json Annotation",
+        "Clean Architecture",
+        "REST API"
+      ],
+      "links": [],
+      "images": [
+        {
+          "file": "seed/chat-apps/01_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Login"
+        },
+        {
+          "file": "seed/chat-apps/02_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Chat room"
+        },
+        {
+          "file": "seed/chat-apps/03_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Conversation"
+        },
+        {
+          "file": "seed/chat-apps/04_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Chat list"
+        },
+        {
+          "file": "seed/chat-apps/05_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Search users"
+        }
+      ]
+    },
+    {
+      "slug": "comel",
+      "title": "Comel",
+      "type": "mobile+iot",
+      "order": 5,
+      "scene_type": "health-iot",
+      "accent_color": "#5B6CF5",
+      "impact_line": "Remote patient monitoring with Arduino sensors: heart rate, oxygen saturation and body temperature.",
+      "short_description": "A monitoring application for patients with COVID-19 symptoms, integrated with the cloud and Arduino hardware to read heart rate, oxygen saturation and body temperature.",
+      "features": [
+        {
+          "title": "Realtime monitoring",
+          "description": "Data is recorded in real time and the data collection interval can be set."
+        },
+        {
+          "title": "Priority",
+          "description": "Set the priority level of patients with worsening symptoms."
+        },
+        {
+          "title": "Online monitoring",
+          "description": "Monitor patients remotely and flexibly."
+        },
+        {
+          "title": "Body monitoring",
+          "description": "Track heart rate, oxygen and temperature trends in real time."
+        }
+      ],
+      "tech": [
+        "Android",
+        "Firebase",
+        "Retrofit",
+        "Koin",
+        "Hilt",
+        "Dagger",
+        "Coroutine",
+        "Lottie",
+        "Shimmer",
+        "Timber",
+        "Clean Architecture",
+        "REST API",
+        "Arduino"
+      ],
+      "links": [],
+      "images": [
+        {
+          "file": "seed/comel/01_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Home"
+        },
+        {
+          "file": "seed/comel/02_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Login"
+        },
+        {
+          "file": "seed/comel/03_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Patient list"
+        },
+        {
+          "file": "seed/comel/04_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Patient monitoring"
+        },
+        {
+          "file": "seed/comel/05_screenshot.png",
+          "kind": "screenshot",
+          "caption": "Sensor charts"
+        },
+        {
+          "file": "seed/comel/06_hardware.png",
+          "kind": "hardware",
+          "caption": "Sensor hardware prototype"
+        }
+      ]
+    },
+    {
+      "slug": "io-tani",
+      "title": "IO-Tani",
+      "type": "mobile+iot",
+      "order": 6,
+      "scene_type": "hydroponic",
+      "accent_color": "#2E9E5B",
+      "impact_line": "Hydroponic plant monitoring with fire and low-water alerts; registered as software copyright (HKI).",
+      "short_description": "Hydroponic plant monitoring application showing soil, air and temperature conditions, with fire-hazard and water-shortage detection.",
+      "features": [
+        {
+          "title": "Realtime monitoring",
+          "description": "Real-time crop data."
+        },
+        {
+          "title": "Hazard detection",
+          "description": "Identify fire hazards and water shortages."
+        },
+        {
+          "title": "Scheduling",
+          "description": "Set the time for sending crop data online."
+        }
+      ],
+      "tech": [
+        "Flutter",
+        "Provider",
+        "Firebase Core",
+        "Cloud Firestore",
+        "Http",
+        "Carousel Slider",
+        "Google Fonts"
+      ],
+      "links": [],
+      "recognition": {
+        "type": "Software copyright registration (HKI)",
+        "holder": "Universitas Negeri Malang",
+        "published": "16 November 2020"
+      },
+      "images": [
+        {
+          "file": "seed/io-tani/01_certificate.png",
+          "kind": "certificate",
+          "caption": "Copyright registration certificate (address redacted)"
+        }
+      ],
+      "note": "No app screenshots available: use a placeholder phone screen (app name + animated sensor gauges) in PhoneViewer3D."
+    },
+    {
+      "slug": "sidedi",
+      "title": "Sidedi Murid & Guru",
+      "type": "mobile",
+      "order": 7,
+      "scene_type": "analytics",
+      "accent_color": "#00897B",
+      "impact_line": "Early-detection app that scores and summarizes indications of radicalism per student and class; registered as software copyright (HKI).",
+      "short_description": "Early detection application for indications of radicalism in students.",
+      "features": [
+        {
+          "title": "Indication calculation",
+          "description": "Calculate indications per student and per class."
+        },
+        {
+          "title": "Status assessment",
+          "description": "Assess the status of each student."
+        },
+        {
+          "title": "Summary",
+          "description": "Resume or conclusion of indications per student."
+        }
+      ],
+      "tech": [
+        "Retrofit",
+        "OkHttp3",
+        "Provider",
+        "Cupertino Icons",
+        "Google Fonts",
+        "Carousel Slider"
+      ],
+      "links": [],
+      "recognition": {
+        "type": "Software copyright registration (HKI)",
+        "holder": "Universitas Negeri Malang",
+        "published": "14 February 2020"
+      },
+      "images": [
+        {
+          "file": "seed/sidedi/01_certificate.png",
+          "kind": "certificate",
+          "caption": "Copyright registration certificate (address redacted)"
+        }
+      ],
+      "note": "No app screenshots available: use a placeholder phone screen. Keep visuals neutral (abstract bars/radar), no sensitive imagery."
+    }
+  ],
+  "skills": [
+    {
+      "group": "Mobile",
+      "items": [
+        "Flutter",
+        "Android"
+      ]
+    },
+    {
+      "group": "Architecture",
+      "items": [
+        "Clean Architecture",
+        "Design Pattern",
+        "OOP",
+        "State Management (Bloc, Provider)",
+        "Material Design"
+      ]
+    },
+    {
+      "group": "Backend & Cloud",
+      "items": [
+        "REST API",
+        "Laravel",
+        "Firebase",
+        "Cloud Firestore",
+        "Dio",
+        "Retrofit"
+      ]
+    },
+    {
+      "group": "IoT",
+      "items": [
+        "Arduino",
+        "Sensors"
+      ]
+    },
+    {
+      "group": "Quality",
+      "items": [
+        "Error Handling",
+        "Responsive Design",
+        "Structured Data"
+      ]
+    }
+  ]
+}

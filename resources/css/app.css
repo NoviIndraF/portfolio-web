@@ -1,0 +1,231 @@
+@import 'tailwindcss';
+
+@source '../views';
+@source '../js';
+
+/* Colors come from admin Settings as CSS variables (see layouts/site). */
+@theme inline {
+    --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+    --color-bg: var(--c-bg);
+    --color-fg: var(--c-text);
+    --color-primary: var(--c-primary);
+    --color-muted: color-mix(in oklab, var(--c-text) 70%, var(--c-bg));
+    --color-surface: color-mix(in oklab, var(--c-text) 5%, var(--c-bg));
+    --color-surface-2: color-mix(in oklab, var(--c-text) 9%, var(--c-bg));
+    --color-line: color-mix(in oklab, var(--c-text) 13%, var(--c-bg));
+    --color-accent: var(--accent, var(--c-primary));
+    /* Lighter versions for text, so any accent color stays readable on the dark background. */
+    --color-accent-fg: color-mix(in oklab, var(--accent, var(--c-primary)) 62%, white);
+    --color-primary-fg: color-mix(in oklab, var(--c-primary) 70%, white);
+}
+
+:root {
+    --c-bg: #0b1020;
+    --c-text: #e8ecf6;
+    --c-primary: #4c8dff;
+    color-scheme: dark;
+}
+
+html {
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-feature-settings: 'ss01';
+    text-rendering: optimizeLegibility;
+}
+
+::selection {
+    background: color-mix(in oklab, var(--c-primary) 45%, transparent);
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent,var(--c-primary));
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+@utility btn {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition;
+}
+
+@layer components {
+    .container-site {
+        @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+    }
+
+    .eyebrow {
+        @apply text-xs font-semibold uppercase tracking-[0.18em] text-accent-fg;
+    }
+
+    .btn-primary {
+        @apply btn bg-primary text-bg hover:brightness-110 active:brightness-95;
+    }
+    .btn-ghost {
+        @apply btn border border-line bg-surface text-fg hover:border-fg/40 hover:bg-surface-2;
+    }
+
+    .chip {
+        @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium text-fg/90;
+    }
+
+    .card {
+        @apply rounded-3xl border border-line bg-surface;
+    }
+
+    /* Hide scrollbars on swipe rails but keep them scrollable. */
+    .no-scrollbar {
+        scrollbar-width: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* Static phone frame (also the no-WebGL fallback for the 3D phone). */
+.phone {
+    --phone-w: 15rem;
+    position: relative;
+    width: var(--phone-w);
+    aspect-ratio: 9 / 19.5;
+    border-radius: calc(var(--phone-w) * 0.16);
+    padding: calc(var(--phone-w) * 0.035);
+    background: linear-gradient(145deg, #2a3146, #0f1424 60%);
+    box-shadow:
+        0 0 0 1px rgb(255 255 255 / 0.08) inset,
+        0 30px 60px -20px rgb(0 0 0 / 0.7),
+        0 0 80px -10px color-mix(in oklab, var(--accent,var(--c-primary)) 45%, transparent);
+}
+.phone-screen {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border-radius: calc(var(--phone-w) * 0.13);
+    background: #05070d;
+}
+.phone-notch {
+    position: absolute;
+    top: calc(var(--phone-w) * 0.055);
+    left: 50%;
+    z-index: 2;
+    width: 28%;
+    height: calc(var(--phone-w) * 0.065);
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: #05070d;
+}
+
+/* Lightbox */
+.lightbox[open] {
+    display: flex;
+}
+.lightbox::backdrop {
+    background: rgb(3 5 12 / 0.92);
+}
+.lightbox img {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* ---------- Stage 4: 3D and motion ---------- */
+
+/* 3D phone canvas sits behind nearby text; input is handled on the viewer element itself. */
+.phone-canvas {
+    position: absolute;
+    left: 50%;
+    z-index: -1;
+    transform: translateX(-50%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+.phone-canvas canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+[data-phone-viewer].is-3d {
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+}
+[data-phone-viewer].is-3d:active {
+    cursor: grabbing;
+}
+[data-phone-viewer].is-3d .phone-canvas {
+    opacity: 1;
+}
+[data-phone-viewer].is-3d [data-phone-static] {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+/* Project cards: 3D carousel + tilt */
+[data-project-card] {
+    transition: transform 0.25s ease-out;
+    transform-style: preserve-3d;
+}
+[data-project-card] .card {
+    transition: transform 0.3s ease-out, border-color 0.3s;
+    background-image: radial-gradient(400px circle at var(--gx, 50%) var(--gy, 0%), color-mix(in oklab, var(--accent, var(--c-primary)) 14%, transparent), transparent 60%);
+}
+
+/* Skills: pointer spotlight */
+[data-skill-group]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--c-primary) 18%, transparent), transparent 70%);
+}
+[data-skill-group]:hover::after {
+    opacity: 1;
+}
+
+/* Smooth page transitions between home and project pages */
+@view-transition {
+    navigation: auto;
+}
+::view-transition-group(project-phone),
+::view-transition-group(project-title) {
+    animation-duration: 0.45s;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @view-transition {
+        navigation: none;
+    }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

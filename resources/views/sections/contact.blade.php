@@ -1,0 +1,38 @@
+@php
+    $items = array_filter([
+        $profile->email ? ['label' => __('site.contact.email'), 'value' => $profile->email, 'href' => 'mailto:'.$profile->email, 'icon' => 'email'] : null,
+        $profile->github ? ['label' => __('site.contact.github'), 'value' => str($profile->github)->after('://')->rtrim('/'), 'href' => $profile->github, 'icon' => 'github'] : null,
+        $profile->linkedin ? ['label' => __('site.contact.linkedin'), 'value' => str($profile->linkedin)->after('://')->rtrim('/'), 'href' => $profile->linkedin, 'icon' => 'linkedin'] : null,
+        $profile->phone ? ['label' => __('site.contact.phone'), 'value' => $profile->phone, 'href' => 'tel:'.preg_replace('/[^0-9+]/', '', $profile->phone), 'icon' => 'phone'] : null,
+    ]);
+@endphp
+<section id="contact" class="py-16 sm:py-24" aria-labelledby="contact-title">
+    <div class="container-site">
+        <div class="card relative overflow-hidden p-6 sm:p-10 lg:p-14" data-reveal>
+            <div class="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-primary/20 blur-3xl" aria-hidden="true"></div>
+            <x-site.section-heading id="contact-title" :eyebrow="__('site.contact.eyebrow')" :title="__('site.contact.title')" :intro="__('site.contact.intro')" />
+
+            <ul class="mt-8 grid gap-3 sm:grid-cols-2">
+                @foreach ($items as $item)
+                    <li>
+                        <a href="{{ $item['href'] }}" @if ($item['icon'] !== 'email' && $item['icon'] !== 'phone') target="_blank" rel="noopener" @endif
+                           class="flex min-h-16 items-center gap-4 rounded-2xl border border-line bg-bg/60 px-5 py-4 transition hover:border-primary/60 hover:bg-surface-2">
+                            <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary-fg">
+                                @switch($item['icon'])
+                                    @case('email') <x-heroicon-o-envelope class="size-5" aria-hidden="true" /> @break
+                                    @case('phone') <x-heroicon-o-phone class="size-5" aria-hidden="true" /> @break
+                                    @case('linkedin') <x-site.linkedin-icon class="size-5" /> @break
+                                    @default {{ \App\Support\Icon::svg('github', 'size-5') }}
+                                @endswitch
+                            </span>
+                            <span class="min-w-0">
+                                <span class="block text-xs text-muted">{{ $item['label'] }}</span>
+                                <span class="block truncate font-semibold">{{ $item['value'] }}</span>
+                            </span>
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,83 @@
+<?php
+
+// Interface text for the public site. Add lang/{locale}/site.php to support another language.
+return [
+    'skip_to_content' => 'Skip to content',
+    'menu' => 'Menu',
+    'close' => 'Close',
+    'nav' => [
+        'projects' => 'Projects',
+        'skills' => 'Skills',
+        'about' => 'About',
+        'contact' => 'Contact',
+    ],
+    'cta' => [
+        'download_cv' => 'Download CV',
+        'contact_me' => 'Contact Me',
+        'view_projects' => 'View projects',
+        'view_project' => 'View project',
+    ],
+    'projects' => [
+        'eyebrow' => 'Selected work',
+        'title' => 'Featured projects',
+        'intro' => 'Apps I designed and built. Swipe or drag to browse.',
+        'prev' => 'Previous projects',
+        'next' => 'Next projects',
+        'no_screens' => 'Screenshots not public',
+    ],
+    'project' => [
+        'back' => 'All projects',
+        'overview' => 'Overview',
+        'problem' => 'Problem',
+        'solution' => 'Solution',
+        'features' => 'Key features',
+        'tech' => 'Tech stack',
+        'links' => 'Links',
+        'gallery' => 'Gallery',
+        'recognition' => 'Registered Software Copyright (HKI)',
+        'holder' => 'Holder',
+        'published' => 'Published',
+        'view_certificate' => 'View certificate',
+        'prev' => 'Previous project',
+        'next' => 'Next project',
+        'swipe_hint' => 'Swipe to see more screens',
+        'screen' => 'Screen :n of :total',
+        'kinds' => [
+            'screenshot' => 'App screens',
+            'web' => 'Web app',
+            'admin' => 'Admin panel',
+            'hardware' => 'Hardware',
+            'certificate' => 'Certificates',
+        ],
+        'types' => [
+            'mobile' => 'Mobile app',
+            'mobile+web' => 'Mobile + Web',
+            'mobile+iot' => 'Mobile + IoT',
+            'web' => 'Web app',
+        ],
+    ],
+    'skills' => [
+        'eyebrow' => 'Toolbox',
+        'title' => 'Skills',
+    ],
+    'about' => [
+        'eyebrow' => 'About',
+        'title' => 'About me',
+    ],
+    'contact' => [
+        'eyebrow' => 'Contact',
+        'title' => 'Let\'s talk about your team',
+        'intro' => 'The fastest way to reach me is by email.',
+        'email' => 'Email',
+        'github' => 'GitHub',
+        'linkedin' => 'LinkedIn',
+        'phone' => 'Phone',
+    ],
+    'lightbox' => [
+        'prev' => 'Previous image',
+        'next' => 'Next image',
+        'close' => 'Close',
+        'hint' => 'Pinch or double-tap to zoom',
+    ],
+    'footer' => 'Built with Laravel and Three.js.',
+];
