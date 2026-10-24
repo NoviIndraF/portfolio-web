@@ -6,6 +6,7 @@ use App\Models\Project;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -36,6 +37,20 @@ class ProjectForm
             ]);
     }
 
+    /** "Show on website" switch used by every hideable item. */
+    public static function visibleToggle(): Toggle
+    {
+        return Toggle::make('is_visible')
+            ->label('Show on website')
+            ->default(true)
+            ->inline(false);
+    }
+
+    private static function label(?string $text, array $state): ?string
+    {
+        return $text && ! ($state['is_visible'] ?? true) ? $text.' (hidden)' : $text;
+    }
+
     private static function overviewTab(): Tab
     {
         return Tab::make('Overview')->icon('heroicon-o-information-circle')->schema([
@@ -55,14 +70,16 @@ class ProjectForm
                     ->unique(ignoreRecord: true)
                     ->alphaDash()
                     ->helperText('Used in the URL: /projects/{slug}'),
-                Select::make('type')
-                    ->required()
-                    ->options([
-                        'mobile' => 'Mobile',
-                        'mobile+web' => 'Mobile + Web',
-                        'mobile+iot' => 'Mobile + IoT',
-                        'web' => 'Web',
-                    ]),
+                Grid::make(2)->schema([
+                    TextInput::make('type')
+                        ->required()
+                        ->maxLength(50)
+                        ->datalist(Project::TYPES)
+                        ->helperText('e.g. mobile, mobile+web, web, iot. Used for the filter on /projects.'),
+                    TextInput::make('year')
+                        ->maxLength(20)
+                        ->placeholder('2023'),
+                ]),
                 Select::make('scene_type')
                     ->label('3D scene')
                     ->required()
@@ -71,10 +88,18 @@ class ProjectForm
                 ColorPicker::make('accent_color')
                     ->required()
                     ->regex('/^#[0-9a-fA-F]{6}$/'),
-                Toggle::make('is_published')
-                    ->label('Published')
-                    ->default(true)
-                    ->inline(false),
+                Grid::make(2)->schema([
+                    Toggle::make('is_published')
+                        ->label('Published')
+                        ->helperText('Off = hidden from the website (draft).')
+                        ->default(true)
+                        ->inline(false),
+                    Toggle::make('is_featured')
+                        ->label('Featured on home')
+                        ->helperText('Shown in the home carousel. All published projects are on /projects.')
+                        ->default(true)
+                        ->inline(false),
+                ]),
             ]),
             TextInput::make('impact_line')
                 ->label('Impact line')
@@ -103,11 +128,14 @@ class ProjectForm
                 ->orderColumn('sort_order')
                 ->reorderable()
                 ->collapsible()
-                ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
+                ->itemLabel(fn (array $state): ?string => self::label($state['title'] ?? null, $state))
                 ->addActionLabel('Add feature')
                 ->defaultItems(0)
                 ->schema([
-                    TextInput::make('title')->required()->maxLength(255),
+                    Grid::make(['default' => 1, 'sm' => 4])->schema([
+                        TextInput::make('title')->required()->maxLength(255)->columnSpan(['sm' => 3]),
+                        self::visibleToggle(),
+                    ]),
                     Textarea::make('description')->rows(2),
                     TextInput::make('icon')
                         ->maxLength(100)
@@ -126,7 +154,14 @@ class ProjectForm
                     ->relationship()
                     ->orderColumn('sort_order')
                     ->reorderable()
-                    ->simple(TextInput::make('name')->required()->maxLength(100))
+                    ->table([
+                        TableColumn::make('Name')->markAsRequired(),
+                        TableColumn::make('Show'),
+                    ])
+                    ->schema([
+                        TextInput::make('name')->required()->maxLength(100),
+                        Toggle::make('is_visible')->default(true)->hiddenLabel(),
+                    ])
                     ->addActionLabel('Add technology')
                     ->defaultItems(0),
                 Repeater::make('links')
@@ -135,11 +170,14 @@ class ProjectForm
                     ->relationship()
                     ->orderColumn('sort_order')
                     ->reorderable()
-                    ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
+                    ->itemLabel(fn (array $state): ?string => self::label($state['label'] ?? null, $state))
                     ->addActionLabel('Add link')
                     ->defaultItems(0)
                     ->schema([
-                        TextInput::make('label')->required()->maxLength(50)->placeholder('Web, Mobile, Backend...'),
+                        Grid::make(['default' => 1, 'sm' => 3])->schema([
+                            TextInput::make('label')->required()->maxLength(50)->placeholder('Web, Mobile, Backend...')->columnSpan(['sm' => 2]),
+                            self::visibleToggle(),
+                        ]),
                         TextInput::make('url')->required()->url()->maxLength(255),
                     ]),
             ]),

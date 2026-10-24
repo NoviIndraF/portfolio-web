@@ -11,14 +11,20 @@ class HomeController extends Controller
 {
     public function __invoke(Site $site): View
     {
-        $projects = Project::published()
-            ->with(['screenshots', 'certificates', 'tech'])
-            ->get();
+        $published = Project::published()->with(Project::publicRelations())->get();
+        // Carousel shows featured projects; if none are marked, show all published ones.
+        $featured = $published->where('is_featured', true)->values();
 
         return view('pages.home', [
             'profile' => $site->profile(),
-            'projects' => $projects,
-            'skillGroups' => SkillGroup::with('skills')->orderBy('sort_order')->get(),
+            'sections' => $site->sections(),
+            'projects' => $featured->isNotEmpty() ? $featured : $published,
+            'publishedCount' => $published->count(),
+            'skillGroups' => SkillGroup::visible()
+                ->with(['skills' => fn ($q) => $q->visible()])
+                ->orderBy('sort_order')
+                ->get()
+                ->filter(fn ($g) => $g->skills->isNotEmpty()),
         ]);
     }
 }

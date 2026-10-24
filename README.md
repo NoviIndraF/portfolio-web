@@ -34,13 +34,14 @@ php artisan serve
 
 ```
 app/
-  Filament/                Admin panel: Projects (+ images), Skills, Profile, Settings, dashboard widget
+  Filament/                Admin panel: Projects (+ images), Skills, Home sections, Profile, Settings
   Http/Controllers/        Home, Project detail, robots.txt + sitemap.xml
   Models/                  Profile, Project, ProjectLink, ProjectFeature, ProjectTech, ProjectImage,
-                           SkillGroup, Skill, Setting (+ Concerns/OptimizesImages: auto WebP)
+                           SkillGroup, Skill, Setting, PageSection
+                           (+ Concerns: OptimizesImages = auto WebP, HasVisibility = show/hide)
   Services/ImageOptimizer  Original + WebP (max 1600 px) + small WebP (560 px wide)
   Support/                 Site (settings/profile per request), Icon (simple-icons), Img (srcset)
-  Console/Commands/        `php artisan portfolio:images` (rebuild small image variants)
+  Console/Commands/        portfolio:export / portfolio:import (backup, move database), portfolio:images
 data/content.json          Source data for the first import
 seed/<slug>/               Source images for the first import (seed/profile/photo.jpg, optional cv.pdf)
 database/
@@ -54,8 +55,9 @@ resources/
   js/ui/                   nav, rail, phone-screens, lightbox, carousel3d, motion, three-boot
   js/three/                PhoneViewer3D, phone model, screen textures, shared helpers
   js/scenes/               One module per scene: hero (particles), learning, donation, shoe-store,
-                           chat, health-iot, hydroponic, analytics
-  views/                   Layout, sections (hero, projects, skills, about, contact), pages, components
+                           chat, health-iot, hydroponic, analytics, generic
+  views/                   Layout, sections (hero, projects, skills, about, contact, text, timeline),
+                           pages (home, all projects, project detail), components
 tests/Feature/             Feature tests (pages, CV button, drafts, admin, sitemap, images, seeder guard)
 ```
 
@@ -68,15 +70,19 @@ Everything below is done at **/admin**. No code changes are needed.
 | Name, tagline, bio, hero stats, email, GitHub, LinkedIn, phone | **Profile** | The tagline is split at `\|`: the first part is the big headline, the rest become tags. Empty LinkedIn or phone is hidden on the site. |
 | Profile photo | **Profile → Photo & CV** | Any JPG/PNG. A WebP copy is made automatically. |
 | CV | **Profile → CV (PDF)** | Upload a PDF and the **Download CV** buttons appear. Remove it and they hide. |
+| Add a project | **Projects → New project**, or **⋯ → Duplicate** on a similar one | *Duplicate* copies features, technologies and links as a hidden draft (images are not copied). |
 | Project order | **Projects** list | Drag rows. |
-| Publish / hide a project | **Projects** list → *Published* switch | Hidden projects are only visible to you while logged in (preview). |
+| Publish / hide a project | **Projects** list → *Published* switch (or select several → bulk actions) | Hidden projects are only visible to you while logged in (preview). |
+| Home carousel vs. all projects | **Projects** list → *On home* switch | Home shows projects marked *On home*; **/projects** lists every published project with type filters. A "See all N projects" button appears when some are not on home. |
+| Type and year | **Overview** → *Type*, *Year* | Type is free text (suggestions: mobile, web, iot…); it drives the filter on /projects. |
 | Project texts | **Projects → Edit → Overview** | *Impact line* is the sentence on the card: add real numbers when you have them. *Problem* / *Solution* are optional. |
-| Colour and 3D scene of a project | **Overview** → *Accent color*, *3D scene* | Colour drives the card, page glow and 3D scene. |
-| Features, technologies, links | **Features** and **Tech & links** tabs | All drag-sortable. No links means no link buttons. |
+| Colour and 3D scene of a project | **Overview** → *Accent color*, *3D scene* | Colour drives the card, page glow and 3D scene. For new projects that fit none of the themes use **Generic** (floating shapes) or **None** (phone only). |
+| Features, technologies, links | **Features** and **Tech & links** tabs | All drag-sortable, each with a **Show on website** switch. No visible links means no link buttons. |
 | HKI / recognition | **Recognition & 3D model** tab | Leave empty to hide the badge. |
-| Screenshots and other images | **Projects → Edit → Images** (bottom of the page) | Choose the *kind*: **Phone screenshot** images become the 3D phone screen; *Web*, *Admin panel*, *Hardware*, *Certificate* go to the gallery. Drag to reorder. WebP + small versions are created automatically; replaced or deleted files are removed. |
+| Screenshots and other images | **Projects → Edit → Images** (bottom of the page) | Each image has a **Show** switch. Choose the *kind*: **Phone screenshot** images become the 3D phone screen; *Web*, *Admin panel*, *Hardware*, *Certificate* go to the gallery. Drag to reorder. WebP + small versions are created automatically; replaced or deleted files are removed. |
 | Custom 3D model | **Recognition & 3D model → GLB model** | Optional `.glb` (keep it under ~3 MB). Normalised to the right size automatically. For the shoe-store scene it replaces the built-in sneaker; for other scenes the built-in visuals are used. |
-| Skills | **Skills** | Groups are drag-sortable. *Icon* is an optional [simple-icons](https://simpleicons.org) slug (many are detected from the name). |
+| Skills | **Skills** | Groups are drag-sortable; groups and single skills have a show/hide switch. *Icon* is an optional [simple-icons](https://simpleicons.org) slug (many are detected from the name). |
+| Home page sections | **Home sections** | Drag to reorder, switch to hide, edit title / small label / intro / menu label (empty = default text). **Add section** creates a *Text block* or a *Timeline* (work experience, education, certificates, awards…). Built-in sections can be hidden but not deleted. The top menu follows the visible sections. |
 | Site title, SEO description, share image | **Settings** | Share image: 1200×630 PNG/JPG. If empty, the profile photo is used. |
 | Theme colours | **Settings → Theme** | Primary, background and text colour. Keep text and background high-contrast. |
 | Turn 3D off | **Settings → 3D effects** | Shows static phones instead (useful for very old phones). |
@@ -133,6 +139,18 @@ Also raise PHP's upload limit to match (in `/etc/php/8.4/fpm/php.ini`: `upload_m
 4. In cPanel → Terminal (or SSH): `php artisan key:generate`, `php artisan migrate --force --seed`, `php artisan storage:link`, `php artisan optimize`, `php artisan filament:optimize`.
 5. The included `public/.htaccess` already enables gzip and browser caching on Apache.
 
+### Which database?
+
+| | When it fits | Notes |
+|---|---|---|
+| **MySQL 8 / MariaDB 10.6+** (recommended online) | Shared hosting (cPanel), VPS, most managed hosts | Available almost everywhere, easy backups in cPanel/phpMyAdmin, fully supported by Laravel and Filament. |
+| SQLite (default) | Laptop, or a single VPS with a persistent disk | Zero setup; the whole database is one file (`database/database.sqlite`). Fine for a one-admin portfolio. |
+| PostgreSQL | Hosts that offer Postgres (e.g. some PaaS) | Also supported without code changes (`DB_CONNECTION=pgsql`). |
+
+> On platforms with a temporary disk (container/PaaS hosting), use MySQL/Postgres **and** S3-compatible storage for uploads (`FILESYSTEM` public disk → S3/R2), otherwise uploads disappear on redeploy.
+
+> Tested: all migrations, a full content import and the complete test suite pass on both SQLite and MySQL.
+
 ### Using MySQL instead of SQLite
 
 Set in `.env`, create the empty database, then run the migration and seed commands:
@@ -145,6 +163,20 @@ DB_DATABASE=portfolio
 DB_USERNAME=...
 DB_PASSWORD=...
 ```
+
+### Moving your content (laptop → server, SQLite → MySQL) and backups
+
+Everything you enter in the admin (texts, sections, projects, skills, settings) plus the original files (photos, screenshots, CV, 3D models) can be exported to one folder and imported anywhere:
+
+```bash
+# On your laptop
+php artisan portfolio:export                 # → storage/app/exports/<date>/ (content.json + files/)
+
+# Upload that folder to the server (e.g. ~/portfolio-export), then on the server, after `php artisan migrate --force`:
+php artisan portfolio:import ~/portfolio-export --force
+```
+
+`portfolio:import` replaces all content (admin users are kept). Run `portfolio:export` regularly as a backup; to restore, import the folder again.
 
 ### Updating the live site later
 

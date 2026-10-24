@@ -17,18 +17,24 @@ class Project extends Model
         'health-iot' => 'Health IoT',
         'hydroponic' => 'Hydroponic',
         'analytics' => 'Analytics',
+        'generic' => 'Generic (floating shapes)',
+        'none' => 'None (phone only)',
     ];
+
+    /** Suggestions for the "type" field; any other text is allowed too. */
+    public const TYPES = ['mobile', 'mobile+web', 'mobile+iot', 'web', 'iot', 'desktop', 'game', 'library'];
 
     protected $fillable = [
         'title', 'slug', 'short_description', 'impact_line', 'problem', 'solution',
-        'type', 'accent_color', 'scene_type', 'model_glb', 'sort_order',
-        'is_published', 'recognition',
+        'type', 'year', 'accent_color', 'scene_type', 'model_glb', 'sort_order',
+        'is_published', 'is_featured', 'recognition',
     ];
 
     protected function casts(): array
     {
         return [
             'is_published' => 'boolean',
+            'is_featured' => 'boolean',
             'recognition' => 'array',
             'sort_order' => 'integer',
         ];
@@ -53,6 +59,24 @@ class Project extends Model
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('is_published', true)->orderBy('sort_order');
+    }
+
+    /** Readable type label: translated if known, otherwise the text as entered. */
+    public function typeLabel(): string
+    {
+        $key = 'site.project.types.'.$this->type;
+
+        return __($key) !== $key ? __($key) : str($this->type)->replace(['+', '-', '_'], [' + ', ' ', ' '])->title();
+    }
+
+    /** Relations for cards and lists on the public site (hidden items excluded). */
+    public static function publicRelations(): array
+    {
+        return [
+            'screenshots' => fn ($q) => $q->visible(),
+            'certificates' => fn ($q) => $q->visible(),
+            'tech' => fn ($q) => $q->visible(),
+        ];
     }
 
     public function links(): HasMany

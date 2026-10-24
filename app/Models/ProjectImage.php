@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Models\Concerns\OptimizesImages;
+use App\Models\Concerns\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectImage extends Model
 {
+    use HasVisibility;
     use OptimizesImages;
 
     public const KINDS = [

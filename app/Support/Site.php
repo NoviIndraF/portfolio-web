@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\PageSection;
 use App\Models\Profile;
 use App\Models\Setting;
 
@@ -14,6 +15,8 @@ class Site
 
     private ?Profile $profile = null;
 
+    private $sections = null;
+
     public function settings(): Setting
     {
         return $this->settings ??= Setting::current();
@@ -22,6 +25,18 @@ class Site
     public function profile(): Profile
     {
         return $this->profile ??= Profile::current() ?? new Profile(['name' => config('app.name'), 'tagline' => '', 'email' => '']);
+    }
+
+    /** Visible home page sections in order. */
+    public function sections()
+    {
+        return $this->sections ??= PageSection::visible()->orderBy('sort_order')->get();
+    }
+
+    /** Menu items: visible sections that have a menu label. */
+    public function nav()
+    {
+        return $this->sections()->filter(fn ($s) => filled($s->nav_label))->values();
     }
 
     /** Absolute URL of the default share image: settings OG image, else the original profile photo. */

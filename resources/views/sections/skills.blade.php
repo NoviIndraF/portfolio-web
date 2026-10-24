@@ -1,6 +1,6 @@
-<section id="skills" class="py-16 sm:py-24" aria-labelledby="skills-title">
+<section id="{{ $section->anchor }}" class="py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
     <div class="container-site">
-        <x-site.section-heading id="skills-title" :eyebrow="__('site.skills.eyebrow')" :title="__('site.skills.title')" />
+        <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->text('eyebrow')" :title="$section->text('title')" :intro="$section->text('intro')" />
 
         <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-skills data-reveal-stagger>
             @foreach ($skillGroups as $group)

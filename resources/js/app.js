@@ -7,6 +7,7 @@ import { initLightbox } from './ui/lightbox';
 import { initCarousel3d, initSpotlight } from './ui/carousel3d';
 import { initThree, prefersReducedMotion, onFirstInteraction } from './ui/three-boot';
 import { initMotion } from './ui/motion';
+import { initFilter } from './ui/filter';
 
 document.documentElement.classList.add('js');
 const reduced = prefersReducedMotion();
@@ -17,5 +18,6 @@ initPhoneScreens();
 initLightbox();
 initCarousel3d({ reduced });
 initSpotlight();
+initFilter();
 initThree();
 onFirstInteraction(() => initMotion({ reduced }));

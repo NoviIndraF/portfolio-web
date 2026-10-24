@@ -4,6 +4,8 @@
     $highlights = $parts->slice(1);
     $intro = str($profile->bio)->before('. ')->append('.')->toString();
     // One screen per project for the hero phone reel.
+    $contactHref = ($c = $sections->firstWhere('type', 'contact')) ? '#'.$c->anchor : 'mailto:'.$profile->email;
+    $projectsHref = ($p = $sections->firstWhere('type', 'projects')) ? '#'.$p->anchor : route('projects.index');
     $reel = $projects->map(fn ($p) => $p->screenshots->first()?->screen($p->title))->filter()->values();
 @endphp
 <section class="relative isolate overflow-hidden" aria-labelledby="hero-title">
@@ -42,17 +44,17 @@
                         <x-heroicon-o-arrow-down-tray class="size-5" aria-hidden="true" />
                         {{ __('site.cta.download_cv') }}
                     </a>
-                    <a href="#contact" class="btn-ghost">
+                    <a href="{{ $contactHref }}" class="btn-ghost">
                         <x-heroicon-o-envelope class="size-5" aria-hidden="true" />
                         {{ __('site.cta.contact_me') }}
                     </a>
                 @else
-                    <a href="#contact" class="btn-primary">
+                    <a href="{{ $contactHref }}" class="btn-primary">
                         <x-heroicon-o-envelope class="size-5" aria-hidden="true" />
                         {{ __('site.cta.contact_me') }}
                     </a>
                 @endif
-                <a href="#projects" class="btn-ghost">{{ __('site.cta.view_projects') }}</a>
+                <a href="{{ $projectsHref }}" class="btn-ghost">{{ __('site.cta.view_projects') }}</a>
             </div>
 
             @if ($profile->stats)

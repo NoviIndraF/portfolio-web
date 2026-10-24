@@ -1,12 +1,9 @@
 @php
-    $profile = app(\App\Support\Site::class)->profile();
+    $site = app(\App\Support\Site::class);
+    $profile = $site->profile();
     $home = request()->routeIs('home') ? '' : route('home');
-    $links = [
-        'projects' => __('site.nav.projects'),
-        'skills' => __('site.nav.skills'),
-        'about' => __('site.nav.about'),
-        'contact' => __('site.nav.contact'),
-    ];
+    // Menu = visible home sections with a menu label (Admin → Home sections).
+    $links = $site->nav()->mapWithKeys(fn ($s) => [$s->anchor => $s->nav_label]);
 @endphp
 <header class="sticky top-0 z-40 border-b border-line/60 bg-bg/80 backdrop-blur-md" data-header>
     <nav class="container-site flex h-16 items-center justify-between gap-4" aria-label="Main">

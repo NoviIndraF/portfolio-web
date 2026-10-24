@@ -1,4 +1,4 @@
-<section id="about" class="py-16 sm:py-24" aria-labelledby="about-title">
+<section id="{{ $section->anchor }}" class="py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
     <div class="container-site grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
         @if ($photo = $profile->photoUrl())
             <div class="relative mx-auto w-full max-w-sm" data-reveal>
@@ -9,7 +9,7 @@
             </div>
         @endif
         <div>
-            <x-site.section-heading id="about-title" :eyebrow="__('site.about.eyebrow')" :title="__('site.about.title')" />
+            <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->text('eyebrow')" :title="$section->text('title')" :intro="$section->text('intro')" />
             <p class="mt-5 text-base leading-relaxed text-muted text-pretty sm:text-lg">{{ $profile->bio }}</p>
             <div class="mt-7 flex flex-wrap gap-3">
                 @if ($cv = $profile->cvUrl())
@@ -18,7 +18,7 @@
                         {{ __('site.cta.download_cv') }}
                     </a>
                 @endif
-                <a href="#contact" class="{{ $cv ? 'btn-ghost' : 'btn-primary' }}">{{ __('site.cta.contact_me') }}</a>
+                <a href="{{ ($c = $sections->firstWhere('type', 'contact')) ? '#'.$c->anchor : 'mailto:'.$profile->email }}" class="{{ $cv ? 'btn-ghost' : 'btn-primary' }}">{{ __('site.cta.contact_me') }}</a>
             </div>
         </div>
     </div>

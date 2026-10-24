@@ -21,7 +21,7 @@
 
         <div class="container-site grid items-center gap-12 pt-8 pb-16 lg:grid-cols-[1.1fr_0.9fr] lg:pb-24">
             <div>
-                <p class="eyebrow">{{ __('site.project.types.'.$project->type) }}</p>
+                <p class="eyebrow">{{ $project->typeLabel() }}@if ($project->year) · {{ $project->year }}@endif</p>
                 <h1 id="project-title" class="mt-2 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl" style="view-transition-name: project-title" data-project-title>{{ $project->title }}</h1>
                 @if ($project->impact_line)
                     <p class="mt-4 max-w-xl text-lg text-fg/90 text-pretty">{{ $project->impact_line }}</p>
@@ -182,6 +182,11 @@
         </nav>
     </div>
 
-    @include('sections.contact')
+    @php
+        $contactSection = app(\App\Support\Site::class)->sections()->firstWhere('type', 'contact');
+    @endphp
+    @if ($contactSection)
+        @include('sections.contact', ['section' => $contactSection])
+    @endif
     <x-site.lightbox />
 </x-layouts.site>

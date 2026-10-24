@@ -15,6 +15,9 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\TernaryFilter;
+use Filament\Forms\Components\Toggle;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
@@ -49,6 +52,7 @@ class ImagesRelationManager extends RelationManager
                     ->options(ProjectImage::KINDS)
                     ->helperText('Phone screenshots are shown on the 3D phone.'),
                 TextInput::make('caption')->maxLength(255),
+                Toggle::make('is_visible')->label('Show on website')->default(true),
             ]);
     }
 
@@ -65,6 +69,7 @@ class ImagesRelationManager extends RelationManager
                 TextColumn::make('kind')
                     ->badge()
                     ->formatStateUsing(fn (string $state) => ProjectImage::KINDS[$state] ?? $state),
+                ToggleColumn::make('is_visible')->label('Show'),
                 TextColumn::make('width')
                     ->label('Size')
                     ->formatStateUsing(fn ($record) => $record->width ? "{$record->width}×{$record->height}" : '–')
@@ -72,6 +77,7 @@ class ImagesRelationManager extends RelationManager
             ])
             ->filters([
                 SelectFilter::make('kind')->options(ProjectImage::KINDS),
+                TernaryFilter::make('is_visible')->label('Shown on website'),
             ])
             ->headerActions([
                 CreateAction::make()

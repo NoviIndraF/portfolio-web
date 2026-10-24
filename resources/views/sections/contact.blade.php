@@ -6,11 +6,11 @@
         $profile->phone ? ['label' => __('site.contact.phone'), 'value' => $profile->phone, 'href' => 'tel:'.preg_replace('/[^0-9+]/', '', $profile->phone), 'icon' => 'phone'] : null,
     ]);
 @endphp
-<section id="contact" class="py-16 sm:py-24" aria-labelledby="contact-title">
+<section id="{{ $section->anchor }}" class="py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
     <div class="container-site">
         <div class="card relative overflow-hidden p-6 sm:p-10 lg:p-14" data-reveal>
             <div class="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-primary/20 blur-3xl" aria-hidden="true"></div>
-            <x-site.section-heading id="contact-title" :eyebrow="__('site.contact.eyebrow')" :title="__('site.contact.title')" :intro="__('site.contact.intro')" />
+            <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->text('eyebrow')" :title="$section->text('title')" :intro="$section->text('intro')" />
 
             <ul class="mt-8 grid gap-3 sm:grid-cols-2">
                 @foreach ($items as $item)

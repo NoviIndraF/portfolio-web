@@ -21,7 +21,7 @@
         </div>
 
         <div class="relative flex flex-1 flex-col border-t border-line bg-surface p-5">
-            <p class="text-xs font-semibold text-accent-fg">{{ __('site.project.types.'.$project->type) }}</p>
+            <p class="text-xs font-semibold text-accent-fg">{{ $project->typeLabel() }}@if ($project->year) · {{ $project->year }}@endif</p>
             <h3 class="mt-1 text-xl font-bold">
                 <a href="{{ route('projects.show', $project) }}" class="after:absolute after:inset-0" data-project-link>
                     {{ $project->title }}

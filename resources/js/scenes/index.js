@@ -8,6 +8,8 @@ const scenes = {
     'health-iot': () => import('./health-iot.js'),
     hydroponic: () => import('./hydroponic.js'),
     analytics: () => import('./analytics.js'),
+    generic: () => import('./generic.js'),
+    // 'none': no accent scene, phone only
 };
 
 export async function loadScene(type) {

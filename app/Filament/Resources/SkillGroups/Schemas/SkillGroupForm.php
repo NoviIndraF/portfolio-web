@@ -12,12 +12,14 @@ class SkillGroupForm
     {
         return $schema->components([
             TextInput::make('name')->label('Group name')->required()->maxLength(100),
+            \App\Filament\Resources\Projects\Schemas\ProjectForm::visibleToggle(),
             Repeater::make('skills')
                 ->relationship()
                 ->orderColumn('sort_order')
                 ->reorderable()
                 ->columnSpanFull()
-                ->columns(2)
+                ->columns(3)
+                ->itemLabel(fn (array $state): ?string => ($state['name'] ?? null).(($state['is_visible'] ?? true) ? '' : ' (hidden)'))
                 ->addActionLabel('Add skill')
                 ->defaultItems(0)
                 ->schema([
@@ -26,6 +28,7 @@ class SkillGroupForm
                         ->maxLength(100)
                         ->placeholder('flutter')
                         ->helperText('Optional simple-icons slug (see simpleicons.org).'),
+                    \App\Filament\Resources\Projects\Schemas\ProjectForm::visibleToggle(),
                 ]),
         ]);
     }

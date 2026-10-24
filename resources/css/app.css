@@ -229,3 +229,11 @@ html.lenis body {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* Rich text from the admin (text sections) */
+.prose-site :where(p, ul, ol) { margin-top: 1em; }
+.prose-site :where(ul) { list-style: disc; padding-left: 1.25em; }
+.prose-site :where(ol) { list-style: decimal; padding-left: 1.25em; }
+.prose-site :where(a) { color: var(--color-primary-fg); text-decoration: underline; }
+.prose-site :where(strong) { color: var(--c-text); }
+.prose-site :where(h2, h3) { margin-top: 1.4em; font-weight: 700; color: var(--c-text); }

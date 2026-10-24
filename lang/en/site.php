@@ -24,6 +24,15 @@ return [
         'prev' => 'Previous projects',
         'next' => 'Next projects',
         'no_screens' => 'Screenshots not public',
+        'all' => 'See all :count projects',
+    ],
+    'all_projects' => [
+        'title' => 'All projects',
+        'intro' => 'Every project I have built. Filter by type.',
+        'back' => 'Home',
+        'filter_all' => 'All',
+        'filter_label' => 'Filter projects by type',
+        'empty' => 'No projects to show yet.',
     ],
     'project' => [
         'back' => 'All projects',
