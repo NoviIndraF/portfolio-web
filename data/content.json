@@ -404,11 +404,6 @@
           "file": "seed/comel/05_screenshot.png",
           "kind": "screenshot",
           "caption": "Sensor charts"
-        },
-        {
-          "file": "seed/comel/06_hardware.png",
-          "kind": "hardware",
-          "caption": "Sensor hardware prototype"
         }
       ]
     },

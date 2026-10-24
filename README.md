@@ -225,7 +225,7 @@ php artisan optimize && php artisan filament:optimize
 - [ ] Change the admin password and upload your CV.
 - [ ] Replace draft **impact lines** with real results where possible (users, downloads, grades, adoption).
 - [ ] Add your LinkedIn URL in Profile.
-- [ ] Comel hardware photo (`06_hardware`) contains someone else's watermark: make sure you may use it, or delete it in Projects → Comel → Images.
+- [ ] Only upload photos you own or may use (no third-party watermarks), and hide real names in screenshots (the Comel patients are shown as "Patient A–D").
 - [ ] Check the HKI certificates (IO-Tani, Sidedi) once more for personal data.
 - [ ] Add links for Comel / Donice / Chat Apps if repositories or store pages exist.
 
