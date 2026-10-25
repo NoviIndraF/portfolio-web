@@ -18,7 +18,7 @@ Laravel 13 portfolio for a Mobile App Developer, aimed at recruiters: the key me
 |---|---|
 | [User guide](docs/user-guide.md) | Website visitors (English) |
 | [Panduan admin](docs/panduan-admin.md) | Mengelola isi website lewat `/admin` (Bahasa Indonesia) |
-| [Technical documentation](docs/technical/README.md) | Architecture, data model, backend, frontend & 3D, admin panel, testing, operations (English) |
+| [Technical documentation](docs/technical/README.md) | Architecture, data model, backend, frontend & 3D, admin panel, testing, operations, AI chatbot (English) |
 
 ---
 
@@ -124,6 +124,7 @@ composer install --no-dev --optimize-autoloader
 cp .env.example .env
 #   APP_ENV=production   APP_DEBUG=false   APP_URL=https://your-domain
 #   ADMIN_EMAIL=...      ADMIN_PASSWORD=...  (a strong one)
+#   GEMINI_API_KEY=...   (free key for the AI chatbot, see docs/technical/08-ai-chatbot.md)
 php artisan key:generate
 touch database/database.sqlite
 php artisan migrate --force --seed

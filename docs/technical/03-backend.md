@@ -7,6 +7,7 @@
 | `GET /` | `HomeController` | `pages/home` |
 | `GET /projects` | `ProjectController@index` | `pages/projects` |
 | `GET /projects/{project:slug}` | `ProjectController@show` | `pages/project` |
+| `POST /chat` (`throttle:chat`) | `ChatController` | JSON – see [AI chatbot](08-ai-chatbot.md) |
 | `GET /robots.txt` | `SeoController@robots` | text |
 | `GET /sitemap.xml` | `SeoController@sitemap` | `seo/sitemap` |
 | `/admin/*` | Filament panel | – |
@@ -17,6 +18,7 @@
 - **`ProjectController@index`** lists all published projects and the distinct types for the filter chips.
 - **`ProjectController@show`** returns 404 for drafts unless a user is logged in (preview), loads only visible links/features/tech/images, and finds the previous/next published project.
 - **`SeoController`** generates `robots.txt` (disallows `/admin`, points to the sitemap) and `sitemap.xml` with the live domain.
+- **`ChatController`** answers one chatbot question with the `PortfolioAssistant` AI agent and returns `{"reply": "..."}`. Details in [AI chatbot](08-ai-chatbot.md).
 
 ## Support classes (`app/Support`)
 

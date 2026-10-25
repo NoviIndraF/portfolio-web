@@ -17,7 +17,9 @@ DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_DATABASE=portfolio_test DB_USERNAME=...
 | `tests/Feature/PortfolioTest.php` | Home and project pages, Download CV visibility, links section, HKI badge, drafts (404 vs. admin preview), admin access, sitemap/robots, WebP + small variant creation and cleanup, valid JSON-LD, 3D toggle, seeder guard |
 | `tests/Feature/CustomizableContentTest.php` | Hidden features/tech/links/images/skills, featured projects and `/projects`, section order/visibility/texts, Text and Timeline sections (incl. HTML sanitizing), built-in section protection, free-text types, Duplicate action, admin forms (Livewire), export → import round trip |
 
-22 tests pass on SQLite and on MySQL.
+| `tests/Feature/ChatbotTest.php` | AI chatbot with a faked AI (no real Gemini calls): only public content in the AI context, answer + conversation memory, validation, offline without an API key, daily cap, per-visitor rate limit, widget on the page |
+
+29 tests pass on SQLite and on MySQL.
 
 ## Lighthouse (mobile)
 

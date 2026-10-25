@@ -20,6 +20,7 @@
 | Icons | Heroicons (Blade), simple-icons (copied to `public/icons/simple` at build) |
 | Database | SQLite or MySQL 8 / MariaDB (PostgreSQL also supported) |
 | Images | GD: original + WebP (max 1600 px) + small WebP (560 px wide) |
+| AI chatbot | Laravel AI SDK (`laravel/ai`) + Google Gemini (free tier) |
 
 ## Request flow
 
@@ -49,12 +50,13 @@ flowchart LR
 
 ```
 app/
+  Ai/Agents/             PortfolioAssistant (AI chatbot agent)
   Console/Commands/      portfolio:export, portfolio:import, portfolio:images
   Filament/              Admin: Resources (Projects, SkillGroups, PageSections), Pages (Profile, Settings), Widgets
-  Http/Controllers/      HomeController, ProjectController, SeoController
+  Http/Controllers/      HomeController, ProjectController, SeoController, ChatController
   Models/                Eloquent models + Concerns (HasVisibility, OptimizesImages)
-  Providers/             AppServiceProvider (Site service, view composer), Filament panel provider
-  Services/              ImageOptimizer (GD → WebP)
+  Providers/             AppServiceProvider (Site service, view composer, chat rate limit), Filament panel provider
+  Services/              ImageOptimizer (GD → WebP), PortfolioContext (portfolio text for the AI)
   Support/               Site (per-request data), Icon (simple-icons), Img (srcset helpers)
 data/content.json        Initial content (first import)
 seed/                    Initial images and files referenced by content.json
@@ -68,7 +70,7 @@ public/.htaccess         Apache: rewrite + gzip + cache headers
 resources/
   css/app.css            Tailwind theme tokens, phone frame, 3D/motion styles
   js/app.js              Entry point
-  js/ui/                 Small UI modules (nav, rails, lightbox, carousel, filter, motion, 3D boot)
+  js/ui/                 Small UI modules (nav, rails, lightbox, carousel, filter, chat, motion, 3D boot)
   js/three/              PhoneViewer3D, phone model, screen textures, helpers
   js/scenes/             One module per accent scene + hero particles
   views/                 Layout, components, sections, pages, errors, seo

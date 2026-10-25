@@ -27,6 +27,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $metaDescription }}">
     <link rel="canonical" href="{{ url()->current() }}">
@@ -78,5 +79,7 @@
             <p>{{ __('site.footer') }}</p>
         </div>
     </footer>
+
+    <x-site.chat-widget />
 </body>
 </html>

@@ -16,7 +16,8 @@ Panduan ini menjelaskan cara mengelola seluruh isi website lewat panel admin, ta
 8. [Pengaturan situs](#8-pengaturan-situs)
 9. [Akun dan password](#9-akun-dan-password)
 10. [Backup dan pindah database](#10-backup-dan-pindah-database)
-11. [Tips dan pertanyaan umum](#11-tips-dan-pertanyaan-umum)
+11. [Chatbot AI ("Ask about me")](#11-chatbot-ai-ask-about-me)
+12. [Tips dan pertanyaan umum](#12-tips-dan-pertanyaan-umum)
 
 ---
 
@@ -161,7 +162,61 @@ php artisan portfolio:import <folder-backup> --force
 ```
 Perintah ini **mengganti** semua isi dengan isi backup; akun admin tidak berubah.
 
-## 11. Tips dan pertanyaan umum
+## 11. Chatbot AI ("Ask about me")
+
+Di pojok kanan bawah setiap halaman ada tombol **Ask about me**. Pengunjung (misalnya HRD) bisa bertanya tentang project, skill dan pengalaman Anda, lalu AI (Google Gemini) menjawab **hanya berdasarkan isi website**. AI bisa menjawab dalam bahasa Indonesia maupun Inggris.
+
+**Isi chatbot ikut admin.** Chatbot membaca data yang sama dengan yang tampil di website. Jadi:
+- project, skill, fitur atau item timeline yang Anda sembunyikan (*Published* / *Show* mati) **tidak diketahui** chatbot;
+- perubahan yang Anda simpan di admin langsung dipakai chatbot, tanpa langkah tambahan;
+- semakin lengkap deskripsi project (ringkasan, masalah, solusi, fitur, teknologi), semakin bagus jawabannya.
+
+### Mengaktifkan chatbot (sekali saja)
+
+Chatbot butuh **API key Gemini** yang gratis:
+
+1. Buka [aistudio.google.com](https://aistudio.google.com) dan login dengan akun Google.
+2. Klik **Get API key** → **Create API key**, lalu salin key-nya (diawali `AIza…`).
+3. Buka file `.env` di folder proyek (bukan `.env.example`) dan isi:
+   ```
+   GEMINI_API_KEY=key-anda
+   ```
+4. Simpan. Di server produksi, jalankan juga `php artisan optimize`.
+
+> **Jaga kerahasiaan key.** Jangan bagikan atau unggah key ke tempat publik. Gunakan **key terpisah** untuk laptop dan server, supaya tes di laptop tidak menghabiskan kuota website yang sudah online.
+
+### Pengaturan di `.env`
+
+| Pengaturan | Fungsi | Bawaan |
+|---|---|---|
+| `CHATBOT_ENABLED` | `false` untuk menyembunyikan chatbot sepenuhnya | `true` |
+| `CHATBOT_PER_HOUR` | Batas pertanyaan per pengunjung per jam | 20 |
+| `CHATBOT_DAILY_LIMIT` | Batas pertanyaan untuk seluruh website per hari (menjaga kuota gratis) | 300 |
+| `CHATBOT_GEMINI_MODEL` | Model Gemini utama | `gemini-3.5-flash` |
+| `CHATBOT_GEMINI_BACKUP_MODEL` | Model cadangan jika model utama sedang penuh | `gemini-3.1-flash-lite` |
+| `GROQ_API_KEY` | Opsional: cadangan ketiga dari Groq (gratis) | kosong |
+
+Setelah mengubah `.env` di server, jalankan `php artisan optimize`.
+
+### Teks tombol dan pertanyaan cepat
+
+Teks widget (judul, sapaan, tiga tombol pertanyaan cepat, pesan error) ada di file `lang/en/site.php` bagian `chat`.
+
+### Pertanyaan umum
+
+**Apakah berbayar?** Tidak, selama memakai kuota gratis Gemini. Batas harian (`CHATBOT_DAILY_LIMIT`) menjaga agar kuota tidak terlewati.
+
+**Chatbot bilang "offline"?** API key belum terbaca atau chatbot dimatikan. Cek `.env`, lalu di server jalankan `php artisan optimize`.
+
+**Chatbot bilang "something went wrong"?** Layanan Gemini sedang sibuk atau gagal. Biasanya pulih sendiri dalam beberapa menit. Penyebab persisnya tercatat di `storage/logs/laravel.log`.
+
+**Chatbot bilang "resting for today"?** Batas harian tercapai; chatbot aktif lagi tengah malam.
+
+**Jawabannya salah atau kurang lengkap?** Lengkapi data di admin (deskripsi, fitur, teknologi project, atau section timeline untuk pengalaman kerja). Chatbot tidak akan menebak hal yang tidak ada di data, misalnya gaji atau bahasa asing, dan akan menyarankan pengunjung menghubungi Anda lewat email.
+
+**Apakah chatbot bisa disuruh melanggar aturan?** Chatbot sudah diatur untuk menolak pertanyaan di luar topik dan mengabaikan perintah seperti "abaikan semua instruksi". Detail teknisnya ada di [dokumentasi teknis](technical/08-ai-chatbot.md).
+
+## 12. Tips dan pertanyaan umum
 
 **Perubahan tidak muncul di website?** Refresh halaman (Cmd+Shift+R). Di server produksi, minta developer menjalankan `php artisan optimize:clear` lalu `php artisan optimize`.
 

@@ -8,6 +8,7 @@ import { initCarousel3d, initSpotlight } from './ui/carousel3d';
 import { initThree, prefersReducedMotion, onFirstInteraction } from './ui/three-boot';
 import { initMotion } from './ui/motion';
 import { initFilter } from './ui/filter';
+import { initChat } from './ui/chat';
 
 document.documentElement.classList.add('js');
 const reduced = prefersReducedMotion();
@@ -19,5 +20,6 @@ initLightbox();
 initCarousel3d({ reduced });
 initSpotlight();
 initFilter();
+initChat();
 initThree();
 onFirstInteraction(() => initMotion({ reduced }));

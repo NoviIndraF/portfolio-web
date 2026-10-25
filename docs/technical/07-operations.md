@@ -55,3 +55,4 @@ php artisan optimize:clear
 | Forgot admin password | `php artisan tinker --execute="App\Models\User::first()->update(['password' => 'new-password'])"` |
 | Upload fails on the server | Raise `upload_max_filesize` / `post_max_size` in PHP and `client_max_body_size` in Nginx (25 MB). |
 | Small images missing after restoring files | `php artisan portfolio:images` |
+| Chatbot says "offline" or "something went wrong" | See the troubleshooting table in [AI chatbot](08-ai-chatbot.md#troubleshooting). |
