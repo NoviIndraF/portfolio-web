@@ -6,8 +6,8 @@ use App\Models\PageSection;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -105,7 +105,7 @@ class PageSectionForm
                         ->schema([
                             Grid::make(['default' => 1, 'sm' => 3])->schema([
                                 TextInput::make('period')->maxLength(60)->placeholder('2022 – Present'),
-                                TextInput::make('title')->required()->maxLength(150)->placeholder('Mobile Developer'),
+                                TextInput::make('title')->required()->maxLength(150)->placeholder('Software Developer'),
                                 TextInput::make('subtitle')->maxLength(150)->placeholder('Company / school / issuer'),
                             ]),
                             Textarea::make('description')->rows(2),

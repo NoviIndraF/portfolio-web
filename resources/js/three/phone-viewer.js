@@ -51,6 +51,9 @@ export class PhoneViewer3D {
         this.holder = document.createElement('div');
         this.holder.className = 'phone-canvas';
         this.holder.setAttribute('aria-hidden', 'true');
+        // Hero: the canvas reaches past the phone, so it takes input for the items beside it.
+        // It stays inside the phone column, so lifting it above the layout never covers the hero text.
+        if (this.isHero) Object.assign(this.holder.style, { pointerEvents: 'auto', zIndex: '0' });
         this.root.prepend(this.holder);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: !this.mobile, alpha: true, powerPreference: 'high-performance' });
@@ -155,7 +158,7 @@ export class PhoneViewer3D {
 
     // ---------- Accent scene ----------
     async initAccentScene() {
-        if (this.isHero || !this.sceneType) return;
+        if (!this.sceneType) return;
         const create = await loadScene(this.sceneType);
         if (!create) return;
         let model = null;
@@ -166,6 +169,8 @@ export class PhoneViewer3D {
             accentHex: this.accentHex,
             reduced: this.reduced,
             mobile: this.mobile,
+            webScreens: JSON.parse(this.root.dataset.webScreens || '[]'),
+            pivot: this.pivot,
             model,
         };
         this.accent = create(this.ctx);
@@ -190,9 +195,14 @@ export class PhoneViewer3D {
     layoutScene() {
         if (!this.accent?.layout) return;
         // Half-width of the visible area at the phone's depth, minus a margin.
-        const halfW = Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * this.camera.position.z * this.camera.aspect;
+        const halfH = Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * this.camera.position.z;
+        const halfW = halfH * this.camera.aspect;
         const spread = Math.max(0.78, halfW - 0.32);
-        this.accent.layout({ spread, front: spread > 1.05 ? 0.25 : -0.35 });
+        // Hero canvas can be off-center: visible world width on each side of the phone.
+        const perPx = (halfH * 2) / (this.extent?.h || 1);
+        const left = this.extent ? this.extent.left * perPx : halfW;
+        const right = this.extent ? this.extent.right * perPx : halfW;
+        this.accent.layout({ spread, front: spread > 1.05 ? 0.25 : -0.35, left, right, distance: this.camera.position.z });
     }
 
     // ---------- Sizing ----------
@@ -201,15 +211,35 @@ export class PhoneViewer3D {
         const rootRect = this.root.getBoundingClientRect();
         if (!phoneRect.height) return;
         const pad = 40;
-        const w = this.isHero ? phoneRect.width * 1.9 : Math.min(window.innerWidth, 736);
         const h = phoneRect.height + pad * 2;
+        let w = Math.min(window.innerWidth, 736);
+        let full = w;
+        this.extent = null;
+        if (this.isHero) {
+            // Hero: room for the browser and AI illustrations on each side of the phone,
+            // without covering the hero text or going past the screen edge.
+            const cx = phoneRect.left + phoneRect.width / 2;
+            const col = this.root.parentElement.getBoundingClientRect();
+            const want = phoneRect.width * 1.4;
+            const min = phoneRect.width * 0.6;
+            const left = Math.round(Math.min(want, Math.max(min, cx - col.left)));
+            const right = Math.round(Math.min(want, Math.max(min, document.documentElement.clientWidth - 8 - cx)));
+            this.extent = { left, right, h };
+            w = left + right;
+            full = 2 * Math.max(left, right);
+            Object.assign(this.holder.style, { left: `${cx - left - rootRect.left}px`, transform: 'none' });
+        }
         Object.assign(this.holder.style, {
             width: `${w}px`,
             height: `${h}px`,
             top: `${phoneRect.top - rootRect.top - pad}px`,
         });
         this.renderer.setSize(w, h, false);
-        this.camera.aspect = w / h;
+        this.camera.aspect = full / h;
+        // Render only the part of a phone-centered view that the (possibly off-center) canvas covers.
+        if (this.extent) {
+            this.camera.setViewOffset(full, h, full / 2 - this.extent.left, 0, w, h);
+        }
         // Same on-screen size as the static phone, so the swap is seamless.
         const worldH = (PHONE.height * h) / phoneRect.height;
         this.baseDistance = worldH / 2 / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
@@ -240,14 +270,20 @@ export class PhoneViewer3D {
             }
             this.dragging = true;
             this.lastInteraction = performance.now();
+            this.accent?.onInteract?.();
         });
 
         el.addEventListener('pointermove', (e) => {
             const rect = el.getBoundingClientRect();
             if (e.pointerType === 'mouse' && !this.dragging) {
                 // Hover tilt toward the cursor
-                this.hover.y = ((e.clientX - rect.left) / rect.width - 0.5) * 0.5;
-                this.hover.x = ((e.clientY - rect.top) / rect.height - 0.5) * 0.3;
+                // Clamped: on the hero the canvas (and so the cursor) reaches far past the phone.
+                this.hover.y = clamp(((e.clientX - rect.left) / rect.width - 0.5) * 0.5, -0.3, 0.3);
+                this.hover.x = clamp(((e.clientY - rect.top) / rect.height - 0.5) * 0.3, -0.2, 0.2);
+                if (this.accent?.onHover) {
+                    const clickable = this.accent.onHover(this.pick(e)?.object ?? null);
+                    el.style.cursor = clickable ? 'pointer' : '';
+                }
             }
             if (!pointers.has(e.pointerId) || !start) return;
             pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -276,7 +312,12 @@ export class PhoneViewer3D {
             const dy = e.clientY - start.y;
             const dt = performance.now() - start.t;
             const dist = Math.hypot(dx, dy);
-            if (e.type === 'pointerup' && dt < 380 && Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+            const flick = dt < 380 && Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4;
+            if (e.type === 'pointerup' && flick && this.accent?.ownsDrag?.()) {
+                // Browser in front: quick flick = next / previous web screen
+                this.target.y = start.ry;
+                this.accent.flick?.(dx < 0 ? 1 : -1);
+            } else if (e.type === 'pointerup' && flick) {
                 // Quick flick = change screen (undo the rotation it caused)
                 this.target.y = start.ry;
                 this.show(this.index + (dx < 0 ? 1 : -1));
@@ -290,7 +331,10 @@ export class PhoneViewer3D {
         el.addEventListener('pointerup', end);
         el.addEventListener('pointercancel', end);
         el.addEventListener('pointerleave', (e) => {
-            if (e.pointerType === 'mouse') this.hover = { x: 0, y: 0 };
+            if (e.pointerType !== 'mouse') return;
+            this.hover = { x: 0, y: 0 };
+            this.accent?.onHover?.(null);
+            el.style.cursor = '';
         });
 
         // Trackpad pinch (ctrl + wheel) zooms; a normal wheel keeps scrolling the page.
@@ -305,6 +349,10 @@ export class PhoneViewer3D {
             if (keys[e.key]) {
                 e.preventDefault();
                 this.show(this.index + keys[e.key]);
+            }
+            if ((e.key === 'Enter' || e.key === ' ') && this.accent?.toggle) {
+                e.preventDefault();
+                this.accent.toggle();
             }
             if (e.key === '+' || e.key === '=') this.targetZoom = clamp(this.targetZoom * 1.15, 0.75, 1.7);
             if (e.key === '-') this.targetZoom = clamp(this.targetZoom / 1.15, 0.75, 1.7);
@@ -339,13 +387,18 @@ export class PhoneViewer3D {
         }
     }
 
-    click(e) {
+    /** Closest accent-scene clickable under the pointer, if any. */
+    pick(e) {
         const targets = this.accent?.clickables;
-        if (!targets?.length) return;
+        if (!targets?.length) return null;
         const rect = this.renderer.domElement.getBoundingClientRect();
         const ndc = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
         this.raycaster.setFromCamera(ndc, this.camera);
-        const hit = this.raycaster.intersectObjects(targets, true)[0];
+        return this.raycaster.intersectObjects(targets, true)[0] ?? null;
+    }
+
+    click(e) {
+        const hit = this.pick(e);
         if (hit) this.accent.onClick?.(hit.object);
     }
 

@@ -6,8 +6,8 @@ use App\Models\Profile;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +31,7 @@ class EditProfile extends SingleRecordPage
     {
         return Profile::query()->firstOrCreate([], [
             'name' => 'Your name',
-            'tagline' => 'Mobile App Developer',
+            'tagline' => 'Software Developer',
             'email' => 'you@example.com',
         ]);
     }

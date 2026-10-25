@@ -7,6 +7,8 @@
     $contactHref = ($c = $sections->firstWhere('type', 'contact')) ? '#'.$c->anchor : 'mailto:'.$profile->email;
     $projectsHref = ($p = $sections->firstWhere('type', 'projects')) ? '#'.$p->anchor : route('projects.index');
     $reel = $projects->map(fn ($p) => $p->screenshots->first()?->screen($p->title))->filter()->values();
+    // "Web" images (Admin → project images) rotate in the 3D browser window next to the phone.
+    $webScreens = $projects->flatMap(fn ($p) => $p->webShots)->map(fn ($s) => $s->screen()['url'])->values();
 @endphp
 <section class="relative isolate overflow-hidden" aria-labelledby="hero-title">
     {{-- Background + 3D particles mount (stage 4) --}}
@@ -70,7 +72,7 @@
         </div>
 
         <div class="flex justify-center lg:justify-end">
-            <x-site.phone scene="hero" :screens="$reel" width="min(16rem, 62vw)" class="lg:mr-6" data-hero-phone />
+            <x-site.phone scene="hero" :screens="$reel" width="min(16rem, 62vw)" class="lg:mr-6" data-hero-phone :data-web-screens="$webScreens->isNotEmpty() ? $webScreens->toJson() : null" />
         </div>
     </div>
 </section>

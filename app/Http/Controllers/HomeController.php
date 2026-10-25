@@ -11,7 +11,9 @@ class HomeController extends Controller
 {
     public function __invoke(Site $site): View
     {
-        $published = Project::published()->with(Project::publicRelations())->get();
+        $published = Project::published()
+            ->with([...Project::publicRelations(), 'webShots' => fn ($q) => $q->visible()])
+            ->get();
         // Carousel shows featured projects; if none are marked, show all published ones.
         $featured = $published->where('is_featured', true)->values();
 

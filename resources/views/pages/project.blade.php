@@ -33,8 +33,11 @@
                         <div class="min-w-0 text-sm">
                             <p class="font-bold">{{ __('site.project.recognition') }}</p>
                             <p class="mt-1 text-muted">
-                                @if (! empty($rec['holder'])) {{ __('site.project.holder') }}: {{ $rec['holder'] }} @endif
-                                @if (! empty($rec['published'])) · {{ __('site.project.published') }}: {{ $rec['published'] }} @endif
+                                {{ collect([
+                                    $rec['type'] ?? null,
+                                    ! empty($rec['holder']) ? __('site.project.holder').': '.$rec['holder'] : null,
+                                    ! empty($rec['published']) ? __('site.project.published').': '.$rec['published'] : null,
+                                ])->filter()->implode(' · ') }}
                             </p>
                             @if ($certificates->isNotEmpty())
                                 <a href="{{ $certificates->first()->url() }}" target="_blank" rel="noopener"

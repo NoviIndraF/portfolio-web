@@ -1,6 +1,6 @@
 # Portofolio Novi Indra Fanani
 
-Portofolio interaktif Laravel 13 untuk Mobile App Developer, ditujukan ke recruiter. Setiap project punya ponsel 3D dengan scene bertema. Semua konten diedit lewat panel admin Filament di `/admin`.
+Portofolio interaktif Laravel 13 untuk Software Developer, ditujukan ke recruiter. Setiap project punya ponsel 3D dengan scene bertema. Semua konten diedit lewat panel admin Filament di `/admin`.
 
 ## Stack
 Laravel 13, PHP 8.3+, Blade, Vite 8, Tailwind CSS 4, Filament 5, Three.js, GSAP + ScrollTrigger, Lenis, simple-icons, laravel/ai (chatbot). Database lokal: MySQL via XAMPP (`.env`); `.env.example` memakai SQLite.
@@ -11,6 +11,7 @@ Laravel 13, PHP 8.3+, Blade, Vite 8, Tailwind CSS 4, Filament 5, Three.js, GSAP 
 - Test: `php artisan test --compact` (pakai `--filter` untuk test tertentu)
 - Format PHP: `vendor/bin/pint --dirty --format agent`
 - Data: `php artisan portfolio:export` / `portfolio:import` / `portfolio:images`
+- Release: `php artisan portfolio:release patch|minor|major --message="..."` (naikkan `VERSION`, tulis `CHANGELOG.md`, snapshot konten ke `storage/app/exports/vX.Y.Z`, git commit + tag)
 
 ## Peta kode
 - `app/Filament/`: admin (Projects, Skills, Home sections, Profile, Settings)

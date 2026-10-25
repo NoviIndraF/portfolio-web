@@ -14,7 +14,7 @@
         '@context' => 'https://schema.org',
         '@type' => 'Person',
         'name' => $profile->name,
-        'jobTitle' => 'Mobile App Developer',
+        'jobTitle' => trim(str($profile->tagline)->before('|')) ?: null,
         'description' => $profile->tagline,
         'url' => url('/'),
         'image' => $profile->photoUrl(),

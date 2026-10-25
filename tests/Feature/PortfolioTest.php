@@ -2,9 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\PageSections\PageSectionResource;
+use App\Models\PageSection;
 use App\Models\Profile;
 use App\Models\Project;
-use App\Models\ProjectImage;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -118,6 +119,19 @@ class PortfolioTest extends TestCase
         $this->actingAs($admin)->get('/admin/settings')->assertOk();
     }
 
+    public function test_admin_menu_has_experience_and_education_shortcuts_when_sections_exist(): void
+    {
+        $admin = User::factory()->create();
+        $this->actingAs($admin)->get('/admin')->assertOk()->assertDontSee('/admin/page-sections/', false);
+
+        $experience = PageSection::create(['type' => 'timeline', 'anchor' => 'experience', 'title' => 'Where I have worked', 'items' => []]);
+        $education = PageSection::create(['type' => 'timeline', 'anchor' => 'education', 'title' => 'Learning and recognition', 'items' => []]);
+
+        $this->actingAs($admin)->get('/admin')->assertOk()
+            ->assertSee(PageSectionResource::getUrl('edit', ['record' => $experience]), false)
+            ->assertSee(PageSectionResource::getUrl('edit', ['record' => $education]), false);
+    }
+
     public function test_sitemap_and_robots(): void
     {
         $this->project();
@@ -125,6 +139,26 @@ class PortfolioTest extends TestCase
 
         $this->get('/sitemap.xml')->assertOk()->assertSee('/projects/codelytic')->assertDontSee('/projects/draft');
         $this->get('/robots.txt')->assertOk()->assertSee('Disallow: /admin')->assertSee('sitemap.xml');
+    }
+
+    public function test_hero_browser_rotates_through_web_images_only(): void
+    {
+        $project = $this->project();
+        $this->get('/')->assertOk()->assertDontSee('data-web-screens', false);
+
+        foreach (['web-1' => 'web', 'web-2' => 'web', 'phone' => 'screenshot'] as $name => $kind) {
+            $path = Storage::disk('public')->putFileAs('projects/codelytic', UploadedFile::fake()->image("$name.png", 1600, 800), "$name.png");
+            $project->images()->create(['path' => $path, 'kind' => $kind, 'sort_order' => 1]);
+        }
+
+        $html = $this->get('/')->assertOk()->getContent();
+        preg_match('/data-web-screens="([^"]+)"/', $html, $match);
+        $urls = json_decode(html_entity_decode($match[1] ?? ''), true);
+
+        $this->assertSame([
+            Storage::disk('public')->url('projects/codelytic/web-1.webp'),
+            Storage::disk('public')->url('projects/codelytic/web-2.webp'),
+        ], $urls);
     }
 
     public function test_uploaded_image_is_converted_to_webp_with_small_variant_and_cleaned_up(): void

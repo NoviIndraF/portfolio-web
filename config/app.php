@@ -15,6 +15,9 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    // Release version (VERSION file, bumped by `php artisan portfolio:release`).
+    'version' => trim((string) @file_get_contents(base_path('VERSION'))) ?: 'dev',
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

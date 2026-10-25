@@ -105,6 +105,12 @@ class Project extends Model
         return $this->images()->where('kind', 'screenshot');
     }
 
+    /** Web app screenshots; the first one fills the 3D browser window in the hero. */
+    public function webShots(): HasMany
+    {
+        return $this->images()->where('kind', 'web');
+    }
+
     public function certificates(): HasMany
     {
         return $this->images()->where('kind', 'certificate');
