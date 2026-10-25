@@ -184,12 +184,44 @@ class CustomizableContentTest extends TestCase
         $this->assertSame(['Flutter'], $p->tech()->visible()->pluck('name')->all());
     }
 
+    public function test_skills_link_to_projects_whose_technologies_match(): void
+    {
+        $app = $this->project(['title' => 'Flutter App']);
+        $app->tech()->create(['name' => 'Flutter Bloc', 'sort_order' => 1]);
+        $group = SkillGroup::create(['name' => 'Mobile', 'sort_order' => 1]);
+        $group->skills()->create(['name' => 'Flutter', 'sort_order' => 1]);
+        $group->skills()->create(['name' => 'Cobol', 'sort_order' => 2]);
+
+        $html = $this->get('/')->assertOk()->getContent();
+
+        preg_match('/data-skill="Flutter" data-skill-projects="([^"]+)"/', $html, $m);
+        $linked = json_decode(html_entity_decode($m[1] ?? '[]'), true);
+        $this->assertSame(['Flutter App'], array_column($linked, 'title'));
+        $this->assertStringNotContainsString('data-skill="Cobol"', $html, 'a skill without projects stays a plain chip');
+    }
+
+    public function test_feature_linked_to_a_screen_points_at_its_position_among_visible_screenshots(): void
+    {
+        $p = $this->project(['slug' => 'screens']);
+        $p->images()->create(['path' => 'projects/screens/a.webp', 'kind' => 'screenshot', 'is_visible' => false, 'sort_order' => 1]);
+        $p->images()->create(['path' => 'projects/screens/b.webp', 'kind' => 'screenshot', 'sort_order' => 2]);
+        $target = $p->images()->create(['path' => 'projects/screens/c.webp', 'kind' => 'screenshot', 'sort_order' => 3]);
+        $p->features()->create(['title' => 'Quiz', 'project_image_id' => $target->id, 'sort_order' => 1]);
+        $p->features()->create(['title' => 'No screen', 'sort_order' => 2]);
+
+        $html = $this->get('/projects/screens')->assertOk()->getContent();
+
+        // The hidden first screenshot is not on the phone, so "c" is the 2nd visible screen (index 1).
+        $this->assertSame(1, substr_count($html, 'data-screen-index='));
+        $this->assertStringContainsString('data-screen-index="1"', $html);
+    }
+
     public function test_export_then_import_restores_all_content(): void
     {
         $p = $this->project(['title' => 'Exported App', 'slug' => 'exported', 'year' => '2023', 'is_featured' => false]);
-        $p->features()->create(['title' => 'Hidden one', 'is_visible' => false, 'sort_order' => 1]);
         $png = UploadedFile::fake()->image('s.png', 600, 1200);
-        $p->images()->create(['path' => Storage::disk('public')->putFileAs('projects/exported', $png, 's.png'), 'kind' => 'screenshot', 'sort_order' => 1]);
+        $shot = $p->images()->create(['path' => Storage::disk('public')->putFileAs('projects/exported', $png, 's.png'), 'kind' => 'screenshot', 'sort_order' => 1]);
+        $p->features()->create(['title' => 'Hidden one', 'is_visible' => false, 'project_image_id' => $shot->id, 'sort_order' => 1]);
         (new PageSection(['type' => 'timeline', 'anchor' => 'edu', 'title' => 'Education', 'sort_order' => 9, 'items' => [['title' => 'University']]]))->save();
 
         $dir = storage_path('framework/testing/export-'.uniqid());
@@ -204,6 +236,7 @@ class CustomizableContentTest extends TestCase
         $this->assertSame('2023', $restored->year);
         $this->assertFalse($restored->is_featured);
         $this->assertFalse($restored->features()->first()->is_visible);
+        $this->assertSame($restored->images()->first()->id, $restored->features()->first()->project_image_id);
         $this->assertSame(1, $restored->images()->count());
         Storage::disk('public')->assertExists($restored->images()->first()->path);
         $this->assertSame('University', PageSection::where('anchor', 'edu')->first()->items[0]['title']);

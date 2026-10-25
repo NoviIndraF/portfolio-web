@@ -8,8 +8,8 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -44,6 +44,22 @@ class ProjectForm
             ->label('Show on website')
             ->default(true)
             ->inline(false);
+    }
+
+    /**
+     * Phone screenshots of the project, for linking a feature to its screen.
+     *
+     * @return array<int, string>
+     */
+    private static function screenOptions(?Project $project): array
+    {
+        if (! $project) {
+            return [];
+        }
+
+        return $project->images()->where('kind', 'screenshot')->get()
+            ->mapWithKeys(fn ($img, $i) => [$img->id => ($i + 1).'. '.($img->caption ?: 'Screenshot')])
+            ->all();
     }
 
     private static function label(?string $text, array $state): ?string
@@ -137,10 +153,17 @@ class ProjectForm
                         self::visibleToggle(),
                     ]),
                     Textarea::make('description')->rows(2),
-                    TextInput::make('icon')
-                        ->maxLength(100)
-                        ->placeholder('e.g. heroicon-o-chat-bubble-left-right')
-                        ->helperText('Optional icon name.'),
+                    Grid::make(['default' => 1, 'sm' => 2])->schema([
+                        TextInput::make('icon')
+                            ->maxLength(100)
+                            ->placeholder('e.g. heroicon-o-chat-bubble-left-right')
+                            ->helperText('Optional icon name.'),
+                        Select::make('project_image_id')
+                            ->label('Screen')
+                            ->options(fn ($livewire): array => self::screenOptions($livewire->getRecord()))
+                            ->placeholder('None')
+                            ->helperText('Phone screenshot that shows this feature. Save new images first.'),
+                    ]),
                 ]),
         ]);
     }

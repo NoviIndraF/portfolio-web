@@ -2,9 +2,12 @@
 @php
     $shot = $project->screenshots->first();
     $cert = $project->certificates->first();
+    // Hover preview: cycle a few small screenshots (resources/js/ui/interactions.js).
+    $previews = $project->screenshots->take(3)->map(fn ($s) => \App\Support\Img::small($s->path))->values();
 @endphp
 <article {{ $attributes->class('group relative w-[82vw] max-w-[22rem] shrink-0 snap-start sm:w-[22rem]') }}
-         style="--accent: {{ $project->accent_color }}" data-tilt data-project-card>
+         style="--accent: {{ $project->accent_color }}" data-tilt data-project-card data-slug="{{ $project->slug }}"
+         @if ($previews->count() > 1) data-previews="{{ $previews->toJson() }}" @endif>
     <div class="card relative flex h-full flex-col overflow-hidden transition duration-300 group-hover:border-accent/60">
         {{-- Accent glow --}}
         <div class="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(60%_80%_at_50%_0%,color-mix(in_oklab,var(--accent,var(--c-primary))_40%,transparent),transparent)]" aria-hidden="true"></div>

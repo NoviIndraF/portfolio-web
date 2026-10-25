@@ -137,6 +137,7 @@ export class PhoneViewer3D {
         if (next === this.index) return;
         this.index = next;
         this.updateDots();
+        this.root.dispatchEvent(new CustomEvent('phone:screen', { detail: { index: next } }));
         const tex = await this.texture(next);
         if (this.index !== next) return; // user moved on
         const { screenA, screenB } = this.phone;
@@ -250,6 +251,8 @@ export class PhoneViewer3D {
 
     // ---------- Input ----------
     bindEvents() {
+        // Other UI (feature cards) can ask for a screen: root.dispatchEvent(new CustomEvent('phone:goto', { detail: { index } })).
+        this.root.addEventListener('phone:goto', (e) => this.show(e.detail.index));
         const el = this.root;
         const pointers = new Map();
         let start = null;

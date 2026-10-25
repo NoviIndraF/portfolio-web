@@ -6,10 +6,13 @@
     <div class="container-site">
         <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->eyebrow" :title="$section->title" :intro="$section->intro" />
 
-        <ol class="relative mt-10 space-y-6 border-l border-line pl-6 sm:pl-8" data-reveal-stagger>
+        <div class="relative mt-10" data-timeline>
+        {{-- Line fills with scroll progress (resources/js/ui/interactions.js) --}}
+        <span class="absolute top-0 left-0 h-full w-0.5 -translate-x-1/4 origin-top bg-primary" data-timeline-line aria-hidden="true"></span>
+        <ol class="relative space-y-6 border-l border-line pl-6 sm:pl-8" data-reveal-stagger>
             @foreach ($items as $item)
                 <li class="relative">
-                    <span class="absolute top-2 -left-[1.95rem] size-3 rounded-full bg-primary ring-4 ring-bg sm:-left-[2.45rem]" aria-hidden="true"></span>
+                    <span class="absolute top-2 -left-[1.95rem] size-3 rounded-full bg-primary ring-4 ring-bg transition duration-500 sm:-left-[2.45rem]" data-timeline-dot aria-hidden="true"></span>
                     <div class="card p-5 sm:p-6">
                         @if (filled($item['period'] ?? null))
                             <p class="text-xs font-semibold text-primary-fg">{{ $item['period'] }}</p>
@@ -30,5 +33,6 @@
                 </li>
             @endforeach
         </ol>
+        </div>
     </div>
 </section>

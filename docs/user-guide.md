@@ -19,6 +19,11 @@ From top to bottom (the owner can change the order and hide sections):
 
 Other sections such as *Experience* or *Education* may appear when the owner adds them. The top menu links to each section; on phones open it with the ☰ button.
 
+- **"Now showing"** under the hero phone names the app on screen; click it to open that project.
+- On phones, **Download CV** and **Contact Me** stay at the bottom of the screen after the first screen.
+- **Skills:** click a highlighted skill (e.g. *Flutter*) to list the projects that use it; they are also highlighted in the carousel.
+- **Contact:** the clipboard button next to the email copies the address.
+
 ## Browsing projects
 
 - **Carousel:** swipe left/right on a phone, or drag with the mouse / use the ← → buttons on a computer. Click a card to open the project.
@@ -27,6 +32,8 @@ Other sections such as *Experience* or *Education* may appear when the owner add
 ![All projects](images/projects-mobile.png)
 
 ## A project page
+
+A bar under the menu jumps to *Overview, Key features, Tech stack, Links, Gallery* and shows where you are. On a computer, hovering a project card plays a few of its screens.
 
 ![Project page](images/project-desktop.png)
 
@@ -40,6 +47,7 @@ Other sections such as *Experience* or *Education* may appear when the owner add
   | Tilt | Tilt your device (Android) | Move the mouse over the phone |
 
   The objects around the phone are an illustration of the project's theme (some are interactive, e.g. the quiz cube on Codelytic can be clicked).
+- Features with a **See this screen** button switch the phone to that screen.
 - **Overview, Key features, Tech stack, Links** – what the app does and how it was built.
 - **Gallery** – screenshots, web pages, admin panels, hardware and certificates. Click an image to open it full screen:
   - swipe or ← → to move between images,

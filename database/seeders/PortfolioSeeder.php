@@ -118,19 +118,11 @@ class PortfolioSeeder extends Seeder
                     'sort_order' => $i + 1,
                 ]);
             }
-            foreach (array_values($p['features'] ?? []) as $i => $f) {
-                $project->features()->create([
-                    'title' => $f['title'],
-                    'description' => $f['description'] ?? null,
-                    'icon' => $f['icon'] ?? null,
-                    'is_visible' => $f['is_visible'] ?? true,
-                    'sort_order' => $i + 1,
-                ]);
-            }
             foreach (array_values($p['tech'] ?? []) as $i => $t) {
                 $t = is_string($t) ? ['name' => $t] : $t;
                 $project->tech()->create(['name' => $t['name'], 'is_visible' => $t['is_visible'] ?? true, 'sort_order' => $i + 1]);
             }
+            $imageIds = [];
             foreach (array_values($p['images'] ?? []) as $i => $img) {
                 $file = $this->file($img['file']);
                 if (! $file) {
@@ -139,7 +131,7 @@ class PortfolioSeeder extends Seeder
                     continue;
                 }
                 $stored = $images->store($file, "projects/{$p['slug']}");
-                $project->images()->create([
+                $imageIds[$img['file']] = $project->images()->create([
                     'path' => $stored['webp'],
                     'original_path' => $stored['original'],
                     'kind' => $img['kind'] ?? 'screenshot',
@@ -147,6 +139,17 @@ class PortfolioSeeder extends Seeder
                     'is_visible' => $img['is_visible'] ?? true,
                     'width' => $stored['width'],
                     'height' => $stored['height'],
+                    'sort_order' => $i + 1,
+                ])->id;
+            }
+            // Features after images, so a feature can point to its screen ("screen" = image file).
+            foreach (array_values($p['features'] ?? []) as $i => $f) {
+                $project->features()->create([
+                    'title' => $f['title'],
+                    'description' => $f['description'] ?? null,
+                    'icon' => $f['icon'] ?? null,
+                    'project_image_id' => $imageIds[$f['screen'] ?? ''] ?? null,
+                    'is_visible' => $f['is_visible'] ?? true,
                     'sort_order' => $i + 1,
                 ]);
             }

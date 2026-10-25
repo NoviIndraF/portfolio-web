@@ -183,7 +183,7 @@ body {
 
 /* Project cards: 3D carousel + tilt */
 [data-project-card] {
-    transition: transform 0.25s ease-out;
+    transition: transform 0.25s ease-out, opacity 0.3s;
     cursor: pointer;
     /* No preserve-3d: a tilted card must never slip behind its container,
        otherwise clicks land on the container instead of the project link. */
@@ -249,3 +249,12 @@ html.lenis body {
 .prose-site :where(a) { color: var(--color-primary-fg); text-decoration: underline; }
 .prose-site :where(strong) { color: var(--c-text); }
 .prose-site :where(h2, h3) { margin-top: 1.4em; font-weight: 700; color: var(--c-text); }
+
+/* Skills → projects: highlight matching cards, dim the rest */
+[data-project-card][data-dim] {
+    opacity: 0.4;
+}
+[data-project-card][data-match] .card {
+    border-color: color-mix(in oklab, var(--accent, var(--c-primary)) 70%, transparent);
+    box-shadow: 0 0 0 1px var(--accent, var(--c-primary)), 0 12px 40px -12px var(--accent, var(--c-primary));
+}

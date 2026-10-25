@@ -6,7 +6,10 @@
     // One screen per project for the hero phone reel.
     $contactHref = ($c = $sections->firstWhere('type', 'contact')) ? '#'.$c->anchor : 'mailto:'.$profile->email;
     $projectsHref = ($p = $sections->firstWhere('type', 'projects')) ? '#'.$p->anchor : route('projects.index');
-    $reel = $projects->map(fn ($p) => $p->screenshots->first()?->screen($p->title))->filter()->values();
+    $reelProjects = $projects->filter(fn ($p) => $p->screenshots->isNotEmpty())->values();
+    $reel = $reelProjects->map(fn ($p) => $p->screenshots->first()->screen($p->title));
+    // "Now showing" label under the phone follows the active screen (resources/js/ui/hero-label.js).
+    $reelLabels = $reelProjects->map(fn ($p) => ['title' => $p->title, 'href' => route('projects.show', $p)]);
     // "Web" images (Admin → project images) rotate in the 3D browser window next to the phone.
     $webScreens = $projects->flatMap(fn ($p) => $p->webShots)->map(fn ($s) => $s->screen()['url'])->values();
 @endphp
@@ -64,15 +67,23 @@
                     @foreach ($profile->stats as $stat)
                         <div class="card flex flex-col px-4 py-3">
                             <dt class="text-xs text-muted">{{ $stat['label'] }}</dt>
-                            <dd class="order-first text-2xl font-extrabold text-fg sm:text-3xl">{{ $stat['value'] }}</dd>
+                            <dd class="order-first text-2xl font-extrabold text-fg tabular-nums sm:text-3xl" data-countup>{{ $stat['value'] }}</dd>
                         </div>
                     @endforeach
                 </dl>
             @endif
         </div>
 
-        <div class="flex justify-center lg:justify-end">
+        <div class="flex flex-col items-center lg:items-end">
             <x-site.phone scene="hero" :screens="$reel" width="min(16rem, 62vw)" class="lg:mr-6" data-hero-phone :data-web-screens="$webScreens->isNotEmpty() ? $webScreens->toJson() : null" />
+            @if ($reelLabels->isNotEmpty())
+                <a href="{{ $reelLabels[0]['href'] }}" class="group relative z-10 mt-3 inline-flex items-center gap-1.5 rounded-full border border-line bg-surface/80 px-4 py-2 text-sm backdrop-blur transition hover:border-primary/60 lg:mr-6"
+                   data-hero-label data-items="{{ $reelLabels->toJson() }}">
+                    <span class="text-muted">{{ __('site.hero.now_showing') }}:</span>
+                    <span class="font-semibold" data-hero-label-title aria-live="polite">{{ $reelLabels[0]['title'] }}</span>
+                    <x-heroicon-o-arrow-right class="size-4 text-primary-fg transition group-hover:translate-x-0.5" aria-hidden="true" />
+                </a>
+            @endif
         </div>
     </div>
 </section>

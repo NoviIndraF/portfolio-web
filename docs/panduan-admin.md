@@ -79,7 +79,7 @@ Ada dua cara:
 | Short description | Ringkasan. Tampil sebagai *Overview* jika Problem/Solution kosong. |
 | Problem / Solution | Opsional. Jika diisi, tampil sebagai dua kartu. |
 
-**Features** – tambah, ubah, urutkan (drag), atau sembunyikan fitur dengan tombol **Show on website**. Kolom *Icon* opsional (nama ikon Heroicons, mis. `heroicon-o-chat-bubble-left-right`); jika kosong, tampil nomor urut.
+**Features** – tambah, ubah, urutkan (drag), atau sembunyikan fitur dengan tombol **Show on website**. Kolom *Icon* opsional (nama ikon Heroicons, mis. `heroicon-o-chat-bubble-left-right`); jika kosong, tampil nomor urut. Kolom *Screen* opsional: pilih screenshot yang menampilkan fitur itu. Di halaman project, kartu fitur lalu punya tombol **See this screen** yang memindahkan HP ke layar tersebut (unggah gambarnya dulu di bagian Images dan simpan).
 
 **Tech & links**
 - *Technologies*: satu baris per teknologi, dengan tombol tampil/sembunyi. Logo muncul otomatis untuk teknologi yang dikenal (Flutter, Android, Laravel, Firebase, dll.).

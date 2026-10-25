@@ -14,9 +14,9 @@
             <span class="sr-only sm:not-sr-only">{{ $profile->name }}</span>
         </a>
 
-        <ul class="hidden items-center gap-1 md:flex">
+        <ul class="hidden items-center gap-1 md:flex" data-scrollspy>
             @foreach ($links as $id => $label)
-                <li><a href="{{ $home }}#{{ $id }}" class="rounded-full px-3 py-2 text-sm font-medium text-muted transition hover:text-fg">{{ $label }}</a></li>
+                <li><a href="{{ $home }}#{{ $id }}" class="rounded-full px-3 py-2 text-sm font-medium text-muted transition hover:text-fg aria-[current=true]:bg-surface-2 aria-[current=true]:text-fg">{{ $label }}</a></li>
             @endforeach
         </ul>
 
@@ -37,6 +37,7 @@
             </button>
         </div>
     </nav>
+    <div class="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-primary" data-scroll-progress aria-hidden="true"></div>
 
     <div id="mobile-menu" class="hidden border-t border-line md:hidden" data-menu>
         <ul class="container-site flex flex-col py-3">

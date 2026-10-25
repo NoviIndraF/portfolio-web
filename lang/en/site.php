@@ -53,6 +53,8 @@ return [
         'prev' => 'Previous project',
         'next' => 'Next project',
         'swipe_hint' => 'Swipe to see more screens',
+        'sections_nav' => 'On this page',
+        'see_screen' => 'See this screen',
         'screen' => 'Screen :n of :total',
         'kinds' => [
             'screenshot' => 'App screens',
@@ -68,7 +70,13 @@ return [
             'web' => 'Web app',
         ],
     ],
+    'hero' => [
+        'now_showing' => 'Now showing',
+    ],
     'skills' => [
+        'hint' => 'Tap a skill to see the projects that use it.',
+        'used_in' => ':skill is used in',
+        'clear' => 'Clear',
         'eyebrow' => 'Toolbox',
         'title' => 'Skills',
     ],
@@ -81,6 +89,8 @@ return [
         'title' => 'Let\'s talk about your team',
         'intro' => 'The fastest way to reach me is by email.',
         'email' => 'Email',
+        'copy_email' => 'Copy email address',
+        'copied' => 'Copied',
         'github' => 'GitHub',
         'linkedin' => 'LinkedIn',
         'phone' => 'Phone',

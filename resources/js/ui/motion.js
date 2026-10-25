@@ -12,7 +12,8 @@ export async function initMotion({ reduced }) {
 
     // Lenis only on precise pointers (mouse/trackpad); touch keeps native scrolling.
     if (window.matchMedia('(pointer: fine)').matches) {
-        const lenis = new Lenis({ autoRaf: false, anchors: { offset: -72 }, prevent: (node) => node.closest?.('dialog, [data-rail]') });
+        // Anchor offset = header height (+ the section nav on project pages).
+        const lenis = new Lenis({ autoRaf: false, anchors: { offset: document.querySelector('[data-subnav]') ? -124 : -72 }, prevent: (node) => node.closest?.('dialog, [data-rail]') });
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => lenis.raf(time * 1000));
         gsap.ticker.lagSmoothing(0);

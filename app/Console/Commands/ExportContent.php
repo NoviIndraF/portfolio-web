@@ -71,7 +71,7 @@ class ExportContent extends Command
                 'is_visible' => $s->is_visible,
                 'order' => $s->sort_order,
             ])->all(),
-            'projects' => Project::orderBy('sort_order')->with(['links', 'features', 'tech', 'images'])->get()->map(fn (Project $p) => [
+            'projects' => Project::orderBy('sort_order')->with(['links', 'features.image', 'tech', 'images'])->get()->map(fn (Project $p) => [
                 'slug' => $p->slug,
                 'title' => $p->title,
                 'type' => $p->type,
@@ -87,7 +87,9 @@ class ExportContent extends Command
                 'solution' => $p->solution,
                 'recognition' => $p->recognition,
                 'model_glb' => $this->copy($p->model_glb, $p->slug),
-                'features' => $p->features->map(fn ($f) => $f->only(['title', 'description', 'icon', 'is_visible']))->all(),
+                'features' => $p->features->map(fn ($f) => $f->only(['title', 'description', 'icon', 'is_visible']) + [
+                    'screen' => $f->image ? $this->copy($f->image->original_path ?: $f->image->path, $p->slug) : null,
+                ])->all(),
                 'tech' => $p->tech->map(fn ($t) => $t->only(['name', 'is_visible']))->all(),
                 'links' => $p->links->map(fn ($l) => $l->only(['label', 'url', 'is_visible']))->all(),
                 'images' => $p->images->map(fn ($i) => [

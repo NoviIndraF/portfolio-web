@@ -14,9 +14,9 @@
 
             <ul class="mt-8 grid gap-3 sm:grid-cols-2">
                 @foreach ($items as $item)
-                    <li>
+                    <li class="relative">
                         <a href="{{ $item['href'] }}" @if ($item['icon'] !== 'email' && $item['icon'] !== 'phone') target="_blank" rel="noopener" @endif
-                           class="flex min-h-16 items-center gap-4 rounded-2xl border border-line bg-bg/60 px-5 py-4 transition hover:border-primary/60 hover:bg-surface-2">
+                           class="flex min-h-16 items-center gap-4 rounded-2xl border border-line bg-bg/60 px-5 py-4 transition hover:border-primary/60 hover:bg-surface-2 {{ $item['icon'] === 'email' ? 'pr-16' : '' }}">
                             <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary-fg">
                                 @switch($item['icon'])
                                     @case('email') <x-heroicon-o-envelope class="size-5" aria-hidden="true" /> @break
@@ -30,6 +30,14 @@
                                 <span class="block truncate font-semibold">{{ $item['value'] }}</span>
                             </span>
                         </a>
+                        @if ($item['icon'] === 'email')
+                            <button type="button" class="absolute top-1/2 right-3 grid size-10 -translate-y-1/2 place-items-center rounded-xl text-muted transition hover:bg-surface-2 hover:text-fg"
+                                    data-copy="{{ $profile->email }}" data-copied-label="{{ __('site.contact.copied') }}"
+                                    aria-label="{{ __('site.contact.copy_email') }}" title="{{ __('site.contact.copy_email') }}">
+                                <x-heroicon-o-clipboard-document class="size-5" aria-hidden="true" />
+                                <span class="pointer-events-none absolute -top-8 right-0 hidden rounded-lg bg-fg px-2 py-1 text-xs font-semibold whitespace-nowrap text-bg" data-copy-toast role="status"></span>
+                            </button>
+                        @endif
                     </li>
                 @endforeach
             </ul>
