@@ -3,7 +3,7 @@
 Every release is a git tag (`vX.Y.Z`) plus a content snapshot in `storage/app/exports/vX.Y.Z`.
 New entries are added by `php artisan portfolio:release`.
 
-## v1.1.0 - 2026-10-25
+## v1.1.0 - 2026-10-26
 - Tambah mode light dan dark
 
 ## v1.0.0 - 2026-10-26

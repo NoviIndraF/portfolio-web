@@ -97,7 +97,8 @@ class PortfolioRelease extends Command
     private function addChangelogEntry(string $tag, string $message): void
     {
         $path = base_path('CHANGELOG.md');
-        $entry = "## {$tag} - ".now()->toDateString()."\n- {$message}\n\n";
+        // Owner's local date (the app itself runs on UTC).
+        $entry = "## {$tag} - ".now('Asia/Jakarta')->toDateString()."\n- {$message}\n\n";
         $text = File::exists($path) ? File::get($path) : "# Changelog\n\n";
         // New entries go above the previous release.
         $at = strpos($text, '## ');
