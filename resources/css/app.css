@@ -3,6 +3,9 @@
 @source '../views';
 @source '../js';
 
+/* light:… utilities apply only in light mode (html[data-theme="light"]). */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
 /* Colors come from admin Settings as CSS variables (see layouts/site). */
 @theme inline {
     --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
@@ -14,16 +17,22 @@
     --color-surface-2: color-mix(in oklab, var(--c-text) 9%, var(--c-bg));
     --color-line: color-mix(in oklab, var(--c-text) 13%, var(--c-bg));
     --color-accent: var(--accent, var(--c-primary));
-    /* Lighter versions for text, so any accent color stays readable on the dark background. */
-    --color-accent-fg: color-mix(in oklab, var(--accent, var(--c-primary)) 62%, white);
-    --color-primary-fg: color-mix(in oklab, var(--c-primary) 70%, white);
+    /* Accent text mixed toward the text color's side (white in dark mode, black in light) so it stays readable. */
+    --color-accent-fg: color-mix(in oklab, var(--accent, var(--c-primary)) 62%, var(--c-mix));
+    --color-primary-fg: color-mix(in oklab, var(--c-primary) 70%, var(--c-mix));
 }
 
 :root {
     --c-bg: #0b1020;
     --c-text: #e8ecf6;
     --c-primary: #4c8dff;
+    --c-mix: white;
     color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+    --c-mix: black;
+    color-scheme: light;
 }
 
 html {
@@ -36,6 +45,7 @@ body {
     color: var(--c-text);
     font-feature-settings: 'ss01';
     text-rendering: optimizeLegibility;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ::selection {

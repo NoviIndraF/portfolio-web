@@ -8,6 +8,7 @@
     $pageTitle = $title ? $title.' | '.$profile->name : $settings->site_title;
     $metaDescription = str($description ?: $settings->meta_description ?: $profile->tagline)->squish()->limit(160);
     $ogImage = $image ?: $site->defaultOgImage();
+    $defaultTheme = array_key_exists($settings->default_theme, \App\Models\Setting::THEMES) ? $settings->default_theme : 'system';
     $sameAs = array_values(array_filter([$profile->github, $profile->linkedin]));
     // Built here: inside @php, Blade does not treat "@context" as a directive.
     $jsonLd = array_filter([
@@ -23,8 +24,21 @@
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-      data-3d="{{ $settings->toggle_3d ? 'on' : 'off' }}">
+      data-3d="{{ $settings->toggle_3d ? 'on' : 'off' }}"
+      data-default-theme="{{ $defaultTheme }}" data-theme="{{ $defaultTheme === 'light' ? 'light' : 'dark' }}">
 <head>
+    {{-- Before anything paints: the visitor's saved choice, else the admin default (or the device setting). --}}
+    <script>
+        (() => {
+            let theme;
+            try { theme = localStorage.getItem('theme'); } catch (e) {}
+            if (theme !== 'light' && theme !== 'dark') {
+                theme = @js($defaultTheme);
+                if (theme === 'system') theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            }
+            document.documentElement.dataset.theme = theme;
+        })();
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -57,6 +71,10 @@
             --c-bg: {{ $settings->background_color }};
             --c-text: {{ $settings->text_color }};
             --c-primary: {{ $settings->primary_color }};
+        }
+        :root[data-theme="light"] {
+            --c-bg: {{ $settings->light_background_color }};
+            --c-text: {{ $settings->light_text_color }};
         }
     </style>
     @fonts

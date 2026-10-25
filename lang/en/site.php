@@ -4,6 +4,9 @@
 return [
     'skip_to_content' => 'Skip to content',
     'menu' => 'Menu',
+    'theme' => [
+        'toggle' => 'Dark mode',
+    ],
     'close' => 'Close',
     'nav' => [
         'projects' => 'Projects',

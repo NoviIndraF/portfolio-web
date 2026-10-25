@@ -132,6 +132,21 @@ class PortfolioTest extends TestCase
             ->assertSee(PageSectionResource::getUrl('edit', ['record' => $education]), false);
     }
 
+    public function test_theme_uses_admin_light_colors_default_mode_and_has_toggle(): void
+    {
+        $this->get('/')->assertOk()
+            ->assertSee('data-default-theme="system"', false)
+            ->assertSee('data-theme-toggle', false);
+
+        Setting::current()->update(['default_theme' => 'light', 'light_background_color' => '#FAFAF0', 'light_text_color' => '#111111']);
+        $this->app->forgetScopedInstances(); // a real request starts fresh; the test reuses the app
+
+        $this->get('/')->assertOk()
+            ->assertSee('data-default-theme="light" data-theme="light"', false)
+            ->assertSee('--c-bg: #FAFAF0;', false)
+            ->assertSee('--c-text: #111111;', false);
+    }
+
     public function test_sitemap_and_robots(): void
     {
         $this->project();

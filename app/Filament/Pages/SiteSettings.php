@@ -6,8 +6,9 @@ use App\Models\Setting;
 use BackedEnum;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
@@ -51,9 +52,17 @@ class SiteSettings extends SingleRecordPage
                     ->helperText('1200×630 PNG or JPG works best. If empty, your profile photo is used.'),
             ]),
             Section::make('Theme')->columns(3)->schema([
-                ColorPicker::make('primary_color')->required()->regex('/^#[0-9a-fA-F]{6}$/'),
-                ColorPicker::make('background_color')->required()->regex('/^#[0-9a-fA-F]{6}$/'),
-                ColorPicker::make('text_color')->required()->regex('/^#[0-9a-fA-F]{6}$/'),
+                ColorPicker::make('primary_color')->required()->regex('/^#[0-9a-fA-F]{6}$/')
+                    ->helperText('Used in both light and dark mode.'),
+                ColorPicker::make('background_color')->label('Dark mode background')->required()->regex('/^#[0-9a-fA-F]{6}$/'),
+                ColorPicker::make('text_color')->label('Dark mode text')->required()->regex('/^#[0-9a-fA-F]{6}$/'),
+                Select::make('default_theme')
+                    ->label('Default mode')
+                    ->options(Setting::THEMES)
+                    ->required()
+                    ->helperText('What new visitors see first. They can switch with the sun/moon button.'),
+                ColorPicker::make('light_background_color')->label('Light mode background')->required()->regex('/^#[0-9a-fA-F]{6}$/'),
+                ColorPicker::make('light_text_color')->label('Light mode text')->required()->regex('/^#[0-9a-fA-F]{6}$/'),
             ]),
             Section::make('3D effects')->schema([
                 Toggle::make('toggle_3d')

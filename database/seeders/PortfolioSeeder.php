@@ -186,6 +186,9 @@ class PortfolioSeeder extends Seeder
             'primary_color' => $s['primary_color'] ?? '#4C8DFF',
             'background_color' => $s['background_color'] ?? '#0B1020',
             'text_color' => $s['text_color'] ?? '#E8ECF6',
+            'light_background_color' => $s['light_background_color'] ?? '#F6F8FC',
+            'light_text_color' => $s['light_text_color'] ?? '#0B1020',
+            'default_theme' => $s['default_theme'] ?? 'system',
             'toggle_3d' => $s['toggle_3d'] ?? true,
             'og_image' => $this->copyFile($s['og_image'] ?? null, 'og/'.basename((string) ($s['og_image'] ?? 'og.png'))),
         ]);

@@ -35,7 +35,16 @@ export default function mountHeroParticles(el, { reduced = false, mobile = false
     g.fillRect(0, 0, 64, 64);
     const sprite = new THREE.CanvasTexture(c);
 
-    const mat = new THREE.PointsMaterial({ color, size: 0.09, map: sprite, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.8 });
+    const mat = new THREE.PointsMaterial({ color, size: 0.09, map: sprite, transparent: true, depthWrite: false });
+    // Additive glow vanishes on a light background, so light mode uses plain dots.
+    const setTheme = (theme) => {
+        const light = theme === 'light';
+        mat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+        mat.opacity = light ? 0.45 : 0.8;
+        mat.needsUpdate = true;
+        if (!running) renderer.render(scene, camera);
+    };
+    document.addEventListener('themechange', (e) => setTheme(e.detail));
     scene.add(new THREE.Points(geo, mat));
 
     let halfW = 1;
@@ -114,6 +123,7 @@ export default function mountHeroParticles(el, { reduced = false, mobile = false
         wake();
     }).observe(el);
     document.addEventListener('visibilitychange', wake);
+    setTheme(document.documentElement.dataset.theme);
     resize();
     wake();
     requestAnimationFrame(() => (renderer.domElement.style.opacity = '1'));

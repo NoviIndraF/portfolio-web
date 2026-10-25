@@ -9,10 +9,12 @@ import { initThree, prefersReducedMotion, onFirstInteraction } from './ui/three-
 import { initMotion } from './ui/motion';
 import { initFilter } from './ui/filter';
 import { initChat } from './ui/chat';
+import { initTheme } from './ui/theme';
 
 document.documentElement.classList.add('js');
 const reduced = prefersReducedMotion();
 
+initTheme();
 initNav();
 initRails();
 initPhoneScreens();

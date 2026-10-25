@@ -21,6 +21,10 @@
         </ul>
 
         <div class="flex items-center gap-2">
+            <button type="button" class="btn-ghost size-10 min-h-10 px-0" data-theme-toggle aria-pressed="true" aria-label="{{ __('site.theme.toggle') }}" title="{{ __('site.theme.toggle') }}">
+                <x-heroicon-o-sun class="size-5 light:hidden" aria-hidden="true" />
+                <x-heroicon-o-moon class="hidden size-5 light:block" aria-hidden="true" />
+            </button>
             @if ($cv = $profile->cvUrl())
                 <a href="{{ $cv }}" download class="btn-primary hidden min-h-9 px-4 sm:inline-flex">
                     <x-heroicon-o-arrow-down-tray class="size-4" aria-hidden="true" />

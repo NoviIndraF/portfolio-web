@@ -4,7 +4,7 @@
          data-chat data-chat-url="{{ route('chat') }}" data-chat-error="{{ __('site.chat.error') }}">
 
         <section id="chat-panel" hidden data-chat-panel aria-labelledby="chat-title"
-                 class="card flex max-h-[min(36rem,calc(100dvh-7rem))] w-[min(24rem,calc(100vw-2rem))] flex-col overflow-hidden shadow-2xl shadow-black/40">
+                 class="card flex max-h-[min(36rem,calc(100dvh-7rem))] w-[min(24rem,calc(100vw-2rem))] flex-col overflow-hidden shadow-2xl shadow-black/40 light:shadow-black/15">
             <header class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
                 <div>
                     <h2 id="chat-title" class="text-sm font-bold">{{ __('site.chat.title') }}</h2>
@@ -38,7 +38,7 @@
         </section>
 
         <button type="button" data-chat-toggle aria-controls="chat-panel" aria-expanded="false"
-                class="btn-primary shadow-lg shadow-black/40">
+                class="btn-primary shadow-lg shadow-black/40 light:shadow-black/15">
             <x-heroicon-o-chat-bubble-left-right class="size-5" aria-hidden="true" />
             {{ __('site.chat.open') }}
         </button>

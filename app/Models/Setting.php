@@ -9,8 +9,10 @@ class Setting extends Model
 {
     protected $fillable = [
         'site_title', 'meta_description', 'primary_color', 'background_color',
-        'text_color', 'toggle_3d', 'og_image',
+        'text_color', 'light_background_color', 'light_text_color', 'default_theme', 'toggle_3d', 'og_image',
     ];
+
+    public const THEMES = ['system' => 'Follow the visitor\'s device', 'light' => 'Light', 'dark' => 'Dark'];
 
     protected function casts(): array
     {
