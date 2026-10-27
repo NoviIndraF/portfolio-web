@@ -8,6 +8,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
@@ -74,6 +75,33 @@ class EditProfile extends SingleRecordPage
                     ->preserveFilenames()
                     ->helperText('If empty, the "Download CV" button is hidden.'),
             ]),
+            Section::make('Gallery')
+                ->description('Personal photos shown as a carousel in the About section. If empty, the profile photo is shown.')
+                ->schema([
+                    Repeater::make('photos')
+                        ->hiddenLabel()
+                        ->relationship()
+                        ->orderColumn('sort_order')
+                        ->reorderable()
+                        ->collapsible()
+                        ->grid(['default' => 1, 'md' => 2, 'xl' => 3])
+                        ->addActionLabel('Add photo')
+                        ->itemLabel(fn (array $state): ?string => $state['caption'] ?? null)
+                        ->schema([
+                            FileUpload::make('path')
+                                ->label('Photo')
+                                ->image()
+                                ->required()
+                                ->disk('public')
+                                ->visibility('public')
+                                ->directory('profile/gallery')
+                                ->maxSize(8 * 1024)
+                                ->imagePreviewHeight('200')
+                                ->helperText('Converted to WebP automatically. Portrait (4:5) fits best.'),
+                            TextInput::make('caption')->maxLength(255)->placeholder('Speaking at a Flutter meetup'),
+                            Toggle::make('is_visible')->label('Show on website')->default(true),
+                        ]),
+                ]),
             Section::make('Contact')->columns(2)->schema([
                 TextInput::make('email')->email()->required()->maxLength(255),
                 TextInput::make('phone')->tel()->maxLength(50)->helperText('Optional. Hidden if empty.'),

@@ -44,9 +44,13 @@ Components: `.container-site`, `.eyebrow`, `.btn-primary`, `.btn-ghost`, `.chip`
 | `ui/lightbox.js` | immediately | Gallery viewer: keyboard, swipe, pinch / wheel / double-tap zoom, pan |
 | `ui/carousel3d.js` | immediately | Coverflow transform on the project rail, card tilt, View Transition names, skills spotlight |
 | `ui/filter.js` | immediately | Type filter on `/projects` |
+| `ui/interactions.js` → `initPhotoCarousel` | immediately | About gallery: dots follow the scroll position, auto-advance every 5 s (wraps). Pauses on hover/focus or while the lightbox is open, stops after a touch, runs only while visible. No auto-advance with `prefers-reduced-motion`. |
 | `ui/three-boot.js` | immediately (tiny) | Decides if 3D runs; on the first interaction lazy-imports the viewer / hero scene for elements near the viewport |
 | `ui/motion.js` | first interaction | Lenis (mouse/trackpad only), reveal animations (`data-reveal`, `data-reveal-stagger`) via IntersectionObserver + GSAP, light parallax via ScrollTrigger |
 | `three/*`, `scenes/*` | first interaction | 3D (separate chunks) |
+
+### Scroll companion (`scenes/scroll-ornament.js`)
+One fixed, click-through canvas on the home page (`data-scene="scroll-ornament"`, `data-sections` = `{anchor: type}` of the visible sections). A particle cloud (1200 points, 500 on phones) sits at the upper right beside the section headings and morphs per section type: `about` orb, `timeline` layers, `projects` faint small orb, `skills` network, `contact` dot; unknown types use the orb. Hidden over the hero. It sleeps when invisible and the page is still, and wakes on scroll. Not loaded with `prefers-reduced-motion` or when 3D is off. To change a look, edit `LOOKS` at the top of the file.
 
 ### When 3D does not run
 
@@ -103,9 +107,9 @@ export default function create({ group, accent, accentHex, reduced, mobile, mode
 
 To add a scene: create the module, add it to `scenes/index.js` and to `Project::SCENE_TYPES` (so it appears in the admin). `model` is the uploaded `.glb` (normalised to ~0.8 units) or `null`.
 
-Existing scenes: `learning` (books, code blocks, clickable quiz cube), `donation` (pins with coins and hearts flowing between them), `shoe-store` (sneaker on a pedestal or the uploaded model, chat bubbles), `chat` (network nodes with travelling messages), `health-iot` (beating heart, ECG line, circuit board, gauges), `hydroponic` (pipes, plants, drops, sensor), `analytics` (bar chart and radar, neutral), `generic` (floating shapes), `hero.js` (pointer-reactive particles behind the hero).
+Existing scenes: `learning` (books, code blocks, clickable quiz cube), `donation` (pins with coins and hearts flowing between them), `shoe-store` (sneaker on a pedestal or the uploaded model, chat bubbles), `chat` (network nodes with travelling messages), `health-iot` (beating heart, ECG line, circuit board, gauges), `hydroponic` (pipes, plants, drops, sensor), `analytics` (bar chart and radar, neutral), `generic` (floating shapes), `hero.js` (pointer-reactive particles behind the hero), `scroll-ornament.js` (see above).
 
-`three/helpers.js` provides `std()`, `roundedRectShape()`, `roundedBox()`, `shapeWithUv()`, `heart()`, `textTexture()`, `label()`, `chatBubble()`, `float()`, `ease`, `disposeTree()`.
+`three/helpers.js` provides `std()`, `roundedRectShape()`, `roundedBox()`, `shapeWithUv()`, `heart()`, `textTexture()`, `label()`, `chatBubble()`, `float()`, `ease`, `disposeTree()`, `softSprite()` (round particle texture).
 
 ## Page transitions
 

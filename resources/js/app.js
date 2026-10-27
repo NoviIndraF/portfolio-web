@@ -10,7 +10,7 @@ import { initMotion } from './ui/motion';
 import { initFilter } from './ui/filter';
 import { initChat } from './ui/chat';
 import { initTheme } from './ui/theme';
-import { initHeroLabel, initCountUp, initSkillLinks, initScrollSpy, initFloatingCta, initCopy, initTimeline, initCardPreviews, initFeatureScreens } from './ui/interactions';
+import { initHeroLabel, initCountUp, initSkillLinks, initScrollSpy, initFloatingCta, initCopy, initTimeline, initCardPreviews, initFeatureScreens, initPhotoCarousel } from './ui/interactions';
 
 document.documentElement.classList.add('js');
 const reduced = prefersReducedMotion();
@@ -29,6 +29,7 @@ initCountUp({ reduced });
 initSkillLinks();
 initScrollSpy();
 initFloatingCta();
+initPhotoCarousel({ reduced });
 initCopy();
 initTimeline({ reduced });
 initCardPreviews({ reduced });

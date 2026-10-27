@@ -6,7 +6,7 @@ Panel: `app/Providers/Filament/AdminPanelProvider.php` – path `/admin`, login,
 
 | Admin menu | Code | Notes |
 |---|---|---|
-| Content → Profile | `Filament/Pages/EditProfile.php` (`/admin/portfolio-profile`) | Single-record page built on `SingleRecordPage` |
+| Content → Profile | `Filament/Pages/EditProfile.php` (`/admin/portfolio-profile`) | Single-record page built on `SingleRecordPage`. Section **Gallery**: `Repeater::make('photos')->relationship()` (upload, caption, show/hide, drag to reorder) |
 | Content → Projects | `Filament/Resources/Projects/…` | Form in `Schemas/ProjectForm.php` (tabs), table in `Tables/ProjectsTable.php`, images in `RelationManagers/ImagesRelationManager.php` |
 | Content → Skills | `Filament/Resources/SkillGroups/…` | Group form with a skills repeater |
 | Site → Home sections | `Filament/Resources/PageSections/…` | Built-in sections can't be deleted (UI and model `deleting` guard) |
@@ -15,7 +15,7 @@ Panel: `app/Providers/Filament/AdminPanelProvider.php` – path `/admin`, login,
 Filament 5 conventions used: resources split into `Schemas/*Form.php` and `Tables/*Table.php`; form layout classes live in `Filament\Schemas\Components` (`Section`, `Tabs`, `Grid`, `Utilities\Get/Set`), fields in `Filament\Forms\Components`, actions in `Filament\Actions`.
 
 ### `SingleRecordPage`
-`app/Filament/Pages/SingleRecordPage.php` is a small base class for pages that edit one row: implement `getRecord()` and `getFormComponents()`; it renders the form with a Save button (`mod+s`), saves, refills the form and shows a notification.
+`app/Filament/Pages/SingleRecordPage.php` is a small base class for pages that edit one row: implement `getRecord()` and `getFormComponents()`; it renders the form with a Save button (`mod+s`), saves (including relationship repeaters via `saveRelationships()`), refills the form and shows a notification.
 
 ### Projects
 - Tabs: **Overview** (title → slug on create, type with suggestions, year, 3D scene, color, published, on home, texts), **Features** (repeater), **Tech & links** (table repeater + repeater), **Recognition & 3D model**.

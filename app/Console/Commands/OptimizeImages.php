@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Profile;
+use App\Models\ProfilePhoto;
 use App\Models\ProjectImage;
 use App\Services\ImageOptimizer;
 use Illuminate\Console\Command;
@@ -18,7 +19,7 @@ class OptimizeImages extends Command
     public function handle(ImageOptimizer $optimizer): int
     {
         $disk = Storage::disk('public');
-        $paths = ProjectImage::pluck('path')->push(Profile::value('photo'))->filter();
+        $paths = ProjectImage::pluck('path')->merge(ProfilePhoto::pluck('path'))->push(Profile::value('photo'))->filter();
 
         foreach ($paths as $path) {
             if (! $disk->exists($path)) {

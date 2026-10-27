@@ -55,6 +55,7 @@ abstract class SingleRecordPage extends Page
     {
         $record = $this->getRecord();
         $record->fill($this->form->getState())->save();
+        $this->form->model($record)->saveRelationships(); // relationship repeaters, e.g. profile photos
 
         // Refill so the form shows the stored values (e.g. the WebP path).
         $this->form->fill($record->fresh()->attributesToArray());

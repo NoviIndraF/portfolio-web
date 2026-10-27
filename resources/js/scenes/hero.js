@@ -1,5 +1,6 @@
 // Hero background: soft particles that drift and move away from the cursor / finger.
 import * as THREE from 'three';
+import { softSprite } from '../three/helpers';
 
 export default function mountHeroParticles(el, { reduced = false, mobile = false, color = '#4c8dff' } = {}) {
     const section = el.closest('section') ?? el;
@@ -23,17 +24,7 @@ export default function mountHeroParticles(el, { reduced = false, mobile = false
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
 
-    // Round soft sprite
-    const c = document.createElement('canvas');
-    c.width = c.height = 64;
-    const g = c.getContext('2d');
-    const grd = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-    grd.addColorStop(0, 'rgba(255,255,255,1)');
-    grd.addColorStop(0.4, 'rgba(255,255,255,0.5)');
-    grd.addColorStop(1, 'rgba(255,255,255,0)');
-    g.fillStyle = grd;
-    g.fillRect(0, 0, 64, 64);
-    const sprite = new THREE.CanvasTexture(c);
+    const sprite = softSprite();
 
     const mat = new THREE.PointsMaterial({ color, size: 0.09, map: sprite, transparent: true, depthWrite: false });
     // Additive glow vanishes on a light background, so light mode uses plain dots.

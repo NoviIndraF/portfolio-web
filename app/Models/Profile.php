@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\OptimizesImages;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class Profile extends Model
@@ -29,6 +30,12 @@ class Profile extends Model
     public static function current(): ?self
     {
         return static::query()->first();
+    }
+
+    /** Personal gallery (About carousel), in admin order. */
+    public function photos(): HasMany
+    {
+        return $this->hasMany(ProfilePhoto::class)->orderBy('sort_order');
     }
 
     public function photoUrl(): ?string

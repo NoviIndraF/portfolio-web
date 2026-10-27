@@ -38,9 +38,9 @@
         </section>
 
         <button type="button" data-chat-toggle aria-controls="chat-panel" aria-expanded="false"
-                class="btn-primary shadow-lg shadow-black/40 light:shadow-black/15">
+                class="btn-primary shadow-lg shadow-black/40 max-md:size-11 max-md:px-0 light:shadow-black/15">
             <x-heroicon-o-chat-bubble-left-right class="size-5" aria-hidden="true" />
-            {{ __('site.chat.open') }}
+            <span class="max-md:sr-only">{{ __('site.chat.open') }}</span>
         </button>
     </div>
 @endif

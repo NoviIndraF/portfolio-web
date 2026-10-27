@@ -69,7 +69,7 @@ resources/
   js/app.js                Entry: small UI modules; 3D and motion load later
   js/ui/                   nav, rail, phone-screens, lightbox, carousel3d, motion, three-boot
   js/three/                PhoneViewer3D, phone model, screen textures, shared helpers
-  js/scenes/               One module per scene: hero (particles), learning, donation, shoe-store,
+  js/scenes/               One module per scene: hero (particles), scroll-ornament, learning, donation, shoe-store,
                            chat, health-iot, hydroponic, analytics, generic
   views/                   Layout, sections (hero, projects, skills, about, contact, text, timeline),
                            pages (home, all projects, project detail), components
@@ -84,6 +84,7 @@ Everything below is done at **/admin**. No code changes are needed.
 |---|---|---|
 | Name, tagline, bio, hero stats, email, GitHub, LinkedIn, phone | **Profile** | The tagline is split at `\|`: the first part is the big headline, the rest become tags. Empty LinkedIn or phone is hidden on the site. |
 | Profile photo | **Profile → Photo & CV** | Any JPG/PNG. A WebP copy is made automatically. |
+| About gallery | **Profile → Gallery** | Several photos with captions, shown as a carousel in About. Drag to reorder, switch to hide. Empty = the profile photo is used. |
 | CV | **Profile → CV (PDF)** | Upload a PDF and the **Download CV** buttons appear. Remove it and they hide. |
 | Add a project | **Projects → New project**, or **⋯ → Duplicate** on a similar one | *Duplicate* copies features, technologies and links as a hidden draft (images are not copied). |
 | Project order | **Projects** list | Drag rows. |

@@ -59,13 +59,16 @@
                         {{ __('site.cta.contact_me') }}
                     </a>
                 @endif
-                <a href="{{ $projectsHref }}" class="btn-ghost">{{ __('site.cta.view_projects') }}</a>
+                {{-- Phones: a text link, so the CTAs stay on one row --}}
+                <a href="{{ $projectsHref }}" class="btn-ghost max-sm:border-transparent max-sm:bg-transparent max-sm:px-1 max-sm:text-primary-fg">
+                    {{ __('site.cta.view_projects') }} <x-heroicon-o-arrow-right class="size-4 sm:hidden" aria-hidden="true" />
+                </a>
             </div>
 
             @if ($profile->stats)
-                <dl class="mt-10 grid max-w-lg grid-cols-3 gap-3">
+                <dl class="mt-8 grid max-w-lg grid-cols-3 gap-2 sm:mt-10 sm:gap-3">
                     @foreach ($profile->stats as $stat)
-                        <div class="card flex flex-col px-4 py-3">
+                        <div class="card flex flex-col px-3 py-2.5 sm:px-4 sm:py-3">
                             <dt class="text-xs text-muted">{{ $stat['label'] }}</dt>
                             <dd class="order-first text-2xl font-extrabold text-fg tabular-nums sm:text-3xl" data-countup>{{ $stat['value'] }}</dd>
                         </div>

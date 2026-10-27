@@ -44,6 +44,7 @@ Menu **Content → Profile**.
 | Hero | Name, Tagline, Bio, Stats | Tagline dipisah dengan tanda `\|`: bagian pertama jadi judul besar (mis. *Mobile App Developer*), sisanya jadi label kecil. Kalimat pertama Bio tampil di bagian atas, Bio lengkap di bagian *About*. Stats maksimal 4 (mis. `4+` / *Years of experience*). |
 | Photo & CV | Foto profil, CV (PDF) | Foto otomatis diperkecil dan dikonversi ke WebP. Jika CV kosong, semua tombol *Download CV* otomatis disembunyikan. |
 | Contact | Email, Phone, GitHub, LinkedIn | Phone dan LinkedIn yang kosong tidak ditampilkan. |
+| Gallery | Beberapa foto pribadi + caption | Tampil sebagai carousel di bagian *About* (geser, tombol panah, titik, berganti otomatis tiap 5 detik, klik untuk memperbesar). Urutkan dengan drag, sembunyikan dengan **Show on website**, hapus dengan ikon tempat sampah. Jika galeri kosong, *About* memakai foto profil. |
 
 Klik **Save changes**.
 
@@ -129,7 +130,7 @@ Menu **Site → Home sections**. Mengatur bagian-bagian beranda di bawah hero.
   - *Link name* – alamat section, mis. `experience` → `domain/#experience`.
 - **Add section** untuk membuat section baru:
   - **Text block** – teks bebas dengan format (tebal, miring, link, judul, daftar).
-  - **Timeline** – daftar berurutan seperti **Pengalaman kerja, Pendidikan, Sertifikat, Penghargaan, Organisasi**. Tiap item: Period (mis. `2022 – Present`), Title, Subtitle (perusahaan/sekolah), Description, Link opsional, dan tombol tampil/sembunyi.
+  - **Timeline** – daftar berurutan seperti **Pengalaman kerja, Pendidikan, Sertifikat, Penghargaan, Organisasi**. Tiap item: Period (mis. `2022 – Present`), Title, Subtitle (perusahaan/sekolah), Description, Link opsional, dan tombol tampil/sembunyi. Description yang ditulis beberapa baris tampil sebagai daftar poin (satu poin per baris).
 - Section bawaan (Featured projects, Skills, About, Contact) bisa disembunyikan tetapi tidak bisa dihapus. Section buatan sendiri bisa dihapus.
 
 ## 8. Pengaturan situs

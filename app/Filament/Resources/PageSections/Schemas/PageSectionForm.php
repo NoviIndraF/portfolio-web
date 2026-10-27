@@ -108,7 +108,7 @@ class PageSectionForm
                                 TextInput::make('title')->required()->maxLength(150)->placeholder('Software Developer'),
                                 TextInput::make('subtitle')->maxLength(150)->placeholder('Company / school / issuer'),
                             ]),
-                            Textarea::make('description')->rows(2),
+                            Textarea::make('description')->rows(4)->helperText('One point per line shows as a bullet list.'),
                             Grid::make(['default' => 1, 'sm' => 3])->schema([
                                 TextInput::make('url')->url()->maxLength(255)->label('Link (optional)'),
                                 TextInput::make('link_label')->maxLength(40)->placeholder('View'),

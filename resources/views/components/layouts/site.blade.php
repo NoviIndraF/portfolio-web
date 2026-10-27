@@ -103,15 +103,15 @@
         $contactHref = $contactSection ? route('home').'#'.$contactSection->anchor : 'mailto:'.$profile->email;
         $floatCv = $profile->cvUrl();
     @endphp
-    {{-- Phones: CV + contact stay reachable after the hero, above the chat button (resources/js/ui/interactions.js) --}}
-    <div class="fixed right-4 bottom-20 left-4 z-30 flex translate-y-24 gap-2 opacity-0 transition duration-300 data-[show]:translate-y-0 data-[show]:opacity-100 md:hidden"
+    {{-- Phones: CV + contact stay reachable after the hero, in one row with the icon-only chat button (resources/js/ui/interactions.js) --}}
+    <div class="fixed {{ config('chatbot.enabled') ? 'right-18' : 'right-4' }} bottom-4 left-4 z-30 flex translate-y-24 gap-2 opacity-0 transition duration-300 data-[show]:translate-y-0 data-[show]:opacity-100 md:hidden"
          data-float-cta inert>
         @if ($floatCv)
-            <a href="{{ $floatCv }}" download class="btn-primary min-h-11 min-w-0 flex-1 px-3 shadow-lg">
+            <a href="{{ $floatCv }}" download class="btn-primary min-h-11 min-w-0 flex-1 px-2 whitespace-nowrap shadow-lg">
                 <x-heroicon-o-arrow-down-tray class="size-4" aria-hidden="true" /> {{ __('site.cta.download_cv') }}
             </a>
         @endif
-        <a href="{{ $contactHref }}" class="{{ $floatCv ? 'btn-ghost bg-bg/90 backdrop-blur' : 'btn-primary' }} min-h-11 min-w-0 flex-1 px-3 shadow-lg">
+        <a href="{{ $contactHref }}" class="{{ $floatCv ? 'btn-ghost bg-bg/90 backdrop-blur' : 'btn-primary' }} min-h-11 min-w-0 flex-1 px-2 whitespace-nowrap shadow-lg">
             <x-heroicon-o-envelope class="size-4" aria-hidden="true" /> {{ __('site.cta.contact_me') }}
         </a>
     </div>

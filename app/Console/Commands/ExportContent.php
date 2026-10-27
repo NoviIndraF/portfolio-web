@@ -46,6 +46,11 @@ class ExportContent extends Command
                 'phone' => $profile->phone,
                 'photo' => $this->copy($profile->photo_original ?: $profile->photo, 'profile'),
                 'cv_pdf' => $this->copy($profile->cv_pdf, 'profile'),
+                'photos' => $profile->photos->map(fn ($i) => [
+                    'file' => $this->copy($i->original_path ?: $i->path, 'profile/gallery'),
+                    'caption' => $i->caption,
+                    'is_visible' => $i->is_visible,
+                ])->filter(fn ($i) => $i['file'])->values()->all(),
             ] : null,
             'settings' => [
                 'site_title' => $settings->site_title,

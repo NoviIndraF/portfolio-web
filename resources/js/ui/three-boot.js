@@ -30,13 +30,18 @@ export function initThree() {
                 const el = entry.target;
                 if (el.matches('[data-phone-viewer]')) {
                     import('../three/phone-viewer').then(({ PhoneViewer3D }) => new PhoneViewer3D(el, opts)).catch(console.warn);
+                } else if (el.matches('[data-scene="scroll-ornament"]')) {
+                    // Scroll-driven, so it stays off for reduced motion.
+                    if (opts.reduced) return;
+                    const color = getComputedStyle(html).getPropertyValue('--c-primary').trim();
+                    import('../scenes/scroll-ornament').then(({ default: mount }) => mount(el, { ...opts, color })).catch(console.warn);
                 } else {
                     const color = getComputedStyle(html).getPropertyValue('--c-primary').trim();
                     import('../scenes/hero').then(({ default: mount }) => mount(el, { ...opts, color })).catch(console.warn);
                 }
             });
         }, { rootMargin: '200px' });
-        document.querySelectorAll('[data-phone-viewer], [data-scene="hero-particles"]').forEach((el) => io.observe(el));
+        document.querySelectorAll('[data-phone-viewer], [data-scene="hero-particles"], [data-scene="scroll-ornament"]').forEach((el) => io.observe(el));
     };
 
     // Load 3D on the visitor's first interaction, so it never competes with the first paint.

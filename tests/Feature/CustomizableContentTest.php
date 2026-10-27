@@ -104,7 +104,7 @@ class CustomizableContentTest extends TestCase
     public function test_custom_timeline_and_text_sections(): void
     {
         $timeline = new PageSection(['type' => 'timeline', 'anchor' => 'experience', 'nav_label' => 'Experience', 'title' => 'Work experience', 'sort_order' => 5, 'items' => [
-            ['period' => '2022 – Now', 'title' => 'Mobile Developer', 'subtitle' => 'Acme', 'is_visible' => true],
+            ['period' => '2022 – Now', 'title' => 'Mobile Developer', 'subtitle' => 'Acme', 'description' => "- Built the POS app\n- Cut crashes by 80%", 'is_visible' => true],
             ['period' => '2020', 'title' => 'Hidden job', 'is_visible' => false],
         ]]);
         $timeline->save();
@@ -112,6 +112,7 @@ class CustomizableContentTest extends TestCase
 
         $this->get('/')
             ->assertSee('Work experience')->assertSee('Mobile Developer')->assertSee('Acme')->assertDontSee('Hidden job')
+            ->assertSeeInOrder(['<li', 'Built the POS app</li>', '<li', 'Cut crashes by 80%</li>'], false)
             ->assertSee('href="#experience"', false)
             ->assertSee('<strong>HR</strong>', false)
             ->assertDontSee('<script>alert(1)</script>', false);

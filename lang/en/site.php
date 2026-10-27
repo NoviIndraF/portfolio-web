@@ -83,6 +83,8 @@ return [
     'about' => [
         'eyebrow' => 'About',
         'title' => 'About me',
+        'gallery' => 'Personal photos',
+        'go_to_photo' => 'Show photo :n',
     ],
     'contact' => [
         'eyebrow' => 'Contact',

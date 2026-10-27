@@ -216,3 +216,33 @@ export function initFeatureScreens() {
         });
     });
 }
+
+/** About photo carousel: dots follow the visible photo; auto-advances every 5 s unless the visitor is using it. */
+export function initPhotoCarousel({ reduced }) {
+    const rail = document.querySelector('[data-photo-carousel]');
+    const slides = rail ? [...rail.children] : [];
+    if (slides.length < 2) return;
+    const dots = [...document.querySelectorAll('[data-photo-dot]')];
+    const current = () => Math.round(rail.scrollLeft / rail.clientWidth);
+    const go = (i) => rail.scrollTo({ left: ((i + slides.length) % slides.length) * rail.clientWidth, behavior: reduced ? 'auto' : 'smooth' });
+    const sync = () => dots.forEach((d, i) => d.setAttribute('aria-current', String(i === current())));
+    rail.addEventListener('scroll', sync, { passive: true });
+    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
+    sync();
+    if (reduced) return;
+
+    // Pause while hovered or focused; stop for good once the visitor swipes or clicks.
+    let hovered = false;
+    let stopped = false;
+    let visible = false;
+    const box = rail.parentElement;
+    box.addEventListener('pointerenter', () => (hovered = true));
+    box.addEventListener('pointerleave', () => (hovered = false));
+    box.addEventListener('focusin', () => (hovered = true));
+    box.addEventListener('focusout', () => (hovered = false));
+    ['touchstart', 'pointerdown'].forEach((e) => box.addEventListener(e, () => (stopped = true), { passive: true }));
+    new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(rail);
+    setInterval(() => {
+        if (!stopped && !hovered && visible && !document.hidden && !document.querySelector('[data-lightbox][open]')) go(current() + 1);
+    }, 5000);
+}

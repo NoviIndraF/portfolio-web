@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\PageSection;
 use App\Models\Profile;
+use App\Models\ProfilePhoto;
 use App\Models\Project;
 use App\Models\Setting;
 use App\Models\SkillGroup;
@@ -70,8 +71,9 @@ class PortfolioSeeder extends Seeder
         // CV is optional: hidden on the site when missing.
         $cv = $this->copyFile($p['cv_pdf'] ?? 'seed/profile/cv.pdf', 'profile/cv.pdf');
 
+        ProfilePhoto::query()->get()->each->delete(); // model events remove old files
         Profile::query()->delete();
-        Profile::create([
+        $profile = Profile::create([
             'name' => $p['name'],
             'tagline' => $p['tagline'],
             'bio' => $p['bio'] ?? null,
@@ -84,6 +86,25 @@ class PortfolioSeeder extends Seeder
             'linkedin' => $p['linkedin'] ?? null,
             'phone' => $p['phone'] ?? null,
         ]);
+
+        foreach (array_values($p['photos'] ?? []) as $i => $img) {
+            $file = $this->file($img['file']);
+            if (! $file) {
+                $this->command?->warn("Photo not found, skipped: {$img['file']}");
+
+                continue;
+            }
+            $stored = $images->store($file, 'profile/gallery');
+            $profile->photos()->create([
+                'path' => $stored['webp'],
+                'original_path' => $stored['original'],
+                'caption' => $img['caption'] ?? null,
+                'is_visible' => $img['is_visible'] ?? true,
+                'width' => $stored['width'],
+                'height' => $stored['height'],
+                'sort_order' => $i + 1,
+            ]);
+        }
     }
 
     private function seedProjects(array $projects, ImageOptimizer $images): void

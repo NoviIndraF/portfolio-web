@@ -1,6 +1,6 @@
 # 2. Data model
 
-All content is stored in ten tables (plus Laravel's own `users`, `sessions`, `cache`, `jobs`, `migrations`). Schema: `database/migrations/2026_10_24_000001_create_portfolio_tables.php` and `2026_10_25_000001_add_visibility_and_page_sections.php`. Everything works the same on SQLite, MySQL/MariaDB and PostgreSQL.
+All content is stored in eleven tables (plus Laravel's own `users`, `sessions`, `cache`, `jobs`, `migrations`). Schema: `database/migrations/2026_10_24_000001_create_portfolio_tables.php` `2026_10_25_000001_add_visibility_and_page_sections.php` and `2026_10_26_113637_create_profile_photos_table.php`. Everything works the same on SQLite, MySQL/MariaDB and PostgreSQL.
 
 ```mermaid
 erDiagram
@@ -9,10 +9,12 @@ erDiagram
     projects ||--o{ project_links : has
     projects ||--o{ project_images : has
     skill_groups ||--o{ skills : has
+    profiles ||--o{ profile_photos : has
     profiles { string name string tagline text bio json stats string photo string cv_pdf string email }
     settings { string site_title string primary_color string background_color string text_color bool toggle_3d string og_image }
     page_sections { string type string anchor string nav_label string title json items bool is_visible int sort_order }
     projects { string slug string title string type string year string scene_type string accent_color bool is_published bool is_featured json recognition int sort_order }
+    profile_photos { string path string original_path string caption bool is_visible int sort_order }
     project_images { string path string original_path string kind string caption bool is_visible int sort_order }
 ```
 
@@ -26,6 +28,9 @@ erDiagram
 | `photo`, `photo_original` | Display WebP and the uploaded original. |
 | `cv_pdf` | Nullable. No file = no "Download CV" buttons (`Profile::cvUrl()`). |
 | `email`, `github`, `linkedin`, `phone` | Empty LinkedIn / phone are hidden on the site. |
+
+### `profile_photos` – `App\Models\ProfilePhoto`
+Personal gallery in the About section (`Profile::photos()`, ordered by `sort_order`). Columns: `path` + `original_path` (auto WebP via `OptimizesImages`), `caption`, `width`, `height`, `is_visible`, `sort_order`. Deleting the profile deletes the photos and their files. No visible photo = About shows the single profile `photo`.
 
 ### `settings` (single row) – `App\Models\Setting`
 `site_title`, `meta_description`, `primary_color`, `background_color`, `text_color` (become CSS variables), `toggle_3d` (exposed as `<html data-3d="on|off">`), `og_image` (share image, kept as PNG/JPG).
@@ -67,7 +72,7 @@ Sections of the home page below the hero.
 | `nav_label` | Menu label; empty = not in the menu. |
 | `eyebrow`, `title`, `intro` | Empty values on built-in sections fall back to `lang/en/site.php` (`PageSection::text()`). |
 | `body` | Rich text for `text` sections (sanitized on output). |
-| `items` | JSON for `timeline` sections: `[{period, title, subtitle, description, url, link_label, is_visible}]`. |
+| `items` | JSON for `timeline` sections: `[{period, title, subtitle, description, url, link_label, is_visible}]`. A multi-line `description` renders as a bullet list (one point per line; leading `-`, `•` or `*` is stripped). |
 | `is_visible`, `sort_order` | Visibility and order on the page and in the menu. |
 
 The four built-in rows are inserted by the second migration.
