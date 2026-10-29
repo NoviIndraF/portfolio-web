@@ -32,6 +32,9 @@ class ChatController extends Controller
             return $this->reply(__('site.chat.daily_limit'), 429);
         }
 
+        // Each provider may take up to its #[Timeout] (15 s) before failover, so the 30 s PHP default is too short.
+        set_time_limit(count($agent->provider()) * 15 + 15);
+
         try {
             $reply = trim((string) $agent->prompt($data['message']));
         } catch (Throwable $e) {
