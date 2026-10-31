@@ -25,7 +25,7 @@
 
         <div class="relative flex flex-1 flex-col border-t border-line bg-surface p-5">
             <p class="eyebrow">{{ $project->typeLabel() }}@if ($project->year) · {{ $project->year }}@endif</p>
-            <h3 class="display mt-2 text-3xl transition-colors group-hover:text-accent-fg">
+            <h3 class="item-title mt-2 transition-colors group-hover:text-accent-fg">
                 <a href="{{ route('projects.show', $project) }}" class="after:absolute after:inset-0" data-project-link>
                     {{ $project->title }}
                 </a>

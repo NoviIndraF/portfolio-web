@@ -11,6 +11,7 @@
     --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
     --font-display: var(--font-anton), var(--font-jakarta), 'Arial Narrow', sans-serif;
     --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+    --font-item: var(--font-rubik), var(--font-jakarta), sans-serif;
     --color-bg: var(--c-bg);
     --color-fg: var(--c-text);
     --color-primary: var(--c-primary);
@@ -78,6 +79,11 @@ body {
 
     .eyebrow {
         @apply font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-accent-fg;
+    }
+
+    /* v2: item titles (timeline, projects, skills), like the reference: Rubik 900, fluid size. */
+    .item-title {
+        @apply font-item text-[clamp(1.6rem,2.6vw,2.35rem)] leading-tight font-black;
     }
 
     /* v2: big condensed uppercase titles */
@@ -156,6 +162,42 @@ a:hover .arrow-shift {
 :is(a.card, [data-skill-group]):hover {
     translate: 0 -4px;
     border-color: color-mix(in oklab, var(--color-accent-fg) 50%, transparent);
+}
+
+/* Timeline items: an accent fill slides in from the left and all text turns dark, like the reference. */
+.log-card {
+    --log-ink: #0e0e0e;
+    --log-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s var(--log-ease);
+}
+.log-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--c-primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--log-ease);
+}
+.log-card > * {
+    position: relative;
+}
+.log-card :is(h3, p, li, a, span) {
+    transition: color 0.3s var(--log-ease);
+}
+.log-card:hover {
+    border-color: color-mix(in oklab, var(--c-primary) 50%, transparent);
+}
+.log-card:hover::before {
+    transform: scaleX(1);
+}
+.log-card:hover :is(h3, p, li, a, span) {
+    color: var(--log-ink);
+}
+.log-card:hover li::before {
+    background: var(--log-ink);
 }
 
 /* Outline text for the marquee, alternating with solid accent words. */

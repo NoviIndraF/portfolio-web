@@ -13,25 +13,24 @@
             @foreach ($items as $item)
                 <li class="relative">
                     <span class="absolute top-2 -left-[1.95rem] size-3 rounded-full bg-primary ring-4 ring-bg transition duration-500 sm:-left-[2.45rem]" data-timeline-dot aria-hidden="true"></span>
-                    <div class="card p-5 sm:p-6">
-                        @if (filled($item['period'] ?? null))
-                            <p class="text-xs font-semibold text-primary-fg">{{ $item['period'] }}</p>
-                        @endif
-                        <h3 class="mt-1 text-lg font-bold">{{ $item['title'] }}</h3>
+                    <div class="card log-card grid gap-2 p-5 sm:p-6 md:grid-cols-[11rem_1fr] md:gap-8 md:p-8">
+                        <p class="eyebrow md:pt-2">{{ $item['period'] ?? '' }}</p>
+                        <div>
+                        <h3 class="item-title">{{ $item['title'] }}</h3>
                         @if (filled($item['subtitle'] ?? null))
-                            <p class="text-sm text-fg/80">{{ $item['subtitle'] }}</p>
+                            <p class="mt-1 font-item text-base font-light text-fg/80">{{ $item['subtitle'] }}</p>
                         @endif
                         @if (filled($item['description'] ?? null))
                             {{-- One line per bullet in Admin; a single line stays a paragraph. --}}
                             @php($lines = str($item['description'])->explode("\n")->map(fn ($l) => trim(ltrim(trim($l), '-•*')))->filter()->values())
                             @if ($lines->count() > 1)
-                                <ul class="mt-3 space-y-1.5 text-sm text-muted">
+                                <ul class="mt-3 space-y-1.5 font-item text-sm font-light text-muted">
                                     @foreach ($lines as $line)
                                         <li class="relative pl-4 text-pretty before:absolute before:top-2 before:left-0 before:size-1.5 before:rounded-full before:bg-primary/60">{{ $line }}</li>
                                     @endforeach
                                 </ul>
                             @else
-                                <p class="mt-2 text-sm text-muted text-pretty">{{ $lines->first() }}</p>
+                                <p class="mt-2 font-item text-sm font-light text-muted text-pretty">{{ $lines->first() }}</p>
                             @endif
                         @endif
                         @if (filled($item['url'] ?? null))
@@ -39,6 +38,7 @@
                                 {{ $item['link_label'] ?? 'View' }} <x-heroicon-o-arrow-top-right-on-square class="size-4" aria-hidden="true" />
                             </a>
                         @endif
+                        </div>
                     </div>
                 </li>
             @endforeach

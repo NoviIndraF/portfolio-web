@@ -25,7 +25,7 @@
             {{-- v2: name in big condensed type, one word per line --}}
             <h1 id="hero-title" class="display mt-4 text-[clamp(4.25rem,15vw,8rem)] text-fg lg:text-[clamp(8rem,11.5vw,14rem)]">
                 @foreach (str($profile->name)->explode(' ')->filter() as $word)
-                    <span class="reveal-line"><span @class(['text-accent-fg' => $loop->last && ! $loop->first]) style="--i: {{ $loop->index }}">{{ $word }}</span></span>
+                    <span class="reveal-line"><span @class(['text-accent-fg' => $loop->index === 1]) style="--i: {{ $loop->index }}">{{ $word }}</span></span>
                 @endforeach
             </h1>
 

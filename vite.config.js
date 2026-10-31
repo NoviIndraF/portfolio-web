@@ -19,6 +19,8 @@ export default defineConfig({
                 // v2: condensed display face for big uppercase titles, mono for small labels.
                 bunny('Anton', { variable: '--font-anton', weights: [400], preload: [{ weight: 400 }] }),
                 bunny('JetBrains Mono', { variable: '--font-jetbrains', weights: [400, 500] }),
+                // Item titles (900) and their descriptions (300), like the reference.
+                bunny('Rubik', { variable: '--font-rubik', weights: [300, 900] }),
             ],
         }),
         tailwindcss(),
