@@ -10,12 +10,15 @@ import { initMotion } from './ui/motion';
 import { initFilter } from './ui/filter';
 import { initChat } from './ui/chat';
 import { initTheme } from './ui/theme';
+import { initIntro, initClock } from './ui/v2';
 import { initHeroLabel, initCountUp, initSkillLinks, initScrollSpy, initFloatingCta, initCopy, initTimeline, initCardPreviews, initFeatureScreens, initPhotoCarousel } from './ui/interactions';
 
 document.documentElement.classList.add('js');
 const reduced = prefersReducedMotion();
 
 initTheme();
+initIntro();
+initClock();
 initNav();
 initRails();
 initPhoneScreens();

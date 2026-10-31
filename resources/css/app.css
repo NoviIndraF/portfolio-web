@@ -9,6 +9,8 @@
 /* Colors come from admin Settings as CSS variables (see layouts/site). */
 @theme inline {
     --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+    --font-display: var(--font-anton), var(--font-jakarta), 'Arial Narrow', sans-serif;
+    --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
     --color-bg: var(--c-bg);
     --color-fg: var(--c-text);
     --color-primary: var(--c-primary);
@@ -65,7 +67,7 @@ body {
 }
 
 @utility btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 font-mono text-xs font-medium tracking-[0.12em] uppercase transition;
 }
 
 @layer components {
@@ -74,7 +76,12 @@ body {
     }
 
     .eyebrow {
-        @apply text-xs font-semibold uppercase tracking-[0.18em] text-accent-fg;
+        @apply font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-accent-fg;
+    }
+
+    /* v2: big condensed uppercase titles */
+    .display {
+        @apply font-display font-normal uppercase leading-[0.9] tracking-tight;
     }
 
     .btn-primary {
@@ -85,11 +92,11 @@ body {
     }
 
     .chip {
-        @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium text-fg/90;
+        @apply inline-flex items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-1 text-xs font-medium text-fg/90;
     }
 
     .card {
-        @apply rounded-3xl border border-line bg-surface;
+        @apply rounded-md border border-line bg-surface;
     }
 
     /* Hide scrollbars on swipe rails but keep them scrollable. */
@@ -99,6 +106,76 @@ body {
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }
+}
+
+/* ---------- v2 redesign ---------- */
+
+/* Section numbers (01, 02, …) follow the order of home sections; the header menu uses the same order. */
+main {
+    counter-reset: section;
+}
+.section-heading {
+    counter-increment: section;
+}
+.section-index::before {
+    content: counter(section, decimal-leading-zero);
+}
+
+/* Looping text strip. The track holds the items twice, so -50% loops seamlessly. */
+.marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 32s linear infinite;
+}
+.marquee:hover .marquee-track {
+    animation-play-state: paused;
+}
+@keyframes marquee {
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* Hero name: each line slides up once on load. */
+.reveal-line {
+    display: block;
+    overflow: hidden;
+}
+.reveal-line > span {
+    display: block;
+    animation: line-up 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(0.15s + var(--i, 0) * 0.09s);
+}
+@keyframes line-up {
+    from {
+        transform: translateY(105%);
+    }
+}
+
+/* Intro counter: shown only on the first visit of a session (inline script in layouts/site).
+   It hides itself after 2.6s even if JavaScript fails. */
+.intro {
+    display: none;
+}
+.intro-on .intro {
+    display: flex;
+    animation: intro-out 0.5s ease 2.6s forwards;
+}
+.intro.is-done {
+    animation: intro-out 0.5s ease forwards;
+}
+@keyframes intro-out {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+.intro-on .reveal-line > span {
+    animation-delay: calc(1.6s + var(--i, 0) * 0.09s);
 }
 
 /* Static phone frame (also the no-WebGL fallback for the 3D phone). */

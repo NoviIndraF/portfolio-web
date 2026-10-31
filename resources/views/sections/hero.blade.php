@@ -20,27 +20,17 @@
 
     <div class="container-site grid items-center gap-12 pt-10 pb-16 sm:pt-14 lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
         <div>
-            <div class="flex items-center gap-3">
-                @if ($photo = $profile->photoUrl())
-                    <img src="{{ \App\Support\Img::small($profile->photo) }}" alt="" width="48" height="48" class="size-12 rounded-full object-cover ring-2 ring-primary/50" fetchpriority="high">
-                @endif
-                <p class="text-sm font-medium text-muted">{{ $profile->name }}</p>
-            </div>
+            <p class="eyebrow">{{ $role }}</p>
 
-            <h1 id="hero-title" class="mt-5 text-4xl leading-[1.05] font-extrabold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-                {{ $role }}
+            {{-- v2: name in big condensed type, one word per line --}}
+            <h1 id="hero-title" class="display mt-4 text-[clamp(3.75rem,13vw,8.5rem)] text-fg">
+                @foreach (str($profile->name)->explode(' ')->filter() as $word)
+                    <span class="reveal-line"><span style="--i: {{ $loop->index }}">{{ $word }}</span></span>
+                @endforeach
             </h1>
 
-            @if ($highlights->isNotEmpty())
-                <ul class="mt-4 flex flex-wrap gap-2">
-                    @foreach ($highlights as $h)
-                        <li class="chip border-primary/30 text-sm">{{ $h }}</li>
-                    @endforeach
-                </ul>
-            @endif
-
             @if ($profile->bio)
-                <p class="mt-5 max-w-xl text-base text-muted text-pretty sm:text-lg">{{ $intro }}</p>
+                <p class="mt-6 max-w-xl text-base text-muted text-pretty sm:text-lg">{{ $intro }}</p>
             @endif
 
             <div class="mt-7 flex flex-wrap gap-3">
@@ -80,7 +70,7 @@
         <div class="flex flex-col items-center lg:items-end">
             <x-site.phone scene="hero" :screens="$reel" width="min(16rem, 62vw)" class="lg:mr-6" data-hero-phone :data-web-screens="$webScreens->isNotEmpty() ? $webScreens->toJson() : null" />
             @if ($reelLabels->isNotEmpty())
-                <a href="{{ $reelLabels[0]['href'] }}" class="group relative z-10 mt-3 inline-flex items-center gap-1.5 rounded-full border border-line bg-surface/80 px-4 py-2 text-sm backdrop-blur transition hover:border-primary/60 lg:mr-6"
+                <a href="{{ $reelLabels[0]['href'] }}" class="group relative z-10 mt-3 inline-flex items-center gap-1.5 rounded-sm border border-line bg-surface/80 px-4 py-2 text-sm backdrop-blur transition hover:border-primary/60 lg:mr-6"
                    data-hero-label data-items="{{ $reelLabels->toJson() }}">
                     <span class="text-muted">{{ __('site.hero.now_showing') }}:</span>
                     <span class="font-semibold" data-hero-label-title aria-live="polite">{{ $reelLabels[0]['title'] }}</span>
@@ -89,4 +79,21 @@
             @endif
         </div>
     </div>
+
+    {{-- v2: highlights from the tagline as a looping strip --}}
+    @if ($highlights->isNotEmpty())
+        <div class="marquee border-y border-line py-4" aria-label="{{ $highlights->implode(', ') }}">
+            <div class="marquee-track" aria-hidden="true">
+                @foreach ([1, 2] as $copy)
+                    @foreach ($highlights->concat($highlights) as $h)
+                        <span class="display flex items-center gap-6 pr-6 text-2xl text-fg/80 sm:text-3xl">{{ $h }} <span class="text-accent-fg">&#10022;</span></span>
+                    @endforeach
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+    <a href="{{ $projectsHref }}" class="container-site flex items-center gap-2 py-4 font-mono text-[11px] tracking-[0.2em] text-muted uppercase hover:text-fg max-lg:hidden">
+        <span aria-hidden="true">&#9660;</span> {{ __('site.hero.scroll') }}
+    </a>
 </section>

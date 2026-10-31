@@ -37,6 +37,13 @@
                 if (theme === 'system') theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
             }
             document.documentElement.dataset.theme = theme;
+            // v2 intro counter: home page, first visit of the session, motion allowed.
+            try {
+                if (@js(request()->routeIs('home')) && !sessionStorage.getItem('intro') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    sessionStorage.setItem('intro', '1');
+                    document.documentElement.classList.add('intro-on');
+                }
+            } catch (e) {}
         })();
     </script>
     <meta charset="utf-8">
@@ -81,6 +88,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-dvh font-sans antialiased" @if ($accent) style="--accent: {{ $accent }}" @endif>
+    {{-- v2 intro counter (resources/js/ui/v2.js) --}}
+    <div class="intro fixed inset-0 z-[60] items-end justify-between bg-bg p-6 font-mono text-xs tracking-[0.2em] text-muted uppercase sm:p-10" data-intro aria-hidden="true">
+        <span>{{ $profile->name }}</span>
+        <span><span class="display text-7xl text-fg tabular-nums sm:text-9xl" data-intro-count>0.00</span> &mdash; {{ __('site.intro') }}</span>
+    </div>
     <a href="#main" class="sr-only z-50 rounded-full bg-primary px-4 py-2 font-semibold text-bg focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
         {{ __('site.skip_to_content') }}
     </a>

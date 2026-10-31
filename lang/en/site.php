@@ -4,6 +4,11 @@
 return [
     'skip_to_content' => 'Skip to content',
     'menu' => 'Menu',
+    'intro' => 'Portfolio',
+    'header' => [
+        'place' => 'Jakarta',
+        'timezone' => 'Asia/Jakarta',
+    ],
     'theme' => [
         'toggle' => 'Dark mode',
     ],
@@ -72,6 +77,7 @@ return [
     ],
     'hero' => [
         'now_showing' => 'Now showing',
+        'scroll' => 'Scroll',
     ],
     'skills' => [
         'hint' => 'Tap a skill to see the projects that use it.',

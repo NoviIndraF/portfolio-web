@@ -16,6 +16,9 @@ export default defineConfig({
                     weights: [400, 500, 600, 700, 800],
                     preload: [{ weight: 400 }, { weight: 700 }],
                 }),
+                // v2: condensed display face for big uppercase titles, mono for small labels.
+                bunny('Anton', { variable: '--font-anton', weights: [400], preload: [{ weight: 400 }] }),
+                bunny('JetBrains Mono', { variable: '--font-jetbrains', weights: [400, 500] }),
             ],
         }),
         tailwindcss(),
