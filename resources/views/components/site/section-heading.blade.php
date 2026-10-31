@@ -10,6 +10,6 @@
     </p>
     <h2 @if ($id) id="{{ $id }}" @endif class="display mt-3 text-[clamp(3.25rem,9vw,8.5rem)] text-balance">{{ $title }}</h2>
     @if ($intro)
-        <p class="mt-4 text-base text-muted text-pretty">{{ $intro }}</p>
+        <p class="mt-4 max-w-2xl text-base text-muted text-pretty">{{ $intro }}</p>
     @endif
 </div>

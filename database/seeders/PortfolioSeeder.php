@@ -230,7 +230,9 @@ class PortfolioSeeder extends Seeder
                 'title' => $s['title'] ?? null,
                 'intro' => $s['intro'] ?? null,
                 'body' => $s['body'] ?? null,
-                'items' => $s['items'] ?? null,
+                'items' => $s['type'] === 'logos'
+                    ? collect($s['items'] ?? [])->map(fn ($i) => ['logo' => $this->copyFile($i['logo'] ?? null, 'sections/logos/'.basename((string) ($i['logo'] ?? '')))] + $i)->all()
+                    : ($s['items'] ?? null),
                 'sort_order' => $s['order'] ?? $i + 1,
             ]);
             $section->is_visible = $s['is_visible'] ?? true;

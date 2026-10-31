@@ -13,6 +13,8 @@ export function initIntro() {
         count.textContent = (1 - (1 - t) ** 3).toFixed(2); // ease-out
         if (t < 1) return requestAnimationFrame(tick);
         intro.classList.add('is-done');
+        // Desktop only: phones keep loading 3D on the first touch, to save data and CPU.
+        if (matchMedia('(pointer: fine) and (min-width: 1024px)').matches) window.dispatchEvent(new Event('intro:done'));
     };
     requestAnimationFrame(tick);
 }

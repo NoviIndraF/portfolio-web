@@ -68,7 +68,7 @@ export default function create({ group, accentHex }) {
         x.arc(128, 136, 80, Math.PI * 0.8, Math.PI * (0.8 + 1.4 * v));
         x.stroke();
         x.fillStyle = '#fff';
-        x.font = '700 34px "Plus Jakarta Sans", system-ui, sans-serif';
+        x.font = '700 34px "Rubik", system-ui, sans-serif';
         x.textAlign = 'center';
         x.fillText(gg.name, 128, 150);
         gg.tex.needsUpdate = true;

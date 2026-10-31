@@ -10,7 +10,7 @@
 <header class="sticky top-0 z-40 border-b border-line/60 bg-bg/80 backdrop-blur-md" data-header>
     <nav class="container-site flex h-16 items-center justify-between gap-4" aria-label="Main">
         <a href="{{ route('home') }}" class="flex items-center gap-2 font-bold tracking-tight">
-            <span class="grid size-8 place-items-center rounded-sm bg-primary text-sm font-extrabold text-bg" aria-hidden="true">
+            <span class="grid size-8 place-items-center rounded-sm bg-primary text-sm font-extrabold text-on-primary" aria-hidden="true">
                 {{ str($profile->name)->explode(' ')->take(2)->map(fn ($w) => mb_substr($w, 0, 1))->implode('') }}
             </span>
             <span class="sr-only xl:not-sr-only">{{ $profile->name }}</span>

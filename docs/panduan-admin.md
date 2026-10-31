@@ -131,6 +131,7 @@ Menu **Site → Home sections**. Mengatur bagian-bagian beranda di bawah hero.
 - **Add section** untuk membuat section baru:
   - **Text block** – teks bebas dengan format (tebal, miring, link, judul, daftar).
   - **Timeline** – daftar berurutan seperti **Pengalaman kerja, Pendidikan, Sertifikat, Penghargaan, Organisasi**. Tiap item: Period (mis. `2022 – Present`), Title, Subtitle (perusahaan/sekolah), Description, Link opsional, dan tombol tampil/sembunyi. Description yang ditulis beberapa baris tampil sebagai daftar poin (satu poin per baris).
+  - **Logo strip** – deretan logo perusahaan atau klien yang bergerak. Tiap item: Name (wajib, tampil sebagai teks bila tanpa logo), Logo (SVG/PNG/WebP transparan, maks 1 MB), Link opsional, dan tombol tampil/sembunyi.
 - Section bawaan (Featured projects, Skills, About, Contact) bisa disembunyikan tetapi tidak bisa dihapus. Section buatan sendiri bisa dihapus.
 
 ## 8. Pengaturan situs

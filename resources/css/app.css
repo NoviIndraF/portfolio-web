@@ -8,10 +8,10 @@
 
 /* Colors come from admin Settings as CSS variables (see layouts/site). */
 @theme inline {
-    --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
-    --font-display: var(--font-anton), var(--font-jakarta), 'Arial Narrow', sans-serif;
+    --font-sans: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
+    --font-display: var(--font-anton), var(--font-rubik), 'Arial Narrow', sans-serif;
     --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
-    --font-item: var(--font-rubik), var(--font-jakarta), sans-serif;
+    --font-item: var(--font-rubik), sans-serif;
     --color-bg: var(--c-bg);
     --color-fg: var(--c-text);
     --color-primary: var(--c-primary);
@@ -23,9 +23,12 @@
     /* Accent text mixed toward the text color's side (white in dark mode, black in light) so it stays readable. */
     --color-accent-fg: color-mix(in oklab, var(--accent, var(--c-primary)) 62%, var(--c-mix));
     --color-primary-fg: color-mix(in oklab, var(--c-primary) 70%, var(--c-mix));
+    /* Text on a primary background: black on light primaries, white on dark ones. */
+    --color-on-primary: oklch(from var(--c-primary) clamp(0, (0.62 - l) * 1000, 1) 0 0);
 }
 
-:root {
+/* Fallbacks only (zero specificity): the admin colors in layouts/site load before this file and must win. */
+:where(:root) {
     --c-bg: #0b1020;
     --c-text: #e8ecf6;
     --c-primary: #4c8dff;
@@ -92,7 +95,7 @@ body {
     }
 
     .btn-primary {
-        @apply btn bg-primary text-bg hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 active:brightness-95;
+        @apply btn bg-primary text-on-primary hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 active:brightness-95;
     }
     .btn-ghost {
         @apply btn border border-line bg-surface text-fg hover:border-accent-fg/60 hover:text-accent-fg;
@@ -176,7 +179,7 @@ a:hover .arrow-shift {
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--c-primary);
+    background: var(--accent, var(--c-primary));
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.3s var(--log-ease);
@@ -188,7 +191,7 @@ a:hover .arrow-shift {
     transition: color 0.3s var(--log-ease);
 }
 .log-card:hover {
-    border-color: color-mix(in oklab, var(--c-primary) 50%, transparent);
+    border-color: color-mix(in oklab, var(--accent, var(--c-primary)) 50%, transparent);
 }
 .log-card:hover::before {
     transform: scaleX(1);
@@ -198,6 +201,19 @@ a:hover .arrow-shift {
 }
 .log-card:hover li::before {
     background: var(--log-ink);
+}
+
+/* Logo strip: muted until hovered, like the reference's client row. */
+.logo-item {
+    color: var(--color-muted);
+    opacity: 0.6;
+    filter: grayscale(1);
+    transition: opacity 0.3s ease, filter 0.3s ease, color 0.3s ease;
+}
+.logo-item:hover {
+    color: var(--color-accent-fg);
+    opacity: 1;
+    filter: none;
 }
 
 /* Outline text for the marquee, alternating with solid accent words. */

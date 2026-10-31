@@ -50,7 +50,8 @@ export function initThree() {
 
 /** Runs `fn` once, on the first scroll / pointer / touch / key event (after the page has loaded). */
 export function onFirstInteraction(fn) {
-    const events = ['pointermove', 'pointerdown', 'touchstart', 'wheel', 'scroll', 'keydown'];
+    // 'intro:done' (resources/js/ui/v2.js): the intro hid the first paint, so 3D can load without waiting for input.
+    const events = ['pointermove', 'pointerdown', 'touchstart', 'wheel', 'scroll', 'keydown', 'intro:done'];
     let done = false;
     const run = () => {
         if (done) return;

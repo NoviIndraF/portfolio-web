@@ -22,13 +22,13 @@
         <div class="container-site grid items-center gap-12 pt-8 pb-16 lg:grid-cols-[1.1fr_0.9fr] lg:pb-24">
             <div>
                 <p class="eyebrow">{{ $project->typeLabel() }}@if ($project->year) · {{ $project->year }}@endif</p>
-                <h1 id="project-title" class="mt-2 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl" style="view-transition-name: project-title" data-project-title>{{ $project->title }}</h1>
+                <h1 id="project-title" class="display mt-3 text-[clamp(3.25rem,9vw,8rem)] text-balance" style="view-transition-name: project-title" data-project-title>{{ $project->title }}</h1>
                 @if ($project->impact_line)
                     <p class="mt-4 max-w-xl text-lg text-fg/90 text-pretty">{{ $project->impact_line }}</p>
                 @endif
 
                 @if ($rec)
-                    <div class="mt-6 flex max-w-xl items-start gap-4 rounded-2xl border border-accent/40 bg-accent/10 p-4">
+                    <div class="mt-6 flex max-w-xl items-start gap-4 rounded-md border border-accent/40 bg-accent/10 p-4">
                         <x-heroicon-s-check-badge class="size-8 shrink-0 text-accent-fg" aria-hidden="true" />
                         <div class="min-w-0 text-sm">
                             <p class="font-bold">{{ __('site.project.recognition') }}</p>
@@ -84,7 +84,7 @@
     <nav class="sticky top-16 z-30 border-y border-line/60 bg-bg/85 backdrop-blur-md" aria-label="{{ __('site.project.sections_nav') }}" data-subnav>
         <ul class="container-site no-scrollbar flex gap-1 overflow-x-auto py-2" data-scrollspy>
             @foreach ($pageSections as $id => $label)
-                <li class="shrink-0"><a href="#{{ $id }}" class="block rounded-full px-3 py-1.5 text-sm font-medium text-muted transition hover:text-fg aria-[current=true]:bg-accent/15 aria-[current=true]:text-accent-fg">{{ $label }}</a></li>
+                <li class="shrink-0"><a href="#{{ $id }}" class="link-line block rounded-sm px-3 py-1.5 font-mono text-[11px] tracking-[0.14em] whitespace-nowrap text-muted uppercase transition aria-[current=true]:text-accent-fg">{{ $label }}</a></li>
             @endforeach
         </ul>
     </nav>
@@ -92,7 +92,7 @@
     <div class="container-site space-y-16 pt-12 pb-16 sm:space-y-20 sm:pb-24">
         {{-- 1. Overview: problem / solution --}}
         <section aria-labelledby="overview-title" data-reveal>
-            <h2 id="overview-title" class="scroll-mt-32 text-2xl font-extrabold tracking-tight sm:text-3xl">{{ __('site.project.overview') }}</h2>
+            <h2 id="overview-title" class="section-heading display scroll-mt-32 text-[clamp(2.5rem,5vw,4.5rem)]"><span class="section-index eyebrow mb-2 block" aria-hidden="true"></span>{{ __('site.project.overview') }}</h2>
             @if ($project->problem || $project->solution)
                 <div class="mt-6 grid gap-4 md:grid-cols-2">
                     @foreach (['problem' => $project->problem, 'solution' => $project->solution] as $key => $text)
@@ -112,7 +112,7 @@
         {{-- 2. Features --}}
         @if ($project->features->isNotEmpty())
             <section aria-labelledby="features-title">
-                <h2 id="features-title" class="scroll-mt-32 text-2xl font-extrabold tracking-tight sm:text-3xl">{{ __('site.project.features') }}</h2>
+                <h2 id="features-title" class="section-heading display scroll-mt-32 text-[clamp(2.5rem,5vw,4.5rem)]"><span class="section-index eyebrow mb-2 block" aria-hidden="true"></span>{{ __('site.project.features') }}</h2>
                 @php
                     $featureCols = [1 => 'lg:grid-cols-2', 2 => 'lg:grid-cols-2', 3 => 'lg:grid-cols-3'][$project->features->count()] ?? 'lg:grid-cols-4';
                 @endphp
@@ -134,7 +134,7 @@
                                     {{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}
                                 @endif
                             </span>
-                            <h3 class="mt-4 font-bold">{{ $feature->title }}</h3>
+                            <h3 class="mt-4 font-item text-xl font-black">{{ $feature->title }}</h3>
                             @if ($feature->description)
                                 <p class="mt-2 text-sm text-muted text-pretty">{{ $feature->description }}</p>
                             @endif
@@ -156,7 +156,7 @@
         {{-- 3. Tech --}}
         @if ($project->tech->isNotEmpty())
             <section aria-labelledby="tech-title">
-                <h2 id="tech-title" class="scroll-mt-32 text-2xl font-extrabold tracking-tight sm:text-3xl">{{ __('site.project.tech') }}</h2>
+                <h2 id="tech-title" class="section-heading display scroll-mt-32 text-[clamp(2.5rem,5vw,4.5rem)]"><span class="section-index eyebrow mb-2 block" aria-hidden="true"></span>{{ __('site.project.tech') }}</h2>
                 <ul class="mt-6 flex flex-wrap gap-2" data-reveal-stagger>
                     @foreach ($project->tech as $t)
                         <li><x-site.tech-chip :name="$t->name" class="px-3.5 py-1.5 text-sm" /></li>
@@ -168,12 +168,12 @@
         {{-- 4. Links (only when present) --}}
         @if ($project->links->isNotEmpty())
             <section aria-labelledby="links-title">
-                <h2 id="links-title" class="scroll-mt-32 text-2xl font-extrabold tracking-tight sm:text-3xl">{{ __('site.project.links') }}</h2>
+                <h2 id="links-title" class="section-heading display scroll-mt-32 text-[clamp(2.5rem,5vw,4.5rem)]"><span class="section-index eyebrow mb-2 block" aria-hidden="true"></span>{{ __('site.project.links') }}</h2>
                 <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
                     @foreach ($project->links as $link)
                         <li>
                             <a href="{{ $link->url }}" target="_blank" rel="noopener"
-                               class="flex items-center justify-between gap-3 rounded-2xl border border-line bg-surface px-5 py-4 transition hover:border-accent/60">
+                               class="log-card flex items-center justify-between gap-3 rounded-md border border-line bg-surface px-5 py-4">
                                 <span class="min-w-0">
                                     <span class="block font-semibold">{{ $link->label }}</span>
                                     <span class="block truncate text-xs text-muted">{{ str($link->url)->after('://')->rtrim('/') }}</span>
@@ -189,7 +189,7 @@
         {{-- 5. Gallery --}}
         @if ($project->images->isNotEmpty())
             <section aria-labelledby="gallery-title" data-reveal>
-                <h2 id="gallery-title" class="scroll-mt-32 text-2xl font-extrabold tracking-tight sm:text-3xl">{{ __('site.project.gallery') }}</h2>
+                <h2 id="gallery-title" class="section-heading display scroll-mt-32 text-[clamp(2.5rem,5vw,4.5rem)]"><span class="section-index eyebrow mb-2 block" aria-hidden="true"></span>{{ __('site.project.gallery') }}</h2>
                 <div class="mt-6">
                     <x-site.gallery :project="$project" />
                 </div>

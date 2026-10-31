@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * A section of the home page (below the hero). Built-in sections can be renamed,
- * reordered and hidden; custom "text" and "timeline" sections can also be added and deleted.
+ * reordered and hidden; custom "text", "timeline" and "logos" sections can also be added and deleted.
  */
 class PageSection extends Model
 {
@@ -22,6 +22,7 @@ class PageSection extends Model
         'contact' => 'Contact (built-in)',
         'text' => 'Text block',
         'timeline' => 'Timeline (experience, education, certificates…)',
+        'logos' => 'Logo strip (companies, clients…)',
     ];
 
     protected $fillable = [

@@ -72,7 +72,10 @@ class ExportContent extends Command
                 'title' => $s->title,
                 'intro' => $s->intro,
                 'body' => $s->body,
-                'items' => $s->items,
+                // Logo strips: copy each logo file into the export.
+                'items' => $s->type === 'logos'
+                    ? collect($s->items ?? [])->map(fn ($i) => ['logo' => $this->copy($i['logo'] ?? null, 'sections')] + $i)->all()
+                    : $s->items,
                 'is_visible' => $s->is_visible,
                 'order' => $s->sort_order,
             ])->all(),

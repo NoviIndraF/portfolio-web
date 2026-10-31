@@ -118,6 +118,22 @@ class CustomizableContentTest extends TestCase
             ->assertDontSee('<script>alert(1)</script>', false);
     }
 
+    public function test_logo_strip_shows_visible_logos_and_names(): void
+    {
+        $logo = Storage::disk('public')->putFileAs('sections/logos', UploadedFile::fake()->image('acme.png', 200, 80), 'acme.png');
+        (new PageSection(['type' => 'logos', 'anchor' => 'clients', 'title' => 'Companies I worked with', 'sort_order' => 7, 'items' => [
+            ['name' => 'Acme Corp', 'logo' => $logo, 'url' => 'https://acme.test', 'is_visible' => true],
+            ['name' => 'Text Only Ltd', 'is_visible' => true],
+            ['name' => 'Secret Client', 'is_visible' => false],
+        ]]))->save();
+
+        $this->get('/')
+            ->assertSee('Companies I worked with')
+            ->assertSee('Acme Corp')->assertSee('Text Only Ltd')->assertDontSee('Secret Client')
+            ->assertSee(Storage::disk('public')->url($logo), false)
+            ->assertSee('href="https://acme.test"', false);
+    }
+
     public function test_built_in_sections_cannot_be_deleted(): void
     {
         PageSection::where('type', 'about')->first()->delete();
@@ -224,12 +240,15 @@ class CustomizableContentTest extends TestCase
         $shot = $p->images()->create(['path' => Storage::disk('public')->putFileAs('projects/exported', $png, 's.png'), 'kind' => 'screenshot', 'sort_order' => 1]);
         $p->features()->create(['title' => 'Hidden one', 'is_visible' => false, 'project_image_id' => $shot->id, 'sort_order' => 1]);
         (new PageSection(['type' => 'timeline', 'anchor' => 'edu', 'title' => 'Education', 'sort_order' => 9, 'items' => [['title' => 'University']]]))->save();
+        $logo = Storage::disk('public')->putFileAs('sections/logos', UploadedFile::fake()->image('acme.png', 200, 80), 'acme.png');
+        (new PageSection(['type' => 'logos', 'anchor' => 'clients', 'title' => 'Clients', 'sort_order' => 10, 'items' => [['name' => 'Acme', 'logo' => $logo]]]))->save();
 
         $dir = storage_path('framework/testing/export-'.uniqid());
         $this->artisan('portfolio:export', ['path' => $dir])->assertSuccessful();
 
         Project::query()->get()->each->delete();
-        PageSection::where('anchor', 'edu')->delete();
+        PageSection::whereIn('anchor', ['edu', 'clients'])->delete();
+        Storage::disk('public')->delete($logo);
 
         $this->artisan('portfolio:import', ['path' => $dir, '--force' => true])->assertSuccessful();
 
@@ -241,6 +260,9 @@ class CustomizableContentTest extends TestCase
         $this->assertSame(1, $restored->images()->count());
         Storage::disk('public')->assertExists($restored->images()->first()->path);
         $this->assertSame('University', PageSection::where('anchor', 'edu')->first()->items[0]['title']);
+        $restoredLogo = PageSection::where('anchor', 'clients')->first()->items[0];
+        $this->assertSame('Acme', $restoredLogo['name']);
+        Storage::disk('public')->assertExists($restoredLogo['logo']);
 
         File::deleteDirectory($dir);
     }

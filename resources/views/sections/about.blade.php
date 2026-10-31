@@ -52,7 +52,7 @@
         @endif
         <div>
             <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->text('eyebrow')" :title="$section->text('title')" :intro="$section->text('intro')" />
-            <p class="mt-5 text-base leading-relaxed text-muted text-pretty sm:text-lg">{{ $profile->bio }}</p>
+            <p class="mt-5 max-w-[65ch] text-base leading-relaxed text-muted text-pretty sm:text-lg">{{ $profile->bio }}</p>
             <div class="mt-7 flex flex-wrap gap-3">
                 @if ($cv = $profile->cvUrl())
                     <a href="{{ $cv }}" download class="btn-primary">

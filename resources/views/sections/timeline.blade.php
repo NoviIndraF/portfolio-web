@@ -24,13 +24,13 @@
                             {{-- One line per bullet in Admin; a single line stays a paragraph. --}}
                             @php($lines = str($item['description'])->explode("\n")->map(fn ($l) => trim(ltrim(trim($l), '-•*')))->filter()->values())
                             @if ($lines->count() > 1)
-                                <ul class="mt-3 space-y-1.5 font-item text-sm font-light text-muted">
+                                <ul class="mt-3 max-w-[72ch] space-y-1.5 font-item text-sm font-light text-muted">
                                     @foreach ($lines as $line)
                                         <li class="relative pl-4 text-pretty before:absolute before:top-2 before:left-0 before:size-1.5 before:rounded-full before:bg-primary/60">{{ $line }}</li>
                                     @endforeach
                                 </ul>
                             @else
-                                <p class="mt-2 font-item text-sm font-light text-muted text-pretty">{{ $lines->first() }}</p>
+                                <p class="mt-2 max-w-[72ch] font-item text-sm font-light text-muted text-pretty">{{ $lines->first() }}</p>
                             @endif
                         @endif
                         @if (filled($item['url'] ?? null))

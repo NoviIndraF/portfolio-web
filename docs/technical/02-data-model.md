@@ -67,12 +67,12 @@ Sections of the home page below the hero.
 
 | Column | Notes |
 |---|---|
-| `type` | Built-in: `projects`, `skills`, `about`, `contact` (cannot be deleted). Custom: `text`, `timeline`. |
+| `type` | Built-in: `projects`, `skills`, `about`, `contact` (cannot be deleted). Custom: `text`, `timeline`, `logos`. |
 | `anchor` | Unique; the `#id` of the section and the menu link. |
 | `nav_label` | Menu label; empty = not in the menu. |
 | `eyebrow`, `title`, `intro` | Empty values on built-in sections fall back to `lang/en/site.php` (`PageSection::text()`). |
 | `body` | Rich text for `text` sections (sanitized on output). |
-| `items` | JSON for `timeline` sections: `[{period, title, subtitle, description, url, link_label, is_visible}]`. A multi-line `description` renders as a bullet list (one point per line; leading `-`, `•` or `*` is stripped). |
+| `items` | JSON for `timeline` sections: `[{period, title, subtitle, description, url, link_label, is_visible}]`. A multi-line `description` renders as a bullet list (one point per line; leading `-`, `•` or `*` is stripped). For `logos` sections: `[{name, logo, url, is_visible}]`; `logo` is a path on the public disk (`sections/logos/…`), copied by export/import. |
 | `is_visible`, `sort_order` | Visibility and order on the page and in the menu. |
 
 The four built-in rows are inserted by the second migration.

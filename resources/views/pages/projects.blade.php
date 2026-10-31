@@ -3,16 +3,16 @@
         <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-fg">
             <x-heroicon-o-arrow-left class="size-4" aria-hidden="true" /> {{ __('site.all_projects.back') }}
         </a>
-        <h1 id="all-projects-title" class="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl">{{ __('site.all_projects.title') }}</h1>
+        <h1 id="all-projects-title" class="display mt-6 text-[clamp(3.25rem,9vw,8rem)]">{{ __('site.all_projects.title') }}</h1>
         <p class="mt-3 max-w-2xl text-muted">{{ __('site.all_projects.intro') }}</p>
 
         @if ($types->count() > 1)
             <div class="mt-8 flex flex-wrap gap-2" role="group" aria-label="{{ __('site.all_projects.filter_label') }}" data-filter>
-                <button type="button" class="chip px-4 py-2 text-sm aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-bg" aria-pressed="true" data-filter-value="">
+                <button type="button" class="chip px-4 py-2 text-sm aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-on-primary" aria-pressed="true" data-filter-value="">
                     {{ __('site.all_projects.filter_all') }} ({{ $projects->count() }})
                 </button>
                 @foreach ($types as $type => $label)
-                    <button type="button" class="chip px-4 py-2 text-sm aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-bg" aria-pressed="false" data-filter-value="{{ $type }}">
+                    <button type="button" class="chip px-4 py-2 text-sm aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-on-primary" aria-pressed="false" data-filter-value="{{ $type }}">
                         {{ $label }} ({{ $projects->where('type', $type)->count() }})
                     </button>
                 @endforeach

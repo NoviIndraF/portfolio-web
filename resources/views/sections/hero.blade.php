@@ -82,8 +82,9 @@
 
     {{-- v2: highlights from the tagline as a looping strip --}}
     @if ($highlights->isNotEmpty())
-        <div class="marquee border-y border-line py-4" aria-label="{{ $highlights->implode(', ') }}">
-            <div class="marquee-track" aria-hidden="true">
+        <p class="sr-only">{{ $highlights->implode(', ') }}</p>
+        <div class="marquee border-y border-line py-4" aria-hidden="true">
+            <div class="marquee-track">
                 @foreach ([1, 2] as $copy)
                     @foreach ($highlights->concat($highlights) as $h)
                         <span @class(['display flex items-center gap-[0.3em] pr-[0.3em] text-[clamp(3rem,8vw,8rem)]', $loop->even ? 'text-accent-fg' : 'text-outline'])>{{ $h }} <span class="text-[0.4em] text-accent-fg">&#10022;</span></span>
