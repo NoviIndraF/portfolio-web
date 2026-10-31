@@ -18,13 +18,13 @@
 
         <ul class="hidden items-center gap-1 md:flex" data-scrollspy>
             @foreach ($links as $id => $label)
-                <li><a href="{{ $home }}#{{ $id }}" class="rounded-sm px-3 py-2 font-mono text-[11px] whitespace-nowrap font-medium tracking-[0.14em] text-muted uppercase transition hover:text-fg aria-[current=true]:bg-surface-2 aria-[current=true]:text-fg"><span class="text-accent-fg">{{ $numbers[$id] ?? '' }}</span> {{ $label }}</a></li>
+                <li><a href="{{ $home }}#{{ $id }}" class="link-line rounded-sm px-3 py-2 font-mono text-[11px] whitespace-nowrap font-medium tracking-[0.14em] text-muted uppercase transition aria-[current=true]:text-fg"><span class="text-accent-fg">{{ $numbers[$id] ?? '' }}</span> {{ $label }}</a></li>
             @endforeach
         </ul>
 
         <div class="flex items-center gap-2">
             {{-- v2: live local time (resources/js/ui/v2.js) --}}
-            <span class="hidden font-mono text-[11px] tracking-[0.14em] text-muted uppercase xl:inline" data-clock data-tz="{{ __('site.header.timezone') }}">
+            <span class="hidden font-mono text-[11px] tracking-[0.14em] whitespace-nowrap text-muted uppercase xl:inline" data-clock data-tz="{{ __('site.header.timezone') }}">
                 {{ __('site.header.place') }} <span class="text-fg tabular-nums" data-clock-time>--:--</span>
             </span>
             <button type="button" class="btn-ghost size-10 min-h-10 px-0" data-theme-toggle aria-pressed="true" aria-label="{{ __('site.theme.toggle') }}" title="{{ __('site.theme.toggle') }}">

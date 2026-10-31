@@ -67,12 +67,13 @@ body {
 }
 
 @utility btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 font-mono text-xs font-medium tracking-[0.12em] uppercase transition;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 font-mono text-xs font-medium tracking-[0.12em] whitespace-nowrap uppercase transition;
 }
 
 @layer components {
     .container-site {
-        @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+        /* v2: near full width, like the reference (40px side gutter on desktop). */
+        @apply mx-auto w-full max-w-[120rem] px-4 sm:px-8 lg:px-10;
     }
 
     .eyebrow {
@@ -85,10 +86,10 @@ body {
     }
 
     .btn-primary {
-        @apply btn bg-primary text-bg hover:brightness-110 active:brightness-95;
+        @apply btn bg-primary text-bg hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 active:brightness-95;
     }
     .btn-ghost {
-        @apply btn border border-line bg-surface text-fg hover:border-fg/40 hover:bg-surface-2;
+        @apply btn border border-line bg-surface text-fg hover:border-accent-fg/60 hover:text-accent-fg;
     }
 
     .chip {
@@ -119,6 +120,48 @@ main {
 }
 .section-index::before {
     content: counter(section, decimal-leading-zero);
+}
+
+/* Hover, adapted from the reference: accent color, a small lift, an accent line that grows from the left. */
+.link-line {
+    position: relative;
+}
+.link-line::after {
+    content: '';
+    position: absolute;
+    inset: auto 0.75rem 0.3rem;
+    height: 1px;
+    background: var(--color-accent-fg);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.link-line:hover::after,
+.link-line[aria-current='true']::after {
+    transform: scaleX(1);
+}
+.link-line:hover {
+    color: var(--color-accent-fg);
+}
+a:hover .arrow-shift {
+    translate: 4px 0;
+}
+.arrow-shift {
+    transition: translate 0.25s ease;
+}
+/* Cards that link somewhere or react to the pointer lift a little. */
+:is(a.card, [data-skill-group]) {
+    transition: translate 0.3s ease, border-color 0.3s ease;
+}
+:is(a.card, [data-skill-group]):hover {
+    translate: 0 -4px;
+    border-color: color-mix(in oklab, var(--color-accent-fg) 50%, transparent);
+}
+
+/* Outline text for the marquee, alternating with solid accent words. */
+.text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in oklab, var(--c-text) 55%, transparent);
 }
 
 /* Looping text strip. The track holds the items twice, so -50% loops seamlessly. */

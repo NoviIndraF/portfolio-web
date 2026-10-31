@@ -23,9 +23,9 @@
             <p class="eyebrow">{{ $role }}</p>
 
             {{-- v2: name in big condensed type, one word per line --}}
-            <h1 id="hero-title" class="display mt-4 text-[clamp(3.75rem,13vw,8.5rem)] text-fg">
+            <h1 id="hero-title" class="display mt-4 text-[clamp(4.25rem,15vw,8rem)] text-fg lg:text-[clamp(8rem,11.5vw,14rem)]">
                 @foreach (str($profile->name)->explode(' ')->filter() as $word)
-                    <span class="reveal-line"><span style="--i: {{ $loop->index }}">{{ $word }}</span></span>
+                    <span class="reveal-line"><span @class(['text-accent-fg' => $loop->last && ! $loop->first]) style="--i: {{ $loop->index }}">{{ $word }}</span></span>
                 @endforeach
             </h1>
 
@@ -51,7 +51,7 @@
                 @endif
                 {{-- Phones: a text link, so the CTAs stay on one row --}}
                 <a href="{{ $projectsHref }}" class="btn-ghost max-sm:border-transparent max-sm:bg-transparent max-sm:px-1 max-sm:text-primary-fg">
-                    {{ __('site.cta.view_projects') }} <x-heroicon-o-arrow-right class="size-4 sm:hidden" aria-hidden="true" />
+                    {{ __('site.cta.view_projects') }} <x-heroicon-o-arrow-right class="arrow-shift size-4 sm:hidden" aria-hidden="true" />
                 </a>
             </div>
 
@@ -67,10 +67,10 @@
             @endif
         </div>
 
-        <div class="flex flex-col items-center lg:items-end">
-            <x-site.phone scene="hero" :screens="$reel" width="min(16rem, 62vw)" class="lg:mr-6" data-hero-phone :data-web-screens="$webScreens->isNotEmpty() ? $webScreens->toJson() : null" />
+        <div class="flex flex-col items-center">
+            <x-site.phone scene="hero" :screens="$reel" width="min(16rem, 62vw)" data-hero-phone :data-web-screens="$webScreens->isNotEmpty() ? $webScreens->toJson() : null" />
             @if ($reelLabels->isNotEmpty())
-                <a href="{{ $reelLabels[0]['href'] }}" class="group relative z-10 mt-3 inline-flex items-center gap-1.5 rounded-sm border border-line bg-surface/80 px-4 py-2 text-sm backdrop-blur transition hover:border-primary/60 lg:mr-6"
+                <a href="{{ $reelLabels[0]['href'] }}" class="group relative z-10 mt-3 inline-flex items-center gap-1.5 rounded-sm border border-line bg-surface/80 px-4 py-2 text-sm backdrop-blur transition hover:border-primary/60"
                    data-hero-label data-items="{{ $reelLabels->toJson() }}">
                     <span class="text-muted">{{ __('site.hero.now_showing') }}:</span>
                     <span class="font-semibold" data-hero-label-title aria-live="polite">{{ $reelLabels[0]['title'] }}</span>
@@ -86,7 +86,7 @@
             <div class="marquee-track" aria-hidden="true">
                 @foreach ([1, 2] as $copy)
                     @foreach ($highlights->concat($highlights) as $h)
-                        <span class="display flex items-center gap-6 pr-6 text-2xl text-fg/80 sm:text-3xl">{{ $h }} <span class="text-accent-fg">&#10022;</span></span>
+                        <span @class(['display flex items-center gap-[0.3em] pr-[0.3em] text-[clamp(3rem,8vw,8rem)]', $loop->even ? 'text-accent-fg' : 'text-outline'])>{{ $h }} <span class="text-[0.4em] text-accent-fg">&#10022;</span></span>
                     @endforeach
                 @endforeach
             </div>

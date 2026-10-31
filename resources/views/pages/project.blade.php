@@ -43,7 +43,7 @@
                                 <a href="{{ $certificates->first()->url() }}" target="_blank" rel="noopener"
                                    class="mt-2 inline-flex items-center gap-1 font-semibold text-accent-fg hover:underline"
                                    data-lightbox-open="certificate">
-                                    {{ __('site.project.view_certificate') }} <x-heroicon-o-arrow-right class="size-4" aria-hidden="true" />
+                                    {{ __('site.project.view_certificate') }} <x-heroicon-o-arrow-right class="arrow-shift size-4" aria-hidden="true" />
                                 </a>
                             @endif
                         </div>

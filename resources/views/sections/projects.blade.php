@@ -6,7 +6,7 @@
                 <x-heroicon-o-arrow-left class="size-5" aria-hidden="true" />
             </button>
             <button type="button" class="btn-ghost size-11 px-0" data-rail-next="projects-rail" aria-label="{{ __('site.projects.next') }}">
-                <x-heroicon-o-arrow-right class="size-5" aria-hidden="true" />
+                <x-heroicon-o-arrow-right class="arrow-shift size-5" aria-hidden="true" />
             </button>
         </div>
     </div>
@@ -23,7 +23,7 @@
         <div class="container-site mt-4">
             <a href="{{ route('projects.index') }}" class="btn-ghost">
                 {{ __('site.projects.all', ['count' => $publishedCount]) }}
-                <x-heroicon-o-arrow-right class="size-4" aria-hidden="true" />
+                <x-heroicon-o-arrow-right class="arrow-shift size-4" aria-hidden="true" />
             </a>
         </div>
     @endif
