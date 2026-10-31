@@ -21,23 +21,26 @@
     --color-line: color-mix(in oklab, var(--c-text) 13%, var(--c-bg));
     --color-accent: var(--accent, var(--c-primary));
     /* Accent text mixed toward the text color's side (white in dark mode, black in light) so it stays readable. */
-    --color-accent-fg: color-mix(in oklab, var(--accent, var(--c-primary)) 62%, var(--c-mix));
-    --color-primary-fg: color-mix(in oklab, var(--c-primary) 70%, var(--c-mix));
+    --color-accent-fg: color-mix(in oklab, var(--accent, var(--c-primary)) var(--fg-mix), var(--c-mix));
+    --color-primary-fg: color-mix(in oklab, var(--c-primary) calc(var(--fg-mix) + 8%), var(--c-mix));
     /* Text on a primary background: black on light primaries, white on dark ones. */
     --color-on-primary: oklch(from var(--c-primary) clamp(0, (0.62 - l) * 1000, 1) 0 0);
 }
 
 /* Fallbacks only (zero specificity): the admin colors in layouts/site load before this file and must win. */
 :where(:root) {
-    --c-bg: #0b1020;
-    --c-text: #e8ecf6;
-    --c-primary: #4c8dff;
+    --c-bg: #0a0e0a;
+    --c-text: #e2f0e2;
+    --c-primary: #00ff41;
     --c-mix: white;
+    --fg-mix: 62%;
     color-scheme: dark;
 }
 
 :root[data-theme='light'] {
     --c-mix: black;
+    /* Darker accent text on light backgrounds, so bright accents (green, cyan) keep 4.5:1. */
+    --fg-mix: 52%;
     color-scheme: light;
 }
 
