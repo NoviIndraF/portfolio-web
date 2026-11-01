@@ -42,7 +42,7 @@ Menu **Content → Profile**.
 | Bagian | Isi | Catatan |
 |---|---|---|
 | Hero | Name, Tagline, Bio, Stats | Tagline dipisah dengan tanda `\|`: bagian pertama jadi judul besar (mis. *Mobile App Developer*), sisanya jadi label kecil. Kalimat pertama Bio tampil di bagian atas, Bio lengkap di bagian *About*. Stats maksimal 4 (mis. `4+` / *Years of experience*). |
-| Availability badge | Teks + tombol tampil/sembunyi | Label kecil dengan titik hijau di atas judul hero, mis. *Open to work · Mobile & Fullstack · Remote / Jakarta*. Matikan tombolnya atau kosongkan teks untuk menyembunyikan. |
+| Availability badge | Teks + tombol tampil/sembunyi | Label kecil dengan titik hijau di atas judul hero, mis. *Open to work · Software Developer · Remote / Jakarta*. Matikan tombolnya atau kosongkan teks untuk menyembunyikan. |
 | Photo & CV | Foto profil, CV (PDF) | Foto otomatis diperkecil dan dikonversi ke WebP. Jika CV kosong, semua tombol *Download CV* otomatis disembunyikan. |
 | Contact | Email, Phone, GitHub, LinkedIn | Phone dan LinkedIn yang kosong tidak ditampilkan. |
 | Gallery | Beberapa foto pribadi + caption | Tampil sebagai carousel di bagian *About* (geser, tombol panah, titik, berganti otomatis tiap 5 detik, klik untuk memperbesar). Urutkan dengan drag, sembunyikan dengan **Show on website**, hapus dengan ikon tempat sampah. Jika galeri kosong, *About* memakai foto profil. |

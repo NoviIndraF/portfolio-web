@@ -46,7 +46,7 @@ class EditProfile extends SingleRecordPage
                 TextInput::make('availability')
                     ->label('Availability badge')
                     ->maxLength(120)
-                    ->placeholder('Open to work · Mobile & Fullstack · Remote / Jakarta')
+                    ->placeholder('Open to work · Software Developer · Remote / Jakarta')
                     ->helperText('Small badge with a green dot above the hero title. Empty = hidden.'),
                 Toggle::make('show_availability')
                     ->label('Show availability badge')
