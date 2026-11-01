@@ -26,6 +26,21 @@ class Setting extends Model
         return static::query()->firstOrCreate([], ['site_title' => config('app.name')]);
     }
 
+    /** Near-black or white, whichever reads better on the primary color (WCAG contrast). */
+    public function onPrimaryColor(): string
+    {
+        $hex = str_pad(substr(ltrim((string) $this->primary_color, '#'), 0, 6), 6, '0');
+        $linear = array_map(function (string $pair): float {
+            $c = hexdec($pair) / 255;
+
+            return $c <= 0.03928 ? $c / 12.92 : (($c + 0.055) / 1.055) ** 2.4;
+        }, str_split($hex, 2));
+        $luminance = 0.2126 * $linear[0] + 0.7152 * $linear[1] + 0.0722 * $linear[2];
+
+        // Contrast with #0E0E0E (luminance ≈ 0.0044) versus with white.
+        return ($luminance + 0.05) / 0.0544 >= 1.05 / ($luminance + 0.05) ? '#0E0E0E' : '#FFFFFF';
+    }
+
     public function ogImageUrl(): ?string
     {
         return $this->og_image ? Storage::disk('public')->url($this->og_image) : null;
