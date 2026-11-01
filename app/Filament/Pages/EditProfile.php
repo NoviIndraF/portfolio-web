@@ -43,6 +43,15 @@ class EditProfile extends SingleRecordPage
             Section::make('Hero')->columns(2)->schema([
                 TextInput::make('name')->required()->maxLength(255),
                 TextInput::make('tagline')->required()->maxLength(255),
+                TextInput::make('availability')
+                    ->label('Availability badge')
+                    ->maxLength(120)
+                    ->placeholder('Open to work · Mobile & Fullstack · Remote / Jakarta')
+                    ->helperText('Small badge with a green dot above the hero title. Empty = hidden.'),
+                Toggle::make('show_availability')
+                    ->label('Show availability badge')
+                    ->default(true)
+                    ->inline(false),
                 Textarea::make('bio')->rows(4)->columnSpanFull(),
                 Repeater::make('stats')
                     ->label('Stats (shown in the hero)')

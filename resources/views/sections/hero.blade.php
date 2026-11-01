@@ -30,6 +30,16 @@
 
     <div class="container-site grid items-center gap-12 pt-10 pb-16 sm:pt-14 lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
         <div>
+            {{-- Availability badge (Admin → Profile) --}}
+            @if ($profile->show_availability && filled($profile->availability))
+                <p class="mb-5 inline-flex items-center gap-2.5 rounded-sm border border-accent-fg/40 bg-accent/10 px-3 py-1.5 font-mono text-[11px] tracking-[0.14em] text-accent-fg uppercase">
+                    <span class="relative flex size-2" aria-hidden="true">
+                        <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-75 motion-reduce:hidden"></span>
+                        <span class="relative inline-flex size-2 rounded-full bg-accent"></span>
+                    </span>
+                    {{ $profile->availability }}
+                </p>
+            @endif
             <p class="eyebrow">{{ $role }}</p>
 
             {{-- v2: name in big condensed type, one word per line --}}

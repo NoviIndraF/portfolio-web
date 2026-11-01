@@ -12,13 +12,13 @@ class Profile extends Model
     use OptimizesImages;
 
     protected $fillable = [
-        'name', 'tagline', 'bio', 'stats', 'photo', 'photo_original',
+        'name', 'tagline', 'availability', 'show_availability', 'bio', 'stats', 'photo', 'photo_original',
         'cv_pdf', 'email', 'github', 'linkedin', 'phone',
     ];
 
     protected function casts(): array
     {
-        return ['stats' => 'array'];
+        return ['stats' => 'array', 'show_availability' => 'boolean'];
     }
 
     protected function optimizedImageColumns(): array

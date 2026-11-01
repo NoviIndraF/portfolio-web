@@ -11,6 +11,7 @@ use App\Models\Project;
 use App\Models\Setting;
 use App\Models\SkillGroup;
 use App\Models\User;
+use App\Support\Site;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
@@ -170,6 +171,36 @@ class CustomizableContentTest extends TestCase
         $this->get('/projects/does-not-exist')->assertNotFound()->assertSee(__('site.not_found.title'));
     }
 
+    public function test_availability_badge_follows_the_admin_toggle(): void
+    {
+        Profile::query()->first()->update(['availability' => 'Open to work · Remote', 'show_availability' => true]);
+        $this->get('/')->assertSee('Open to work · Remote');
+
+        Profile::query()->first()->update(['show_availability' => false]);
+        app()->forgetInstance(Site::class); // the site object caches the profile for one request
+        $this->get('/')->assertDontSee('Open to work · Remote');
+    }
+
+    public function test_project_page_shows_the_case_study_in_order(): void
+    {
+        $this->project(['slug' => 'case', 'problem' => 'Paper forms', 'role' => 'Lead mobile dev', 'solution' => 'A Flutter app', 'outcome' => 'Saved 5 hours a week']);
+
+        $this->get('/projects/case')->assertSeeInOrder(['Problem', 'Paper forms', 'My role', 'Lead mobile dev', 'Solution', 'A Flutter app', 'Outcome', 'Saved 5 hours a week']);
+    }
+
+    public function test_testimonials_section_shows_visible_recommendations(): void
+    {
+        (new PageSection(['type' => 'testimonials', 'anchor' => 'kind-words', 'title' => 'Kind words', 'sort_order' => 8, 'items' => [
+            ['quote' => 'Ships clean, tested code.', 'name' => 'Rina', 'role' => 'Engineering Manager', 'url' => 'https://linkedin.test/rina', 'is_visible' => true],
+            ['quote' => 'Not public yet.', 'name' => 'Hidden Person', 'is_visible' => false],
+        ]]))->save();
+
+        $this->get('/')
+            ->assertSee('Kind words')->assertSee('Ships clean, tested code.')->assertSee('Engineering Manager')
+            ->assertSee('href="https://linkedin.test/rina"', false)
+            ->assertDontSee('Not public yet.')->assertDontSee('Hidden Person');
+    }
+
     public function test_built_in_sections_cannot_be_deleted(): void
     {
         PageSection::where('type', 'about')->first()->delete();
@@ -271,7 +302,9 @@ class CustomizableContentTest extends TestCase
 
     public function test_export_then_import_restores_all_content(): void
     {
-        $p = $this->project(['title' => 'Exported App', 'slug' => 'exported', 'year' => '2023', 'is_featured' => false]);
+        $p = $this->project(['title' => 'Exported App', 'slug' => 'exported', 'year' => '2023', 'is_featured' => false, 'role' => 'Lead dev', 'outcome' => 'Won a grant']);
+        Profile::query()->first()->update(['availability' => 'Open to work', 'show_availability' => false]);
+        Setting::query()->first()->update(['show_language_switch' => false, 'analytics_script_url' => 'https://stats.test/script.js', 'analytics_site_id' => 'abc-123']);
         $png = UploadedFile::fake()->image('s.png', 600, 1200);
         $shot = $p->images()->create(['path' => Storage::disk('public')->putFileAs('projects/exported', $png, 's.png'), 'kind' => 'screenshot', 'sort_order' => 1]);
         $p->features()->create(['title' => 'Hidden one', 'is_visible' => false, 'project_image_id' => $shot->id, 'sort_order' => 1]);
@@ -290,6 +323,10 @@ class CustomizableContentTest extends TestCase
 
         $restored = Project::where('slug', 'exported')->firstOrFail();
         $this->assertSame('2023', $restored->year);
+        $this->assertSame(['Lead dev', 'Won a grant'], [$restored->role, $restored->outcome]);
+        $this->assertSame(['Open to work', false], [Profile::query()->first()->availability, Profile::query()->first()->show_availability]);
+        $settings = Setting::query()->first();
+        $this->assertSame([false, 'https://stats.test/script.js', 'abc-123'], [$settings->show_language_switch, $settings->analytics_script_url, $settings->analytics_site_id]);
         $this->assertFalse($restored->is_featured);
         $this->assertFalse($restored->features()->first()->is_visible);
         $this->assertSame($restored->images()->first()->id, $restored->features()->first()->project_image_id);

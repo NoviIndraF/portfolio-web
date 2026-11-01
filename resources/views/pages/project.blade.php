@@ -103,12 +103,15 @@
     </nav>
 
     <div class="container-site space-y-16 pt-12 pb-16 sm:space-y-20 sm:pb-24">
-        {{-- 1. Overview: problem / solution --}}
+        {{-- 1. Overview as a case study: problem → my role → solution → outcome (each optional) --}}
         <section aria-labelledby="overview-title" data-reveal>
             <h2 id="overview-title" class="section-heading display scroll-mt-32 text-[clamp(2.5rem,5vw,4.5rem)]"><span class="section-index eyebrow mb-2 block" aria-hidden="true"></span>{{ __('site.project.overview') }}</h2>
-            @if ($project->problem || $project->solution)
+            @php
+                $caseStudy = array_filter(['problem' => $project->problem, 'role' => $project->role, 'solution' => $project->solution, 'outcome' => $project->outcome]);
+            @endphp
+            @if ($caseStudy)
                 <div class="mt-6 grid gap-4 md:grid-cols-2">
-                    @foreach (['problem' => $project->problem, 'solution' => $project->solution] as $key => $text)
+                    @foreach ($caseStudy as $key => $text)
                         @if ($text)
                             <div class="card p-6">
                                 <p class="eyebrow">{{ __('site.project.'.$key) }}</p>

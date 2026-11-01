@@ -57,6 +57,8 @@ return [
         'overview' => 'Overview',
         'problem' => 'Problem',
         'solution' => 'Solution',
+        'role' => 'My role',
+        'outcome' => 'Outcome',
         'features' => 'Key features',
         'tech' => 'Tech stack',
         'links' => 'Links',

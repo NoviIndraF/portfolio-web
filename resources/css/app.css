@@ -190,7 +190,7 @@ a:hover .arrow-shift {
 .log-card > * {
     position: relative;
 }
-.log-card :is(h3, p, li, a, span) {
+.log-card :is(h3, p, li, a, span, blockquote) {
     transition: color 0.3s var(--log-ease);
 }
 .log-card:hover {
@@ -199,7 +199,7 @@ a:hover .arrow-shift {
 .log-card:hover::before {
     transform: scaleX(1);
 }
-.log-card:hover :is(h3, p, li, a, span) {
+.log-card:hover :is(h3, p, li, a, span, blockquote) {
     color: var(--log-ink);
 }
 .log-card:hover li::before {
