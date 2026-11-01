@@ -2,11 +2,26 @@
 {{-- v2: compact rows (period · title · place) like the reference's list; details open on click, the newest one starts open. --}}
 @php
     $items = $section->visibleItems();
+    // Nothing to open (no item has a description or link), e.g. education or certificates: a grid of short cards.
+    $compact = $items->every(fn ($i) => blank($i['description'] ?? null) && blank($i['url'] ?? null));
 @endphp
 <section id="{{ $section->anchor }}" class="py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
     <div class="container-site">
         <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->eyebrow" :title="$section->title" :intro="$section->intro" />
 
+        @if ($compact)
+            <ul class="mt-10 grid gap-3 sm:grid-cols-2 xl:grid-cols-3" data-reveal-stagger>
+                @foreach ($items as $item)
+                    <li class="card log-card flex h-full flex-col p-5 sm:p-6">
+                        <span class="eyebrow">{{ $item['period'] ?? '' }}</span>
+                        <h3 class="mt-3 font-item text-xl leading-snug font-black text-balance sm:text-2xl">{{ $item['title'] }}</h3>
+                        @if (filled($item['subtitle'] ?? null))
+                            <p class="mt-auto pt-3 font-item text-sm font-light text-muted">{{ $item['subtitle'] }}</p>
+                        @endif
+                    </li>
+                @endforeach
+            </ul>
+        @else
         <div class="relative mt-10" data-timeline>
         {{-- Line fills with scroll progress (resources/js/ui/interactions.js) --}}
         <span class="absolute top-0 left-0 h-full w-0.5 -translate-x-1/4 origin-top bg-primary" data-timeline-line aria-hidden="true"></span>
@@ -52,5 +67,6 @@
             @endforeach
         </ol>
         </div>
+        @endif
     </div>
 </section>

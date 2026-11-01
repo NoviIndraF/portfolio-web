@@ -102,6 +102,7 @@ return [
         'hint' => 'Tap a skill to see the projects that use it.',
         'used_in' => ':skill is used in',
         'clear' => 'Clear',
+        'count' => ':count tool|:count tools',
         'eyebrow' => 'Toolbox',
         'title' => 'Skills',
     ],

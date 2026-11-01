@@ -286,6 +286,23 @@ class CustomizableContentTest extends TestCase
         $this->get('/')->assertSee('<script defer src="https://stats.test/script.js" data-website-id="abc-123"', false);
     }
 
+    public function test_timeline_without_details_shows_as_a_card_grid(): void
+    {
+        (new PageSection(['type' => 'timeline', 'anchor' => 'edu', 'title' => 'Education', 'sort_order' => 101, 'items' => [
+            ['period' => '2019', 'title' => 'Bachelor of Informatics', 'subtitle' => 'State University'],
+            ['period' => '2023', 'title' => 'Flutter Expert', 'subtitle' => 'Dicoding'],
+        ]]))->save();
+        (new PageSection(['type' => 'timeline', 'anchor' => 'work', 'title' => 'Work', 'sort_order' => 102, 'items' => [
+            ['period' => '2024', 'title' => 'Developer', 'description' => 'Built apps'],
+        ]]))->save();
+
+        $html = $this->get('/')->assertSee('Bachelor of Informatics')->assertSee('State University')->getContent();
+        $edu = str($html)->after('id="edu"')->before('id="work"');
+
+        $this->assertStringNotContainsString('<details', $edu);
+        $this->assertStringContainsString('<details', str($html)->after('id="work"'));
+    }
+
     public function test_built_in_sections_cannot_be_deleted(): void
     {
         PageSection::where('type', 'about')->first()->delete();

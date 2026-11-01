@@ -102,6 +102,7 @@ return [
         'hint' => 'Ketuk sebuah keahlian untuk melihat project yang memakainya.',
         'used_in' => ':skill dipakai di',
         'clear' => 'Hapus',
+        'count' => ':count alat|:count alat',
         'eyebrow' => 'Perkakas',
         'title' => 'Keahlian',
     ],
