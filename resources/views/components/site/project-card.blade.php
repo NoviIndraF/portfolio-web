@@ -24,8 +24,8 @@
         </div>
 
         <div class="relative flex flex-1 flex-col border-t border-line bg-surface p-5">
-            <p class="text-xs font-semibold text-accent-fg">{{ $project->typeLabel() }}@if ($project->year) · {{ $project->year }}@endif</p>
-            <h3 class="mt-1 text-xl font-bold">
+            <p class="eyebrow">{{ $project->typeLabel() }}@if ($project->year) · {{ $project->year }}@endif</p>
+            <h3 class="item-title mt-2 transition-colors group-hover:text-accent-fg">
                 <a href="{{ route('projects.show', $project) }}" class="after:absolute after:inset-0" data-project-link>
                     {{ $project->title }}
                 </a>
@@ -36,7 +36,7 @@
                     <x-site.tech-chip :name="$t->name" />
                 @endforeach
             </div>
-            <span class="mt-auto inline-flex items-center gap-1 pt-5 text-sm font-semibold text-accent-fg">
+            <span class="mt-auto inline-flex items-center gap-1 pt-5 font-mono text-xs tracking-[0.14em] text-accent-fg uppercase">
                 {{ __('site.cta.view_project') }}
                 <x-heroicon-o-arrow-right class="size-4 transition group-hover:translate-x-1" aria-hidden="true" />
             </span>

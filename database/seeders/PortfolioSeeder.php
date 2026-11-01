@@ -76,6 +76,8 @@ class PortfolioSeeder extends Seeder
         $profile = Profile::create([
             'name' => $p['name'],
             'tagline' => $p['tagline'],
+            'availability' => $p['availability'] ?? null,
+            'show_availability' => $p['show_availability'] ?? true,
             'bio' => $p['bio'] ?? null,
             'stats' => $p['stats'] ?? [],
             'photo' => $stored['webp'] ?? null,
@@ -119,6 +121,8 @@ class PortfolioSeeder extends Seeder
                 'impact_line' => $p['impact_line'] ?? null,
                 'problem' => $p['problem'] ?? null,
                 'solution' => $p['solution'] ?? null,
+                'role' => $p['role'] ?? null,
+                'outcome' => $p['outcome'] ?? null,
                 'type' => $p['type'] ?? 'mobile',
                 'year' => $p['year'] ?? null,
                 'accent_color' => $p['accent_color'] ?? '#4C8DFF',
@@ -214,6 +218,9 @@ class PortfolioSeeder extends Seeder
             'light_text_color' => $s['light_text_color'] ?? '#0B1020',
             'default_theme' => $s['default_theme'] ?? 'system',
             'toggle_3d' => $s['toggle_3d'] ?? true,
+            'show_language_switch' => $s['show_language_switch'] ?? true,
+            'analytics_script_url' => $s['analytics_script_url'] ?? null,
+            'analytics_site_id' => $s['analytics_site_id'] ?? null,
             'og_image' => $this->copyFile($s['og_image'] ?? null, 'og/'.basename((string) ($s['og_image'] ?? 'og.png'))),
         ]);
     }
@@ -230,7 +237,9 @@ class PortfolioSeeder extends Seeder
                 'title' => $s['title'] ?? null,
                 'intro' => $s['intro'] ?? null,
                 'body' => $s['body'] ?? null,
-                'items' => $s['items'] ?? null,
+                'items' => $s['type'] === 'logos'
+                    ? collect($s['items'] ?? [])->map(fn ($i) => ['logo' => $this->copyFile($i['logo'] ?? null, 'sections/logos/'.basename((string) ($i['logo'] ?? '')))] + $i)->all()
+                    : ($s['items'] ?? null),
                 'sort_order' => $s['order'] ?? $i + 1,
             ]);
             $section->is_visible = $s['is_visible'] ?? true;

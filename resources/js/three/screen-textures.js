@@ -62,13 +62,13 @@ export function placeholderScreen({ title, accent, scene }) {
         g.roundRect(40, 120, 64, 64, 16);
         g.fill();
         g.fillStyle = '#05070d';
-        g.font = '800 34px "Plus Jakarta Sans", system-ui, sans-serif';
+        g.font = '700 34px "Rubik", system-ui, sans-serif';
         g.textAlign = 'center';
         g.textBaseline = 'middle';
         g.fillText(title.charAt(0), 72, 154);
         g.fillStyle = '#fff';
         g.textAlign = 'left';
-        g.font = '700 32px "Plus Jakarta Sans", system-ui, sans-serif';
+        g.font = '700 32px "Rubik", system-ui, sans-serif';
         g.fillText(title, 122, 154);
 
         if (scene === 'analytics') {
@@ -102,7 +102,7 @@ export function placeholderScreen({ title, accent, scene }) {
                 g.arc(x, y - 5, 55, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * v);
                 g.stroke();
                 g.fillStyle = 'rgba(255,255,255,0.8)';
-                g.font = '600 22px "Plus Jakarta Sans", system-ui, sans-serif';
+                g.font = '600 22px "Rubik", system-ui, sans-serif';
                 g.textAlign = 'center';
                 g.fillText(name, x, y + 80);
             });

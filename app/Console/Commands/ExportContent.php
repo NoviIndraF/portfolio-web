@@ -38,6 +38,8 @@ class ExportContent extends Command
             'profile' => $profile ? [
                 'name' => $profile->name,
                 'tagline' => $profile->tagline,
+                'availability' => $profile->availability,
+                'show_availability' => $profile->show_availability,
                 'bio' => $profile->bio,
                 'stats' => $profile->stats,
                 'email' => $profile->email,
@@ -62,6 +64,9 @@ class ExportContent extends Command
                 'light_text_color' => $settings->light_text_color,
                 'default_theme' => $settings->default_theme,
                 'toggle_3d' => $settings->toggle_3d,
+                'show_language_switch' => $settings->show_language_switch,
+                'analytics_script_url' => $settings->analytics_script_url,
+                'analytics_site_id' => $settings->analytics_site_id,
                 'og_image' => $this->copy($settings->og_image, 'settings'),
             ],
             'sections' => PageSection::orderBy('sort_order')->get()->map(fn (PageSection $s) => [
@@ -72,7 +77,10 @@ class ExportContent extends Command
                 'title' => $s->title,
                 'intro' => $s->intro,
                 'body' => $s->body,
-                'items' => $s->items,
+                // Logo strips: copy each logo file into the export.
+                'items' => $s->type === 'logos'
+                    ? collect($s->items ?? [])->map(fn ($i) => ['logo' => $this->copy($i['logo'] ?? null, 'sections')] + $i)->all()
+                    : $s->items,
                 'is_visible' => $s->is_visible,
                 'order' => $s->sort_order,
             ])->all(),
@@ -90,6 +98,8 @@ class ExportContent extends Command
                 'short_description' => $p->short_description,
                 'problem' => $p->problem,
                 'solution' => $p->solution,
+                'role' => $p->role,
+                'outcome' => $p->outcome,
                 'recognition' => $p->recognition,
                 'model_glb' => $this->copy($p->model_glb, $p->slug),
                 'features' => $p->features->map(fn ($f) => $f->only(['title', 'description', 'icon', 'is_visible']) + [

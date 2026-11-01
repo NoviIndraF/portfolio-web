@@ -4,6 +4,24 @@
 return [
     'skip_to_content' => 'Skip to content',
     'menu' => 'Menu',
+    'intro' => 'Portfolio',
+    'intro_skip' => 'Click or press Esc to skip',
+    'lang' => [
+        'label' => 'Language',
+    ],
+    'not_found' => [
+        'eyebrow' => 'Error 404',
+        'title' => "This page doesn't exist",
+        'text' => 'The link may be old or the project may have been moved.',
+    ],
+    'motion' => [
+        'pause' => 'Pause moving text',
+        'play' => 'Play moving text',
+    ],
+    'header' => [
+        'place' => 'Jakarta',
+        'timezone' => 'Asia/Jakarta',
+    ],
     'theme' => [
         'toggle' => 'Dark mode',
     ],
@@ -42,6 +60,8 @@ return [
         'overview' => 'Overview',
         'problem' => 'Problem',
         'solution' => 'Solution',
+        'role' => 'My role',
+        'outcome' => 'Outcome',
         'features' => 'Key features',
         'tech' => 'Tech stack',
         'links' => 'Links',
@@ -72,6 +92,11 @@ return [
     ],
     'hero' => [
         'now_showing' => 'Now showing',
+        'scroll' => 'Scroll',
+        'stack' => 'Tech stack',
+    ],
+    'timeline' => [
+        'view' => 'View',
     ],
     'skills' => [
         'hint' => 'Tap a skill to see the projects that use it.',

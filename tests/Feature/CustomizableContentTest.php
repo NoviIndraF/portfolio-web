@@ -5,14 +5,17 @@ namespace Tests\Feature;
 use App\Filament\Resources\PageSections\Pages\CreatePageSection;
 use App\Filament\Resources\Projects\Pages\EditProject;
 use App\Filament\Resources\Projects\Pages\ListProjects;
+use App\Http\Middleware\SetLocale;
 use App\Models\PageSection;
 use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Setting;
 use App\Models\SkillGroup;
 use App\Models\User;
+use App\Support\Site;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
@@ -76,6 +79,27 @@ class CustomizableContentTest extends TestCase
         $this->get('/')->assertSee('Flutter')->assertDontSee('Hidden skill')->assertDontSee('Hidden group')->assertDontSee('Cobol');
     }
 
+    public function test_hero_3d_gets_icons_of_visible_skills_once_each(): void
+    {
+        $mobile = SkillGroup::create(['name' => 'Mobile', 'sort_order' => 1]);
+        $mobile->skills()->create(['name' => 'Flutter', 'sort_order' => 1]);
+        $mobile->skills()->create(['name' => 'Clean Architecture', 'sort_order' => 2]);
+        $mobile->skills()->create(['name' => 'Firebase', 'sort_order' => 3]);
+        $mobile->skills()->create(['name' => 'Cloud Firestore', 'sort_order' => 4]);
+        $mobile->skills()->create(['name' => 'Laravel', 'is_visible' => false, 'sort_order' => 5]);
+        $devops = SkillGroup::create(['name' => 'DevOps', 'sort_order' => 2]);
+        $devops->skills()->create(['name' => 'C#', 'sort_order' => 1]);
+        $devops->skills()->create(['name' => 'GitHub', 'sort_order' => 2]);
+
+        $response = $this->get('/');
+        $icons = json_decode(html_entity_decode(str($response->getContent())->match('/data-tech-icons="([^"]+)"/')->toString()), true);
+
+        // In turns per group, one tile per icon (Firestore shares Firebase's), hidden skills left out, C# as .NET.
+        $this->assertSame(['/icons/simple/flutter.svg', '/icons/simple/dotnet.svg', '/icons/simple/firebase.svg', '/icons/simple/github.svg'], $icons);
+        // Small screens get the same stack as a row of icons with names for screen readers.
+        $response->assertSeeInOrder(['aria-label="Tech stack"', 'sr-only">Flutter<', 'sr-only">C#<', 'sr-only">Firebase<', 'sr-only">GitHub<'], false);
+    }
+
     public function test_home_shows_featured_projects_and_all_projects_page_shows_every_published_one(): void
     {
         $this->project(['title' => 'Featured One']);
@@ -116,6 +140,150 @@ class CustomizableContentTest extends TestCase
             ->assertSee('href="#experience"', false)
             ->assertSee('<strong>HR</strong>', false)
             ->assertDontSee('<script>alert(1)</script>', false);
+    }
+
+    public function test_logo_strip_shows_visible_logos_and_names(): void
+    {
+        $logo = Storage::disk('public')->putFileAs('sections/logos', UploadedFile::fake()->image('acme.png', 200, 80), 'acme.png');
+        (new PageSection(['type' => 'logos', 'anchor' => 'clients', 'title' => 'Companies I worked with', 'sort_order' => 7, 'items' => [
+            ['name' => 'Acme Corp', 'logo' => $logo, 'url' => 'https://acme.test', 'is_visible' => true],
+            ['name' => 'Text Only Ltd', 'is_visible' => true],
+            ['name' => 'Secret Client', 'is_visible' => false],
+        ]]))->save();
+
+        $this->get('/')
+            ->assertSee('Companies I worked with')
+            ->assertSee('Acme Corp')->assertSee('Text Only Ltd')->assertDontSee('Secret Client')
+            ->assertSee(Storage::disk('public')->url($logo), false)
+            ->assertSee('href="https://acme.test" target="_blank" rel="noopener" class="underline">Acme Corp</a>', false);
+    }
+
+    public function test_project_page_describes_the_app_for_search_engines(): void
+    {
+        $this->project(['title' => 'Schema App', 'slug' => 'schema-app', 'year' => '2024']);
+
+        $this->get('/projects/schema-app')
+            ->assertSee('"@type":"SoftwareApplication"', false)
+            ->assertSee('"name":"Schema App"', false)
+            ->assertSee('"dateCreated":"2024"', false);
+    }
+
+    public function test_unknown_page_shows_the_styled_not_found_page(): void
+    {
+        $this->get('/projects/does-not-exist')->assertNotFound()->assertSee(__('site.not_found.title'));
+    }
+
+    public function test_availability_badge_follows_the_admin_toggle(): void
+    {
+        Profile::query()->first()->update(['availability' => 'Open to work · Remote', 'show_availability' => true]);
+        $this->get('/')->assertSee('Open to work · Remote');
+
+        Profile::query()->first()->update(['show_availability' => false]);
+        app()->forgetInstance(Site::class); // the site object caches the profile for one request
+        $this->get('/')->assertDontSee('Open to work · Remote');
+    }
+
+    public function test_project_page_shows_the_case_study_in_order(): void
+    {
+        $this->project(['slug' => 'case', 'problem' => 'Paper forms', 'role' => 'Lead mobile dev', 'solution' => 'A Flutter app', 'outcome' => 'Saved 5 hours a week']);
+
+        $this->get('/projects/case')->assertSeeInOrder(['Problem', 'Paper forms', 'My role', 'Lead mobile dev', 'Solution', 'A Flutter app', 'Outcome', 'Saved 5 hours a week']);
+    }
+
+    public function test_testimonials_section_shows_visible_recommendations(): void
+    {
+        (new PageSection(['type' => 'testimonials', 'anchor' => 'kind-words', 'title' => 'Kind words', 'sort_order' => 8, 'items' => [
+            ['quote' => 'Ships clean, tested code.', 'name' => 'Rina', 'role' => 'Engineering Manager', 'url' => 'https://linkedin.test/rina', 'is_visible' => true],
+            ['quote' => 'Not public yet.', 'name' => 'Hidden Person', 'is_visible' => false],
+        ]]))->save();
+
+        $this->get('/')
+            ->assertSee('Kind words')->assertSee('Ships clean, tested code.')->assertSee('Engineering Manager')
+            ->assertSee('href="https://linkedin.test/rina"', false)
+            ->assertDontSee('Not public yet.')->assertDontSee('Hidden Person');
+    }
+
+    public function test_indonesian_texts_have_the_same_keys_as_english(): void
+    {
+        $this->assertSame(array_keys(Arr::dot(require lang_path('en/site.php'))), array_keys(Arr::dot(require lang_path('id/site.php'))));
+    }
+
+    public function test_language_switch_remembers_the_choice_over_the_browser_language(): void
+    {
+        $this->get('/lang/id')->assertRedirect()->assertCookie('locale', 'id');
+        $this->withCookie('locale', 'id')->get('/')->assertSee('Dibangun dengan Laravel')->assertSee('lang="id"', false);
+        $this->withCookie('locale', 'en')->withHeader('Accept-Language', 'id-ID,id;q=0.9')->get('/')->assertSee('Built with Laravel');
+    }
+
+    public function test_without_a_choice_the_site_language_is_used_not_the_browser_one(): void
+    {
+        // Admin texts are in one language; following the browser would mix languages on the page.
+        $this->withHeader('Accept-Language', 'id-ID,id;q=0.9')->get('/projects')->assertSee('All projects')->assertSee('content="en_US"', false);
+    }
+
+    public function test_chosen_language_sets_og_locale_and_translates_timeline_links(): void
+    {
+        (new PageSection(['type' => 'timeline', 'anchor' => 'certs', 'title' => 'Certificates', 'sort_order' => 4, 'items' => [
+            ['title' => 'Flutter Expert', 'url' => 'https://dicoding.test/cert'],
+        ]]))->save();
+
+        $this->withCookie('locale', 'id')->get('/')->assertSee('content="id_ID"', false)->assertSee('Lihat');
+    }
+
+    public function test_language_switch_only_redirects_back_to_this_site(): void
+    {
+        $this->withHeader('Referer', 'https://evil.example/phish')->get('/lang/id')->assertRedirect(route('home'));
+        $this->withHeader('Referer', url('/projects'))->get('/lang/id')->assertRedirect(url('/projects'));
+    }
+
+    public function test_admin_requests_are_not_touched_by_the_site_language(): void
+    {
+        $livewire = collect(app('router')->getRoutes())->first(fn ($r) => str_ends_with($r->uri(), '/update') && str_starts_with($r->uri(), 'livewire'));
+
+        $this->assertNotNull($livewire);
+        $this->assertNotContains(SetLocale::class, app('router')->gatherRouteMiddleware($livewire));
+    }
+
+    public function test_empty_lists_are_left_out_of_the_page_and_the_menu_numbers(): void
+    {
+        (new PageSection(['type' => 'text', 'anchor' => 'one', 'nav_label' => 'One', 'title' => 'One', 'sort_order' => 101]))->save();
+        (new PageSection(['type' => 'testimonials', 'anchor' => 'kind', 'nav_label' => 'Kind words', 'title' => 'Kind words', 'sort_order' => 102, 'items' => [
+            ['quote' => 'Hidden quote', 'name' => 'Someone', 'is_visible' => false],
+        ]]))->save();
+        (new PageSection(['type' => 'text', 'anchor' => 'two', 'nav_label' => 'Two', 'title' => 'Two', 'sort_order' => 103]))->save();
+
+        $html = $this->get('/')->assertDontSee('Kind words')->getContent();
+        $number = fn (string $label) => (int) str($html)->match('/>(\d{2})<\/span> '.$label.'</')->toString();
+
+        // The hidden-only testimonials section takes no number: "Two" follows "One" directly.
+        $this->assertSame($number('One') + 1, $number('Two'));
+    }
+
+    public function test_stats_band_has_one_column_per_stat(): void
+    {
+        Profile::query()->first()->update(['stats' => [
+            ['value' => '4+', 'label' => 'Years'], ['value' => '10+', 'label' => 'Apps'],
+            ['value' => '2', 'label' => 'Certs'], ['value' => '3', 'label' => 'Awards'],
+        ]]);
+
+        $this->get('/')->assertSee('grid-template-columns: repeat(4, minmax(0, 1fr))', false);
+    }
+
+    public function test_language_switch_off_keeps_the_default_language(): void
+    {
+        Setting::query()->first()->update(['show_language_switch' => false]);
+
+        $this->withCookie('locale', 'id')->get('/')->assertSee('Built with Laravel')->assertDontSee('href="'.route('lang', 'id').'"', false);
+    }
+
+    public function test_analytics_script_loads_only_when_configured(): void
+    {
+        $this->get('/')->assertDontSee('data-website-id', false);
+
+        Setting::query()->first()->update(['analytics_script_url' => 'https://stats.test/script.js', 'analytics_site_id' => 'abc-123']);
+        app()->forgetInstance(Site::class);
+
+        $this->get('/')->assertSee('<script defer src="https://stats.test/script.js" data-website-id="abc-123"', false);
     }
 
     public function test_built_in_sections_cannot_be_deleted(): void
@@ -219,28 +387,40 @@ class CustomizableContentTest extends TestCase
 
     public function test_export_then_import_restores_all_content(): void
     {
-        $p = $this->project(['title' => 'Exported App', 'slug' => 'exported', 'year' => '2023', 'is_featured' => false]);
+        $p = $this->project(['title' => 'Exported App', 'slug' => 'exported', 'year' => '2023', 'is_featured' => false, 'role' => 'Lead dev', 'outcome' => 'Won a grant']);
+        Profile::query()->first()->update(['availability' => 'Open to work', 'show_availability' => false]);
+        Setting::query()->first()->update(['show_language_switch' => false, 'analytics_script_url' => 'https://stats.test/script.js', 'analytics_site_id' => 'abc-123']);
         $png = UploadedFile::fake()->image('s.png', 600, 1200);
         $shot = $p->images()->create(['path' => Storage::disk('public')->putFileAs('projects/exported', $png, 's.png'), 'kind' => 'screenshot', 'sort_order' => 1]);
         $p->features()->create(['title' => 'Hidden one', 'is_visible' => false, 'project_image_id' => $shot->id, 'sort_order' => 1]);
         (new PageSection(['type' => 'timeline', 'anchor' => 'edu', 'title' => 'Education', 'sort_order' => 9, 'items' => [['title' => 'University']]]))->save();
+        $logo = Storage::disk('public')->putFileAs('sections/logos', UploadedFile::fake()->image('acme.png', 200, 80), 'acme.png');
+        (new PageSection(['type' => 'logos', 'anchor' => 'clients', 'title' => 'Clients', 'sort_order' => 10, 'items' => [['name' => 'Acme', 'logo' => $logo]]]))->save();
 
         $dir = storage_path('framework/testing/export-'.uniqid());
         $this->artisan('portfolio:export', ['path' => $dir])->assertSuccessful();
 
         Project::query()->get()->each->delete();
-        PageSection::where('anchor', 'edu')->delete();
+        PageSection::whereIn('anchor', ['edu', 'clients'])->delete();
+        Storage::disk('public')->delete($logo);
 
         $this->artisan('portfolio:import', ['path' => $dir, '--force' => true])->assertSuccessful();
 
         $restored = Project::where('slug', 'exported')->firstOrFail();
         $this->assertSame('2023', $restored->year);
+        $this->assertSame(['Lead dev', 'Won a grant'], [$restored->role, $restored->outcome]);
+        $this->assertSame(['Open to work', false], [Profile::query()->first()->availability, Profile::query()->first()->show_availability]);
+        $settings = Setting::query()->first();
+        $this->assertSame([false, 'https://stats.test/script.js', 'abc-123'], [$settings->show_language_switch, $settings->analytics_script_url, $settings->analytics_site_id]);
         $this->assertFalse($restored->is_featured);
         $this->assertFalse($restored->features()->first()->is_visible);
         $this->assertSame($restored->images()->first()->id, $restored->features()->first()->project_image_id);
         $this->assertSame(1, $restored->images()->count());
         Storage::disk('public')->assertExists($restored->images()->first()->path);
         $this->assertSame('University', PageSection::where('anchor', 'edu')->first()->items[0]['title']);
+        $restoredLogo = PageSection::where('anchor', 'clients')->first()->items[0];
+        $this->assertSame('Acme', $restoredLogo['name']);
+        Storage::disk('public')->assertExists($restoredLogo['logo']);
 
         File::deleteDirectory($dir);
     }

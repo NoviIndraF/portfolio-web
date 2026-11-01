@@ -19,6 +19,11 @@ class Icon
         'google fonts' => 'googlefonts',
         'lottie' => 'lottiefiles',
         'material design' => 'materialdesign',
+        // Slugifying drops "#" and ".", which would give C# the C logo.
+        'c#' => 'dotnet',
+        'asp.net' => 'dotnet',
+        'asp.net core' => 'dotnet',
+        'java' => 'openjdk',
     ];
 
     /** @var array<string, string|null> */

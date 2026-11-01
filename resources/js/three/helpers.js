@@ -74,7 +74,7 @@ export function textTexture(text, { size = 256, aspect = 1, bg = null, fg = '#ff
         g.fill();
     }
     g.fillStyle = fg;
-    g.font = `${font} ${size * scale}px "Plus Jakarta Sans", system-ui, sans-serif`;
+    g.font = `${font} ${size * scale}px "Rubik", system-ui, sans-serif`;
     g.textAlign = 'center';
     g.textBaseline = 'middle';
     g.fillText(text, c.width / 2, c.height / 2 + size * 0.03);

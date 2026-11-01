@@ -1,0 +1,43 @@
+# Runs the test suite on every push and pull request.
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: gd, pdo_sqlite, intl
+          coverage: none
+
+      # Node 24 ships npm 11, like local development; npm 10 rejects the lockfile's optional peers.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      # Builds the CSS/JS and copies the simple-icons SVGs that the hero and skills use.
+      - name: Install and build frontend
+        # npm install, not npm ci: on Linux the optional @laravel/multiplex tree wants a react peer
+        # that the lockfile (made on macOS) doesn't list. shortcut: sync the lockfile on Linux to go back to npm ci.
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+
+      - name: Prepare app
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Tests
+        run: php artisan test --compact

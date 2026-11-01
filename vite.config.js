@@ -10,12 +10,16 @@ export default defineConfig({
             refresh: true,
             fonts: [
                 // Downloaded at build time and served from this site (no font CDN at runtime).
-                bunny('Plus Jakarta Sans', {
+                // v2: Rubik for all text, like the reference (replaces Plus Jakarta Sans).
+                bunny('Rubik', {
                     alias: 'sans',
-                    variable: '--font-jakarta',
-                    weights: [400, 500, 600, 700, 800],
+                    variable: '--font-rubik',
+                    weights: [300, 400, 500, 600, 700, 900],
                     preload: [{ weight: 400 }, { weight: 700 }],
                 }),
+                // v2: condensed display face for big uppercase titles, mono for small labels.
+                bunny('Anton', { variable: '--font-anton', weights: [400], preload: [{ weight: 400 }] }),
+                bunny('JetBrains Mono', { variable: '--font-jetbrains', weights: [400, 500] }),
             ],
         }),
         tailwindcss(),

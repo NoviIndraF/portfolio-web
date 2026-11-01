@@ -25,7 +25,7 @@ class Project extends Model
     public const TYPES = ['mobile', 'mobile+web', 'mobile+iot', 'web', 'iot', 'desktop', 'game', 'library'];
 
     protected $fillable = [
-        'title', 'slug', 'short_description', 'impact_line', 'problem', 'solution',
+        'title', 'slug', 'short_description', 'impact_line', 'problem', 'solution', 'role', 'outcome',
         'type', 'year', 'accent_color', 'scene_type', 'model_glb', 'sort_order',
         'is_published', 'is_featured', 'recognition',
     ];

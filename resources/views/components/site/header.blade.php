@@ -4,23 +4,38 @@
     $home = request()->routeIs('home') ? '' : route('home');
     // Menu = visible home sections with a menu label (Admin → Home sections).
     $links = $site->nav()->mapWithKeys(fn ($s) => [$s->anchor => $s->nav_label]);
+    // Menu numbers match the section numbers on the page (position among all visible sections).
+    $numbers = $site->sections()->pluck('anchor')->flip()->map(fn ($i) => str_pad($i + 1, 2, '0', STR_PAD_LEFT));
 @endphp
 <header class="sticky top-0 z-40 border-b border-line/60 bg-bg/80 backdrop-blur-md" data-header>
     <nav class="container-site flex h-16 items-center justify-between gap-4" aria-label="Main">
         <a href="{{ route('home') }}" class="flex items-center gap-2 font-bold tracking-tight">
-            <span class="grid size-8 place-items-center rounded-xl bg-primary text-sm font-extrabold text-bg" aria-hidden="true">
+            <span class="grid size-8 place-items-center rounded-sm bg-primary text-sm font-extrabold text-on-primary" aria-hidden="true">
                 {{ str($profile->name)->explode(' ')->take(2)->map(fn ($w) => mb_substr($w, 0, 1))->implode('') }}
             </span>
-            <span class="sr-only sm:not-sr-only">{{ $profile->name }}</span>
+            <span class="sr-only 2xl:not-sr-only">{{ $profile->name }}</span>
         </a>
 
         <ul class="hidden items-center gap-1 md:flex" data-scrollspy>
             @foreach ($links as $id => $label)
-                <li><a href="{{ $home }}#{{ $id }}" class="rounded-full px-3 py-2 text-sm font-medium text-muted transition hover:text-fg aria-[current=true]:bg-surface-2 aria-[current=true]:text-fg">{{ $label }}</a></li>
+                <li><a href="{{ $home }}#{{ $id }}" class="link-line rounded-sm px-3 py-2 font-mono text-[11px] whitespace-nowrap font-medium tracking-[0.14em] text-muted uppercase transition aria-[current=true]:text-fg"><span class="text-accent-fg">{{ $numbers[$id] ?? '' }}</span> {{ $label }}</a></li>
             @endforeach
         </ul>
 
         <div class="flex items-center gap-2">
+            {{-- v2: live local time (resources/js/ui/v2.js) --}}
+            <span class="hidden font-mono text-[11px] tracking-[0.14em] whitespace-nowrap text-muted uppercase xl:inline" data-clock data-tz="{{ __('site.header.timezone') }}">
+                {{ __('site.header.place') }} <span class="text-fg tabular-nums" data-clock-time>--:--</span>
+            </span>
+            {{-- ID / EN switch (Admin → Settings → Language) --}}
+            @if ($site->settings()->show_language_switch)
+                <div role="group" aria-label="{{ __('site.lang.label') }}" class="flex items-center overflow-hidden rounded-sm border border-line font-mono text-[11px] tracking-[0.14em] uppercase">
+                    @foreach (\App\Http\Middleware\SetLocale::LOCALES as $code)
+                        <a href="{{ route('lang', $code) }}" hreflang="{{ $code }}" lang="{{ $code }}" @if (app()->getLocale() === $code) aria-current="true" @endif
+                           class="grid h-10 min-w-10 place-items-center px-2 text-muted transition hover:text-accent-fg aria-[current=true]:bg-surface-2 aria-[current=true]:text-fg">{{ $code }}</a>
+                    @endforeach
+                </div>
+            @endif
             <button type="button" class="btn-ghost size-10 min-h-10 px-0" data-theme-toggle aria-pressed="true" aria-label="{{ __('site.theme.toggle') }}" title="{{ __('site.theme.toggle') }}">
                 <x-heroicon-o-sun class="size-5 light:hidden" aria-hidden="true" />
                 <x-heroicon-o-moon class="hidden size-5 light:block" aria-hidden="true" />

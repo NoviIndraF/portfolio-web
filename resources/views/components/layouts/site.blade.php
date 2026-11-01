@@ -3,6 +3,8 @@
     'description' => null,
     'image' => null,
     'accent' => null,
+    // Extra JSON-LD for the page (e.g. a project), next to the site-wide Person.
+    'schema' => null,
 ])
 @php
     $pageTitle = $title ? $title.' | '.$profile->name : $settings->site_title;
@@ -37,6 +39,15 @@
                 if (theme === 'system') theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
             }
             document.documentElement.dataset.theme = theme;
+            // v2 intro counter: home page, first visit ever (recruiters come back), motion allowed.
+            // Paused strips stay paused across visits (resources/js/ui/v2.js).
+            try {
+                if (@js(request()->routeIs('home')) && !localStorage.getItem('intro') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    localStorage.setItem('intro', '1');
+                    document.documentElement.classList.add('intro-on');
+                }
+                if (localStorage.getItem('marquee') === 'paused') document.documentElement.classList.add('marquee-paused');
+            } catch (e) {}
         })();
     </script>
     <meta charset="utf-8">
@@ -53,7 +64,7 @@
     <meta property="og:title" content="{{ $pageTitle }}">
     <meta property="og:description" content="{{ $metaDescription }}">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
+    <meta property="og:locale" content="{{ ['en' => 'en_US', 'id' => 'id_ID'][app()->getLocale()] ?? str_replace('-', '_', app()->getLocale()) }}">
     @if ($ogImage)
         <meta property="og:image" content="{{ $ogImage }}">
         <meta name="twitter:image" content="{{ $ogImage }}">
@@ -65,6 +76,11 @@
     <script type="application/ld+json">
         {!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}
     </script>
+    @if ($schema)
+        <script type="application/ld+json">
+            {!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}
+        </script>
+    @endif
 
     <style>
         :root {
@@ -76,12 +92,35 @@
             --c-bg: {{ $settings->light_background_color }};
             --c-text: {{ $settings->light_text_color }};
         }
+        /* Inverse band (resources/css/app.css): background and text swap, so every derived color follows. */
+        .band-inverse {
+            --c-bg: {{ $settings->text_color }};
+            --c-text: {{ $settings->background_color }};
+            --c-mix: black;
+            --fg-mix: 52%;
+        }
+        :root[data-theme="light"] .band-inverse {
+            --c-bg: {{ $settings->light_text_color }};
+            --c-text: {{ $settings->light_background_color }};
+            --c-mix: white;
+            --fg-mix: 62%;
+        }
     </style>
+    {{-- Privacy-friendly analytics (Admin → Settings → Analytics): Umami reads data-website-id, Plausible data-domain. --}}
+    @if (filled($settings->analytics_script_url))
+        <script defer src="{{ $settings->analytics_script_url }}" data-website-id="{{ $settings->analytics_site_id }}" data-domain="{{ $settings->analytics_site_id }}"></script>
+    @endif
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-dvh font-sans antialiased" @if ($accent) style="--accent: {{ $accent }}" @endif>
-    <a href="#main" class="sr-only z-50 rounded-full bg-primary px-4 py-2 font-semibold text-bg focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
+    {{-- v2 intro counter (resources/js/ui/v2.js) --}}
+    <div class="intro fixed inset-0 z-[60] items-end justify-between bg-bg p-6 font-mono text-xs tracking-[0.2em] text-muted uppercase sm:p-10" data-intro aria-hidden="true">
+        <span>{{ $profile->name }}</span>
+        <span><span class="display text-7xl text-fg tabular-nums sm:text-9xl" data-intro-count>0.00</span> &mdash; {{ __('site.intro') }}</span>
+        <span class="absolute top-6 right-6 sm:top-10 sm:right-10">{{ __('site.intro_skip') }}</span>
+    </div>
+    <a href="#main" class="sr-only z-50 rounded-full bg-primary px-4 py-2 font-semibold text-on-primary focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
         {{ __('site.skip_to_content') }}
     </a>
 

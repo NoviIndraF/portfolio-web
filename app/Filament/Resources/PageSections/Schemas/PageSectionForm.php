@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PageSections\Schemas;
 
 use App\Models\PageSection;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -38,10 +39,10 @@ class PageSectionForm
                     ->live()
                     ->options(fn (?PageSection $record) => $record?->isBuiltIn()
                         ? PageSection::TYPES
-                        : Arr::only(PageSection::TYPES, ['text', 'timeline']))
+                        : Arr::only(PageSection::TYPES, ['text', 'timeline', 'logos', 'testimonials']))
                     ->disabled(fn (?PageSection $record) => (bool) $record?->isBuiltIn())
                     ->dehydrated(fn (?PageSection $record) => ! $record?->isBuiltIn())
-                    ->helperText('Text block: free text. Timeline: a list such as work experience, education or certificates.'),
+                    ->helperText('Text block: free text. Timeline: a list such as work experience, education or certificates. Logo strip: companies or clients as a scrolling row. Testimonials: recommendations from managers, colleagues or clients.'),
                 Toggle::make('is_visible')
                     ->label('Show on website')
                     ->default(true)
@@ -112,6 +113,59 @@ class PageSectionForm
                             Grid::make(['default' => 1, 'sm' => 3])->schema([
                                 TextInput::make('url')->url()->maxLength(255)->label('Link (optional)'),
                                 TextInput::make('link_label')->maxLength(40)->placeholder('View'),
+                                Toggle::make('is_visible')->label('Show on website')->default(true)->inline(false),
+                            ]),
+                        ]),
+                ]),
+
+            Section::make('Logos')
+                ->description('Companies or clients you worked with, shown as a scrolling row. Drag to reorder.')
+                ->columnSpanFull()
+                ->visible(fn (Get $get) => $get('type') === 'logos')
+                ->schema([
+                    Repeater::make('items')
+                        ->hiddenLabel()
+                        ->reorderable()
+                        ->collapsible()
+                        ->defaultItems(1)
+                        ->addActionLabel('Add logo')
+                        ->itemLabel(fn (array $state): ?string => ($state['name'] ?? null).(($state['is_visible'] ?? true) ? '' : ' (hidden)'))
+                        ->schema([
+                            Grid::make(['default' => 1, 'sm' => 2])->schema([
+                                TextInput::make('name')->required()->maxLength(80)->placeholder('PT Panasonic Manufacturing Indonesia')
+                                    ->helperText('Shown as text when there is no logo, and used as the image description.'),
+                                FileUpload::make('logo')
+                                    ->image()
+                                    ->disk('public')
+                                    ->visibility('public')
+                                    ->directory('sections/logos')
+                                    ->acceptedFileTypes(['image/svg+xml', 'image/png', 'image/webp'])
+                                    ->maxSize(1024)
+                                    ->helperText('SVG or PNG with a transparent background works best.'),
+                                TextInput::make('url')->url()->maxLength(255)->label('Link (optional)'),
+                                Toggle::make('is_visible')->label('Show on website')->default(true)->inline(false),
+                            ]),
+                        ]),
+                ]),
+
+            Section::make('Testimonials')
+                ->description('Short recommendations, e.g. copied from LinkedIn with permission. Drag to reorder.')
+                ->columnSpanFull()
+                ->visible(fn (Get $get) => $get('type') === 'testimonials')
+                ->schema([
+                    Repeater::make('items')
+                        ->hiddenLabel()
+                        ->reorderable()
+                        ->collapsible()
+                        ->defaultItems(1)
+                        ->addActionLabel('Add testimonial')
+                        ->itemLabel(fn (array $state): ?string => ($state['name'] ?? null).(($state['is_visible'] ?? true) ? '' : ' (hidden)'))
+                        ->schema([
+                            Textarea::make('quote')->required()->rows(4)->maxLength(600),
+                            Grid::make(['default' => 1, 'sm' => 2])->schema([
+                                TextInput::make('name')->required()->maxLength(80),
+                                TextInput::make('role')->maxLength(120)->placeholder('Engineering Manager, PT Example'),
+                                TextInput::make('url')->url()->maxLength(255)->label('Link (optional)')->helperText('E.g. the LinkedIn recommendation or profile.'),
                                 Toggle::make('is_visible')->label('Show on website')->default(true)->inline(false),
                             ]),
                         ]),

@@ -8,7 +8,10 @@
 
 /* Colors come from admin Settings as CSS variables (see layouts/site). */
 @theme inline {
-    --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+    --font-sans: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
+    --font-display: var(--font-anton), var(--font-rubik), 'Arial Narrow', sans-serif;
+    --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+    --font-item: var(--font-rubik), sans-serif;
     --color-bg: var(--c-bg);
     --color-fg: var(--c-text);
     --color-primary: var(--c-primary);
@@ -18,20 +21,26 @@
     --color-line: color-mix(in oklab, var(--c-text) 13%, var(--c-bg));
     --color-accent: var(--accent, var(--c-primary));
     /* Accent text mixed toward the text color's side (white in dark mode, black in light) so it stays readable. */
-    --color-accent-fg: color-mix(in oklab, var(--accent, var(--c-primary)) 62%, var(--c-mix));
-    --color-primary-fg: color-mix(in oklab, var(--c-primary) 70%, var(--c-mix));
+    --color-accent-fg: color-mix(in oklab, var(--accent, var(--c-primary)) var(--fg-mix), var(--c-mix));
+    --color-primary-fg: color-mix(in oklab, var(--c-primary) calc(var(--fg-mix) + 8%), var(--c-mix));
+    /* Text on a primary background: black on light primaries, white on dark ones. */
+    --color-on-primary: oklch(from var(--c-primary) clamp(0, (0.62 - l) * 1000, 1) 0 0);
 }
 
-:root {
-    --c-bg: #0b1020;
-    --c-text: #e8ecf6;
-    --c-primary: #4c8dff;
+/* Fallbacks only (zero specificity): the admin colors in layouts/site load before this file and must win. */
+:where(:root) {
+    --c-bg: #0a0e0a;
+    --c-text: #e2f0e2;
+    --c-primary: #00ff41;
     --c-mix: white;
+    --fg-mix: 62%;
     color-scheme: dark;
 }
 
 :root[data-theme='light'] {
     --c-mix: black;
+    /* Darker accent text on light backgrounds, so bright accents (green, cyan) keep 4.5:1. */
+    --fg-mix: 52%;
     color-scheme: light;
 }
 
@@ -65,31 +74,42 @@ body {
 }
 
 @utility btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 font-mono text-xs font-medium tracking-[0.12em] whitespace-nowrap uppercase transition;
 }
 
 @layer components {
     .container-site {
-        @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+        /* v2: near full width, like the reference (40px side gutter on desktop). */
+        @apply mx-auto w-full max-w-[120rem] px-4 sm:px-8 lg:px-10;
     }
 
     .eyebrow {
-        @apply text-xs font-semibold uppercase tracking-[0.18em] text-accent-fg;
+        @apply font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-accent-fg;
+    }
+
+    /* v2: item titles (timeline, projects, skills), like the reference: Rubik 900, fluid size. */
+    .item-title {
+        @apply font-item text-[clamp(1.6rem,2.6vw,2.35rem)] leading-tight font-black;
+    }
+
+    /* v2: big condensed uppercase titles */
+    .display {
+        @apply font-display font-normal uppercase leading-[0.9] tracking-tight;
     }
 
     .btn-primary {
-        @apply btn bg-primary text-bg hover:brightness-110 active:brightness-95;
+        @apply btn bg-primary text-on-primary hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 active:brightness-95;
     }
     .btn-ghost {
-        @apply btn border border-line bg-surface text-fg hover:border-fg/40 hover:bg-surface-2;
+        @apply btn border border-line bg-surface text-fg hover:border-accent-fg/60 hover:text-accent-fg;
     }
 
     .chip {
-        @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium text-fg/90;
+        @apply inline-flex items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-1 text-xs font-medium text-fg/90;
     }
 
     .card {
-        @apply rounded-3xl border border-line bg-surface;
+        @apply rounded-md border border-line bg-surface;
     }
 
     /* Hide scrollbars on swipe rails but keep them scrollable. */
@@ -99,6 +119,258 @@ body {
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }
+}
+
+/* ---------- v2 redesign ---------- */
+
+/* Section numbers (01, 02, …) follow the order of home sections; the header menu uses the same order. */
+main {
+    counter-reset: section;
+}
+.section-heading {
+    counter-increment: section;
+}
+.section-index::before {
+    content: counter(section, decimal-leading-zero);
+}
+
+/* A section in swapped colors (light band on the dark theme), to break the rhythm like the reference's client strip.
+   The swapped values come from the admin colors in layouts/site. */
+.band-inverse {
+    background: var(--c-bg);
+    color: var(--c-text);
+}
+
+/* Hover, adapted from the reference: accent color, a small lift, an accent line that grows from the left. */
+.link-line {
+    position: relative;
+}
+.link-line::after {
+    content: '';
+    position: absolute;
+    inset: auto 0.75rem 0.3rem;
+    height: 1px;
+    background: var(--color-accent-fg);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.link-line:hover::after,
+.link-line[aria-current='true']::after {
+    transform: scaleX(1);
+}
+.link-line:hover {
+    color: var(--color-accent-fg);
+}
+a:hover .arrow-shift {
+    translate: 4px 0;
+}
+.arrow-shift {
+    transition: translate 0.25s ease;
+}
+/* Cards that link somewhere or react to the pointer lift a little. */
+:is(a.card, [data-skill-group]) {
+    transition: translate 0.3s ease, border-color 0.3s ease;
+}
+
+/* Timeline items: an accent fill slides in from the left and all text turns dark, like the reference. */
+.log-card {
+    --log-ink: #0e0e0e;
+    --log-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s var(--log-ease);
+}
+.log-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent, var(--c-primary));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--log-ease);
+}
+.log-card > * {
+    position: relative;
+}
+.log-card :is(h3, p, li, a, span, blockquote) {
+    transition: color 0.3s var(--log-ease);
+}
+
+/* Logo strip: muted until hovered, like the reference's client row. */
+.logo-item {
+    color: var(--color-muted);
+    opacity: 0.6;
+    filter: grayscale(1);
+    transition: opacity 0.3s ease, filter 0.3s ease, color 0.3s ease;
+}
+.logo-item:hover {
+    color: var(--color-accent-fg);
+    opacity: 1;
+    filter: none;
+}
+
+/* Timeline rows (sections/timeline): period · title · sign; details open below. */
+.timeline-row {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    list-style: none;
+    cursor: pointer;
+}
+.timeline-row::-webkit-details-marker {
+    display: none;
+}
+div > .timeline-row {
+    cursor: default;
+}
+@media (min-width: 48rem) {
+    .timeline-row {
+        grid-template-columns: 11rem 1fr auto;
+        grid-template-areas: 'period title sign' 'period place sign';
+        align-items: center;
+        column-gap: 2rem;
+        row-gap: 0.25rem;
+        padding: 1.5rem 2rem;
+    }
+    .timeline-period {
+        grid-area: period;
+    }
+    .timeline-title {
+        grid-area: title;
+    }
+    .timeline-place {
+        grid-area: place;
+        align-self: start;
+    }
+    .timeline-sign {
+        grid-area: sign;
+    }
+}
+.timeline-sign {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+}
+.timeline-item[open] .timeline-sign {
+    transform: rotate(45deg);
+}
+
+/* Hover lifts and fills only on devices that can hover: touch screens keep :hover after a tap,
+   which would leave a tapped timeline row or card stuck in its filled state. */
+@media (hover: hover) {
+    .log-card:hover {
+        border-color: color-mix(in oklab, var(--accent, var(--c-primary)) 50%, transparent);
+    }
+
+    .log-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .log-card:hover :is(h3, p, li, a, span, blockquote) {
+        color: var(--log-ink);
+    }
+
+    .log-card:hover li::before {
+        background: var(--log-ink);
+    }
+
+    .log-card:hover .timeline-sign {
+        border-color: var(--log-ink);
+    }
+
+    :is(a.card, [data-skill-group]):hover {
+        translate: 0 -4px;
+        border-color: color-mix(in oklab, var(--color-accent-fg) 50%, transparent);
+    }
+}
+
+/* Outline text for the marquee, alternating with solid accent words. */
+.text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in oklab, var(--c-text) 55%, transparent);
+}
+
+/* Looping text strip. The track holds the items twice, so -50% loops seamlessly. */
+.marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 32s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee-paused .marquee-track {
+    animation-play-state: paused;
+}
+.marquee-toggle .icon-play,
+.marquee-paused .marquee-toggle .icon-pause {
+    display: none;
+}
+.marquee-paused .marquee-toggle .icon-play {
+    display: block;
+}
+@keyframes marquee {
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* Hero name: each line slides up once on load. */
+.reveal-line {
+    display: block;
+    overflow: hidden;
+}
+.reveal-line > span {
+    display: block;
+    animation: line-up 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(0.15s + var(--i, 0) * 0.09s);
+}
+@keyframes line-up {
+    from {
+        transform: translateY(105%);
+    }
+}
+
+/* Section titles slide up into view once (resources/js/ui/v2.js adds .is-in). Visible without JS or with reduced motion. */
+.title-reveal {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+}
+.title-reveal > span {
+    display: block;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .js .title-reveal > span {
+        transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .js .title-reveal:not(.is-in) > span {
+        transform: translateY(105%);
+    }
+}
+
+/* Intro counter: shown only on the first visit of a session (inline script in layouts/site).
+   It hides itself after 2.6s even if JavaScript fails. */
+.intro {
+    display: none;
+}
+.intro-on .intro {
+    display: flex;
+    cursor: pointer;
+    animation: intro-out 0.5s ease 2.6s forwards;
+}
+.intro.is-done {
+    animation: intro-out 0.5s ease forwards;
+}
+@keyframes intro-out {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+.intro-on .reveal-line > span {
+    animation-delay: calc(1.6s + var(--i, 0) * 0.09s);
 }
 
 /* Static phone frame (also the no-WebGL fallback for the 3D phone). */

@@ -131,6 +131,14 @@ class ProjectForm
                 Textarea::make('solution')
                     ->rows(3)
                     ->helperText('Optional. How the app solves it.'),
+                Textarea::make('role')
+                    ->label('My role')
+                    ->rows(3)
+                    ->helperText('Optional. What you did yourself: e.g. lead mobile dev, built the API, designed the UI.'),
+                Textarea::make('outcome')
+                    ->label('Outcome')
+                    ->rows(3)
+                    ->helperText('Optional. Results with numbers if you have them: users, downloads, time saved, awards.'),
             ]),
         ]);
     }

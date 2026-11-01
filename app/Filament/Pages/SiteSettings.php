@@ -69,6 +69,27 @@ class SiteSettings extends SingleRecordPage
                     ->label('Enable 3D scenes')
                     ->helperText('Turn off to show static images instead of 3D (faster on old phones).'),
             ]),
+            Section::make('Language')->schema([
+                Toggle::make('show_language_switch')
+                    ->label('Show the ID / EN switch')
+                    ->helperText('Menus, buttons and labels in Indonesian or English. Texts you write in the admin stay as written.'),
+            ]),
+            Section::make('Analytics')
+                ->description('Privacy-friendly visitor stats (Umami or Plausible). Nothing loads while the script URL is empty.')
+                ->columns(2)
+                ->schema([
+                    TextInput::make('analytics_script_url')
+                        ->label('Script URL')
+                        ->url()
+                        ->regex('/^https:\/\//')
+                        ->validationMessages(['regex' => 'Use an https:// address.'])
+                        ->maxLength(255)
+                        ->placeholder('https://cloud.umami.is/script.js'),
+                    TextInput::make('analytics_site_id')
+                        ->label('Website ID / domain')
+                        ->maxLength(120)
+                        ->helperText('Umami: the website ID. Plausible: your domain.'),
+                ]),
         ];
     }
 }

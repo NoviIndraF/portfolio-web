@@ -9,7 +9,7 @@
             @foreach ($skillGroups as $group)
                 <div class="card group relative overflow-hidden p-6 transition hover:border-primary/50" data-skill-group>
                     <div class="pointer-events-none absolute -top-16 -right-16 size-40 rounded-full bg-primary/10 blur-2xl transition group-hover:bg-primary/20" aria-hidden="true"></div>
-                    <h3 class="text-lg font-bold">{{ $group->name }}</h3>
+                    <h3 class="item-title">{{ $group->name }}</h3>
                     <ul class="mt-4 flex flex-wrap gap-2">
                         @foreach ($group->skills as $skill)
                             <li>

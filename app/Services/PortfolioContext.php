@@ -46,6 +46,9 @@ class PortfolioContext
         }
 
         $out = ['# PROFILE', "Name: {$profile->name}", "Tagline: {$profile->tagline}"];
+        if ($profile->show_availability && filled($profile->availability)) {
+            $out[] = "Availability: {$profile->availability}";
+        }
 
         if (filled($profile->bio)) {
             $out[] = 'Bio: '.static::clean($profile->bio);
@@ -90,7 +93,7 @@ class PortfolioContext
             $out[] = 'Page: '.route('projects.show', $p);
             $out[] = 'Summary: '.static::clean($p->short_description);
 
-            foreach (['impact_line' => 'Impact', 'problem' => 'Problem', 'solution' => 'Solution'] as $field => $label) {
+            foreach (['impact_line' => 'Impact', 'problem' => 'Problem', 'solution' => 'Solution', 'role' => 'Role', 'outcome' => 'Outcome'] as $field => $label) {
                 if (filled($p->{$field})) {
                     $out[] = "{$label}: ".static::clean($p->{$field});
                 }
