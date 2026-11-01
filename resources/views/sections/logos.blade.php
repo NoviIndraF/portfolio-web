@@ -3,7 +3,7 @@
     $items = collect($section->items ?? [])->filter(fn ($i) => ($i['is_visible'] ?? true) && filled($i['name'] ?? null))->values();
 @endphp
 @if ($items->isNotEmpty())
-    <section id="{{ $section->anchor }}" class="py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
+    <section id="{{ $section->anchor }}" class="band-inverse py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
         <div class="container-site">
             <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->eyebrow" :title="$section->title" :intro="$section->intro" />
         </div>

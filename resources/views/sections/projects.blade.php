@@ -1,6 +1,6 @@
 <section id="{{ $section->anchor }}" class="relative py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
     <div class="container-site flex flex-wrap items-end justify-between gap-6">
-        <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->text('eyebrow')" :title="$section->text('title')" :intro="$section->text('intro')" />
+        <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->text('eyebrow')" :title="$section->text('title')" :intro="$section->text('intro')" hide-title />
         <div class="hidden gap-2 sm:flex">
             <button type="button" class="btn-ghost size-11 px-0" data-rail-prev="projects-rail" aria-label="{{ __('site.projects.prev') }}">
                 <x-heroicon-o-arrow-left class="size-5" aria-hidden="true" />
@@ -10,6 +10,8 @@
             </button>
         </div>
     </div>
+
+    <x-site.title-marquee :text="$section->text('title')" class="mt-8" />
 
     {{-- Drag/swipe rail; stage 4 adds the 3D carousel effect on top of this. --}}
     <div id="projects-rail" class="no-scrollbar mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-px-4 px-4 pb-6 sm:scroll-px-6 sm:px-6 lg:px-[max(2rem,calc((100vw-72rem)/2+2rem))] lg:scroll-px-[max(2rem,calc((100vw-72rem)/2+2rem))]"

@@ -75,16 +75,6 @@
                 </a>
             </div>
 
-            @if ($profile->stats)
-                <dl class="mt-8 grid max-w-lg grid-cols-3 gap-2 sm:mt-10 sm:gap-3">
-                    @foreach ($profile->stats as $stat)
-                        <div class="card flex flex-col px-3 py-2.5 sm:px-4 sm:py-3">
-                            <dt class="text-xs text-muted">{{ $stat['label'] }}</dt>
-                            <dd class="order-first text-2xl font-extrabold text-fg tabular-nums sm:text-3xl" data-countup>{{ $stat['value'] }}</dd>
-                        </div>
-                    @endforeach
-                </dl>
-            @endif
         </div>
 
         <div class="flex flex-col items-center">
@@ -125,6 +115,18 @@
             </div>
         </div>
         </div>
+    @endif
+
+    {{-- v2: stats as a full-width band of big numbers (count up once visible, resources/js/ui/interactions.js) --}}
+    @if ($profile->stats)
+        <dl class="container-site grid grid-cols-3 border-b border-line">
+            @foreach ($profile->stats as $stat)
+                <div class="flex flex-col gap-2 border-line py-6 sm:py-10 [&:not(:first-child)]:border-l [&:not(:first-child)]:pl-4 sm:[&:not(:first-child)]:pl-8">
+                    <dt class="eyebrow text-muted">{{ $stat['label'] }}</dt>
+                    <dd class="display order-first text-[clamp(3rem,9vw,8rem)] leading-none text-fg tabular-nums" data-countup>{{ $stat['value'] }}</dd>
+                </div>
+            @endforeach
+        </dl>
     @endif
 
     <a href="{{ $projectsHref }}" class="container-site flex items-center gap-2 py-4 font-mono text-[11px] tracking-[0.2em] text-muted uppercase hover:text-fg max-lg:hidden">

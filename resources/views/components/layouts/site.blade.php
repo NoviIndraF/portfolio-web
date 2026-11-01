@@ -92,6 +92,19 @@
             --c-bg: {{ $settings->light_background_color }};
             --c-text: {{ $settings->light_text_color }};
         }
+        /* Inverse band (resources/css/app.css): background and text swap, so every derived color follows. */
+        .band-inverse {
+            --c-bg: {{ $settings->text_color }};
+            --c-text: {{ $settings->background_color }};
+            --c-mix: black;
+            --fg-mix: 52%;
+        }
+        :root[data-theme="light"] .band-inverse {
+            --c-bg: {{ $settings->light_text_color }};
+            --c-text: {{ $settings->light_background_color }};
+            --c-mix: white;
+            --fg-mix: 62%;
+        }
     </style>
     {{-- Privacy-friendly analytics (Admin → Settings → Analytics): Umami reads data-website-id, Plausible data-domain. --}}
     @if (filled($settings->analytics_script_url))

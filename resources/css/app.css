@@ -134,6 +134,13 @@ main {
     content: counter(section, decimal-leading-zero);
 }
 
+/* A section in swapped colors (light band on the dark theme), to break the rhythm like the reference's client strip.
+   The swapped values come from the admin colors in layouts/site. */
+.band-inverse {
+    background: var(--c-bg);
+    color: var(--c-text);
+}
+
 /* Hover, adapted from the reference: accent color, a small lift, an accent line that grows from the left. */
 .link-line {
     position: relative;
@@ -219,6 +226,38 @@ a:hover .arrow-shift {
     filter: none;
 }
 
+/* Timeline rows (sections/timeline): period · title · sign; details open below. */
+.timeline-row {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    list-style: none;
+    cursor: pointer;
+}
+.timeline-row::-webkit-details-marker {
+    display: none;
+}
+div > .timeline-row {
+    cursor: default;
+}
+@media (min-width: 48rem) {
+    .timeline-row {
+        grid-template-columns: 11rem 1fr auto;
+        align-items: center;
+        gap: 2rem;
+        padding: 1.5rem 2rem;
+    }
+}
+.timeline-sign {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+}
+.timeline-item[open] .timeline-sign {
+    transform: rotate(45deg);
+}
+.log-card:hover .timeline-sign {
+    border-color: var(--log-ink);
+}
+
 /* Outline text for the marquee, alternating with solid accent words. */
 .text-outline {
     color: transparent;
@@ -264,6 +303,24 @@ a:hover .arrow-shift {
 }
 @keyframes line-up {
     from {
+        transform: translateY(105%);
+    }
+}
+
+/* Section titles slide up into view once (resources/js/ui/v2.js adds .is-in). Visible without JS or with reduced motion. */
+.title-reveal {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+}
+.title-reveal > span {
+    display: block;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .js .title-reveal > span {
+        transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .js .title-reveal:not(.is-in) > span {
         transform: translateY(105%);
     }
 }

@@ -33,6 +33,23 @@ export function initIntro() {
     requestAnimationFrame(tick);
 }
 
+/** Section titles slide up the first time they scroll into view (CSS in app.css, .title-reveal). */
+export function initTitleReveal() {
+    const titles = document.querySelectorAll('[data-title-reveal]');
+    if (!titles.length || !('IntersectionObserver' in window)) {
+        titles.forEach((t) => t.classList.add('is-in'));
+        return;
+    }
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);
+        });
+    }, { rootMargin: '0px 0px -10% 0px' });
+    titles.forEach((t) => io.observe(t));
+}
+
 /** One pause/play choice for every moving strip (WCAG 2.2.2), remembered across visits. */
 export function initMarqueeToggle() {
     const buttons = [...document.querySelectorAll('[data-marquee-toggle]')];
