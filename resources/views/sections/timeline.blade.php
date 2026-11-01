@@ -1,7 +1,7 @@
 {{-- Custom timeline section, e.g. experience, education or certificates (Admin → Home sections → Timeline). --}}
 {{-- v2: compact rows (period · title · place) like the reference's list; details open on click, the newest one starts open. --}}
 @php
-    $items = collect($section->items ?? [])->filter(fn ($i) => ($i['is_visible'] ?? true) && filled($i['title'] ?? null))->values();
+    $items = $section->visibleItems();
 @endphp
 <section id="{{ $section->anchor }}" class="py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
     <div class="container-site">
@@ -36,7 +36,7 @@
                                 @endif
                                 @if (filled($item['url'] ?? null))
                                     <a href="{{ $item['url'] }}" target="_blank" rel="noopener" class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary-fg hover:underline">
-                                        {{ $item['link_label'] ?? 'View' }} <x-heroicon-o-arrow-top-right-on-square class="size-4" aria-hidden="true" />
+                                        {{ $item['link_label'] ?? __('site.timeline.view') }} <x-heroicon-o-arrow-top-right-on-square class="size-4" aria-hidden="true" />
                                     </a>
                                 @endif
                             </div>

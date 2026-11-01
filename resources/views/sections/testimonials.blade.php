@@ -1,6 +1,6 @@
 {{-- Testimonials: recommendations from managers, colleagues or clients (Admin → Home sections → Testimonials). --}}
 @php
-    $items = collect($section->items ?? [])->filter(fn ($i) => ($i['is_visible'] ?? true) && filled($i['quote'] ?? null) && filled($i['name'] ?? null))->values();
+    $items = $section->visibleItems();
 @endphp
 @if ($items->isNotEmpty())
     <section id="{{ $section->anchor }}" class="py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">

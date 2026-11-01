@@ -172,10 +172,6 @@ a:hover .arrow-shift {
 :is(a.card, [data-skill-group]) {
     transition: translate 0.3s ease, border-color 0.3s ease;
 }
-:is(a.card, [data-skill-group]):hover {
-    translate: 0 -4px;
-    border-color: color-mix(in oklab, var(--color-accent-fg) 50%, transparent);
-}
 
 /* Timeline items: an accent fill slides in from the left and all text turns dark, like the reference. */
 .log-card {
@@ -199,18 +195,6 @@ a:hover .arrow-shift {
 }
 .log-card :is(h3, p, li, a, span, blockquote) {
     transition: color 0.3s var(--log-ease);
-}
-.log-card:hover {
-    border-color: color-mix(in oklab, var(--accent, var(--c-primary)) 50%, transparent);
-}
-.log-card:hover::before {
-    transform: scaleX(1);
-}
-.log-card:hover :is(h3, p, li, a, span, blockquote) {
-    color: var(--log-ink);
-}
-.log-card:hover li::before {
-    background: var(--log-ink);
 }
 
 /* Logo strip: muted until hovered, like the reference's client row. */
@@ -243,9 +227,24 @@ div > .timeline-row {
 @media (min-width: 48rem) {
     .timeline-row {
         grid-template-columns: 11rem 1fr auto;
+        grid-template-areas: 'period title sign' 'period place sign';
         align-items: center;
-        gap: 2rem;
+        column-gap: 2rem;
+        row-gap: 0.25rem;
         padding: 1.5rem 2rem;
+    }
+    .timeline-period {
+        grid-area: period;
+    }
+    .timeline-title {
+        grid-area: title;
+    }
+    .timeline-place {
+        grid-area: place;
+        align-self: start;
+    }
+    .timeline-sign {
+        grid-area: sign;
     }
 }
 .timeline-sign {
@@ -254,8 +253,34 @@ div > .timeline-row {
 .timeline-item[open] .timeline-sign {
     transform: rotate(45deg);
 }
-.log-card:hover .timeline-sign {
-    border-color: var(--log-ink);
+
+/* Hover lifts and fills only on devices that can hover: touch screens keep :hover after a tap,
+   which would leave a tapped timeline row or card stuck in its filled state. */
+@media (hover: hover) {
+    .log-card:hover {
+        border-color: color-mix(in oklab, var(--accent, var(--c-primary)) 50%, transparent);
+    }
+
+    .log-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .log-card:hover :is(h3, p, li, a, span, blockquote) {
+        color: var(--log-ink);
+    }
+
+    .log-card:hover li::before {
+        background: var(--log-ink);
+    }
+
+    .log-card:hover .timeline-sign {
+        border-color: var(--log-ink);
+    }
+
+    :is(a.card, [data-skill-group]):hover {
+        translate: 0 -4px;
+        border-color: color-mix(in oklab, var(--color-accent-fg) 50%, transparent);
+    }
 }
 
 /* Outline text for the marquee, alternating with solid accent words. */

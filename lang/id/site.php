@@ -95,6 +95,9 @@ return [
         'scroll' => 'Gulir',
         'stack' => 'Teknologi',
     ],
+    'timeline' => [
+        'view' => 'Lihat',
+    ],
     'skills' => [
         'hint' => 'Ketuk sebuah keahlian untuk melihat project yang memakainya.',
         'used_in' => ':skill dipakai di',

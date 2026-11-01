@@ -1,6 +1,6 @@
 {{-- Logo strip: companies or clients as a scrolling row (Admin → Home sections → Logo strip). --}}
 @php
-    $items = collect($section->items ?? [])->filter(fn ($i) => ($i['is_visible'] ?? true) && filled($i['name'] ?? null))->values();
+    $items = $section->visibleItems();
 @endphp
 @if ($items->isNotEmpty())
     <section id="{{ $section->anchor }}" class="band-inverse py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
@@ -8,10 +8,17 @@
             <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->eyebrow" :title="$section->title" :intro="$section->intro" />
         </div>
 
-        {{-- Screen readers get the plain list; the moving strip is decorative. --}}
-        <ul class="sr-only">
+        {{-- Screen readers and keyboard users get this list (with the links); the moving strip is decorative.
+             It becomes visible while one of its links has focus. --}}
+        <ul class="sr-only focus-within:not-sr-only focus-within:mx-auto focus-within:max-w-[120rem] focus-within:px-4 sm:focus-within:px-8 lg:focus-within:px-10 focus-within:mt-6 focus-within:flex focus-within:flex-wrap focus-within:gap-x-6 focus-within:gap-y-2">
             @foreach ($items as $item)
-                <li>{{ $item['name'] }}</li>
+                <li>
+                    @if (filled($item['url'] ?? null))
+                        <a href="{{ $item['url'] }}" target="_blank" rel="noopener" class="underline">{{ $item['name'] }}</a>
+                    @else
+                        {{ $item['name'] }}
+                    @endif
+                </li>
             @endforeach
         </ul>
         <div class="relative mt-10">

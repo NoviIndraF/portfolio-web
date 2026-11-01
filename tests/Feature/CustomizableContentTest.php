@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Filament\Resources\PageSections\Pages\CreatePageSection;
 use App\Filament\Resources\Projects\Pages\EditProject;
 use App\Filament\Resources\Projects\Pages\ListProjects;
+use App\Http\Middleware\SetLocale;
 use App\Models\PageSection;
 use App\Models\Profile;
 use App\Models\Project;
@@ -154,7 +155,7 @@ class CustomizableContentTest extends TestCase
             ->assertSee('Companies I worked with')
             ->assertSee('Acme Corp')->assertSee('Text Only Ltd')->assertDontSee('Secret Client')
             ->assertSee(Storage::disk('public')->url($logo), false)
-            ->assertSee('href="https://acme.test"', false);
+            ->assertSee('href="https://acme.test" target="_blank" rel="noopener" class="underline">Acme Corp</a>', false);
     }
 
     public function test_project_page_describes_the_app_for_search_engines(): void
@@ -214,10 +215,58 @@ class CustomizableContentTest extends TestCase
         $this->withCookie('locale', 'en')->withHeader('Accept-Language', 'id-ID,id;q=0.9')->get('/')->assertSee('Built with Laravel');
     }
 
-    public function test_without_a_choice_the_browser_language_is_used(): void
+    public function test_without_a_choice_the_site_language_is_used_not_the_browser_one(): void
     {
-        $this->withHeader('Accept-Language', 'id-ID,id;q=0.9')->get('/projects')->assertSee('Semua project');
-        $this->withHeader('Accept-Language', 'fr-FR')->get('/projects')->assertSee('All projects');
+        // Admin texts are in one language; following the browser would mix languages on the page.
+        $this->withHeader('Accept-Language', 'id-ID,id;q=0.9')->get('/projects')->assertSee('All projects')->assertSee('content="en_US"', false);
+    }
+
+    public function test_chosen_language_sets_og_locale_and_translates_timeline_links(): void
+    {
+        (new PageSection(['type' => 'timeline', 'anchor' => 'certs', 'title' => 'Certificates', 'sort_order' => 4, 'items' => [
+            ['title' => 'Flutter Expert', 'url' => 'https://dicoding.test/cert'],
+        ]]))->save();
+
+        $this->withCookie('locale', 'id')->get('/')->assertSee('content="id_ID"', false)->assertSee('Lihat');
+    }
+
+    public function test_language_switch_only_redirects_back_to_this_site(): void
+    {
+        $this->withHeader('Referer', 'https://evil.example/phish')->get('/lang/id')->assertRedirect(route('home'));
+        $this->withHeader('Referer', url('/projects'))->get('/lang/id')->assertRedirect(url('/projects'));
+    }
+
+    public function test_admin_requests_are_not_touched_by_the_site_language(): void
+    {
+        $livewire = collect(app('router')->getRoutes())->first(fn ($r) => str_ends_with($r->uri(), '/update') && str_starts_with($r->uri(), 'livewire'));
+
+        $this->assertNotNull($livewire);
+        $this->assertNotContains(SetLocale::class, app('router')->gatherRouteMiddleware($livewire));
+    }
+
+    public function test_empty_lists_are_left_out_of_the_page_and_the_menu_numbers(): void
+    {
+        (new PageSection(['type' => 'text', 'anchor' => 'one', 'nav_label' => 'One', 'title' => 'One', 'sort_order' => 101]))->save();
+        (new PageSection(['type' => 'testimonials', 'anchor' => 'kind', 'nav_label' => 'Kind words', 'title' => 'Kind words', 'sort_order' => 102, 'items' => [
+            ['quote' => 'Hidden quote', 'name' => 'Someone', 'is_visible' => false],
+        ]]))->save();
+        (new PageSection(['type' => 'text', 'anchor' => 'two', 'nav_label' => 'Two', 'title' => 'Two', 'sort_order' => 103]))->save();
+
+        $html = $this->get('/')->assertDontSee('Kind words')->getContent();
+        $number = fn (string $label) => (int) str($html)->match('/>(\d{2})<\/span> '.$label.'</')->toString();
+
+        // The hidden-only testimonials section takes no number: "Two" follows "One" directly.
+        $this->assertSame($number('One') + 1, $number('Two'));
+    }
+
+    public function test_stats_band_has_one_column_per_stat(): void
+    {
+        Profile::query()->first()->update(['stats' => [
+            ['value' => '4+', 'label' => 'Years'], ['value' => '10+', 'label' => 'Apps'],
+            ['value' => '2', 'label' => 'Certs'], ['value' => '3', 'label' => 'Awards'],
+        ]]);
+
+        $this->get('/')->assertSee('grid-template-columns: repeat(4, minmax(0, 1fr))', false);
     }
 
     public function test_language_switch_off_keeps_the_default_language(): void

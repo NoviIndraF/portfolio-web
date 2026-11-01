@@ -27,10 +27,13 @@ class Site
         return $this->profile ??= Profile::current() ?? new Profile(['name' => config('app.name'), 'tagline' => '', 'email' => '']);
     }
 
-    /** Visible home page sections in order. */
+    /**
+     * Visible home page sections in order, without empty logo strips / testimonials, so the section numbers
+     * on the page (CSS counter) and in the menu (position here) always match.
+     */
     public function sections()
     {
-        return $this->sections ??= PageSection::visible()->orderBy('sort_order')->get();
+        return $this->sections ??= PageSection::visible()->orderBy('sort_order')->get()->reject->rendersNothing()->values();
     }
 
     /** Menu items: visible sections that have a menu label. */

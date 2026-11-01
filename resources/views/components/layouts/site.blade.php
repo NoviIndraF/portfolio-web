@@ -64,7 +64,7 @@
     <meta property="og:title" content="{{ $pageTitle }}">
     <meta property="og:description" content="{{ $metaDescription }}">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
+    <meta property="og:locale" content="{{ ['en' => 'en_US', 'id' => 'id_ID'][app()->getLocale()] ?? str_replace('-', '_', app()->getLocale()) }}">
     @if ($ogImage)
         <meta property="og:image" content="{{ $ogImage }}">
         <meta name="twitter:image" content="{{ $ogImage }}">

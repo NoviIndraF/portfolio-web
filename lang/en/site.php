@@ -95,6 +95,9 @@ return [
         'scroll' => 'Scroll',
         'stack' => 'Tech stack',
     ],
+    'timeline' => [
+        'view' => 'View',
+    ],
     'skills' => [
         'hint' => 'Tap a skill to see the projects that use it.',
         'used_in' => ':skill is used in',

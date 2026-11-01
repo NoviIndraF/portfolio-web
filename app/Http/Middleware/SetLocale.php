@@ -8,8 +8,9 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Interface language (lang/{locale}/site.php): the visitor's choice from the ID/EN switch,
- * else their browser language. Only while the switch is on in Admin → Settings.
+ * Interface language of the public pages (lang/{locale}/site.php): the visitor's choice from the ID / EN switch,
+ * else the site default (config app.locale). Not the browser language: texts written in the admin are in one
+ * language, so guessing would mix languages on the page. Only while the switch is on in Admin → Settings.
  */
 class SetLocale
 {
@@ -19,7 +20,9 @@ class SetLocale
     {
         if (app(Site::class)->settings()->show_language_switch) {
             $chosen = $request->cookie('locale');
-            app()->setLocale(in_array($chosen, self::LOCALES, true) ? $chosen : $request->getPreferredLanguage(self::LOCALES));
+            if (in_array($chosen, self::LOCALES, true)) {
+                app()->setLocale($chosen);
+            }
         }
 
         return $next($request);

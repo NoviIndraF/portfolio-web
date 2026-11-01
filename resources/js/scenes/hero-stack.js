@@ -102,12 +102,14 @@ export default function create({ group, accent, reduced, webScreens, techIcons =
 
     // ---------- Tech tiles ----------
     // One small dark tile per skill icon from the CV (Admin → Skills), logo in the accent color.
-    const tileMat = std('#101612', { metalness: 0.35, roughness: 0.45 });
+    // One box and one face geometry shared by all tiles (clone() reuses geometry and material).
+    const tileBox = roundedBox(0.3, 0.3, 0.05, 0.07, std('#101612', { metalness: 0.35, roughness: 0.45 }));
+    const faceGeo = new THREE.PlaneGeometry(0.19, 0.19);
     const tiles = techIcons.slice(0, TILE_SLOTS.length).map((url, i) => {
         const tile = new THREE.Group();
-        tile.add(roundedBox(0.3, 0.3, 0.05, 0.07, tileMat));
+        tile.add(tileBox.clone());
         const face = new THREE.Mesh(
-            new THREE.PlaneGeometry(0.19, 0.19),
+            faceGeo,
             new THREE.MeshBasicMaterial({ map: iconTexture(url, accentCss), transparent: true, toneMapped: false }),
         );
         face.position.z = 0.04; // just in front of the bevelled box (about 0.07 deep)
@@ -317,6 +319,7 @@ function iconTexture(url, color) {
                 tex.needsUpdate = true;
                 URL.revokeObjectURL(src);
             };
+            img.onerror = () => URL.revokeObjectURL(src); // broken SVG: empty tile, no leaked blob
             img.src = src;
         })
         .catch(() => {}); // a missing icon just leaves an empty tile

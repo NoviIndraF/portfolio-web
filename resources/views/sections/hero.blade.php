@@ -119,7 +119,7 @@
 
     {{-- v2: stats as a full-width band of big numbers (count up once visible, resources/js/ui/interactions.js) --}}
     @if ($profile->stats)
-        <dl class="container-site grid grid-cols-3 border-b border-line">
+        <dl class="container-site grid border-b border-line" style="grid-template-columns: repeat({{ count($profile->stats) }}, minmax(0, 1fr))">
             @foreach ($profile->stats as $stat)
                 <div class="flex flex-col gap-2 border-line py-6 sm:py-10 [&:not(:first-child)]:border-l [&:not(:first-child)]:pl-4 sm:[&:not(:first-child)]:pl-8">
                     <dt class="eyebrow text-muted">{{ $stat['label'] }}</dt>
