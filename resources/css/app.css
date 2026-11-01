@@ -136,7 +136,8 @@ main {
 
 /* A section in swapped colors (light band on the dark theme), to break the rhythm like the reference's client strip.
    The swapped values come from the admin colors in layouts/site. */
-.band-inverse {
+.band-inverse,
+.band-accent {
     background: var(--c-bg);
     color: var(--c-text);
 }

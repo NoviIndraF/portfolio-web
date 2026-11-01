@@ -99,6 +99,15 @@
             --c-mix: black;
             --fg-mix: 52%;
         }
+        /* Accent band (Contact): primary color background, near-black or white text. */
+        .band-accent {
+            --c-bg: {{ $settings->primary_color }};
+            --c-text: {{ $settings->onPrimaryColor() }};
+            --c-primary: {{ $settings->onPrimaryColor() }};
+            --accent: {{ $settings->onPrimaryColor() }};
+            --c-mix: {{ $settings->onPrimaryColor() === '#0E0E0E' ? 'black' : 'white' }};
+            --fg-mix: 90%;
+        }
         :root[data-theme="light"] .band-inverse {
             --c-bg: {{ $settings->light_text_color }};
             --c-text: {{ $settings->light_background_color }};
