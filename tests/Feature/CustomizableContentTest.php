@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Support\Site;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
@@ -199,6 +200,31 @@ class CustomizableContentTest extends TestCase
             ->assertSee('Kind words')->assertSee('Ships clean, tested code.')->assertSee('Engineering Manager')
             ->assertSee('href="https://linkedin.test/rina"', false)
             ->assertDontSee('Not public yet.')->assertDontSee('Hidden Person');
+    }
+
+    public function test_indonesian_texts_have_the_same_keys_as_english(): void
+    {
+        $this->assertSame(array_keys(Arr::dot(require lang_path('en/site.php'))), array_keys(Arr::dot(require lang_path('id/site.php'))));
+    }
+
+    public function test_language_switch_remembers_the_choice_over_the_browser_language(): void
+    {
+        $this->get('/lang/id')->assertRedirect()->assertCookie('locale', 'id');
+        $this->withCookie('locale', 'id')->get('/')->assertSee('Dibangun dengan Laravel')->assertSee('lang="id"', false);
+        $this->withCookie('locale', 'en')->withHeader('Accept-Language', 'id-ID,id;q=0.9')->get('/')->assertSee('Built with Laravel');
+    }
+
+    public function test_without_a_choice_the_browser_language_is_used(): void
+    {
+        $this->withHeader('Accept-Language', 'id-ID,id;q=0.9')->get('/projects')->assertSee('Semua project');
+        $this->withHeader('Accept-Language', 'fr-FR')->get('/projects')->assertSee('All projects');
+    }
+
+    public function test_language_switch_off_keeps_the_default_language(): void
+    {
+        Setting::query()->first()->update(['show_language_switch' => false]);
+
+        $this->withCookie('locale', 'id')->get('/')->assertSee('Built with Laravel')->assertDontSee('href="'.route('lang', 'id').'"', false);
     }
 
     public function test_built_in_sections_cannot_be_deleted(): void

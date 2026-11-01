@@ -13,7 +13,7 @@
             <span class="grid size-8 place-items-center rounded-sm bg-primary text-sm font-extrabold text-on-primary" aria-hidden="true">
                 {{ str($profile->name)->explode(' ')->take(2)->map(fn ($w) => mb_substr($w, 0, 1))->implode('') }}
             </span>
-            <span class="sr-only xl:not-sr-only">{{ $profile->name }}</span>
+            <span class="sr-only 2xl:not-sr-only">{{ $profile->name }}</span>
         </a>
 
         <ul class="hidden items-center gap-1 md:flex" data-scrollspy>
@@ -27,6 +27,15 @@
             <span class="hidden font-mono text-[11px] tracking-[0.14em] whitespace-nowrap text-muted uppercase xl:inline" data-clock data-tz="{{ __('site.header.timezone') }}">
                 {{ __('site.header.place') }} <span class="text-fg tabular-nums" data-clock-time>--:--</span>
             </span>
+            {{-- ID / EN switch (Admin → Settings → Language) --}}
+            @if ($site->settings()->show_language_switch)
+                <div role="group" aria-label="{{ __('site.lang.label') }}" class="flex items-center overflow-hidden rounded-sm border border-line font-mono text-[11px] tracking-[0.14em] uppercase">
+                    @foreach (\App\Http\Middleware\SetLocale::LOCALES as $code)
+                        <a href="{{ route('lang', $code) }}" hreflang="{{ $code }}" lang="{{ $code }}" @if (app()->getLocale() === $code) aria-current="true" @endif
+                           class="grid h-10 min-w-10 place-items-center px-2 text-muted transition hover:text-accent-fg aria-[current=true]:bg-surface-2 aria-[current=true]:text-fg">{{ $code }}</a>
+                    @endforeach
+                </div>
+            @endif
             <button type="button" class="btn-ghost size-10 min-h-10 px-0" data-theme-toggle aria-pressed="true" aria-label="{{ __('site.theme.toggle') }}" title="{{ __('site.theme.toggle') }}">
                 <x-heroicon-o-sun class="size-5 light:hidden" aria-hidden="true" />
                 <x-heroicon-o-moon class="hidden size-5 light:block" aria-hidden="true" />

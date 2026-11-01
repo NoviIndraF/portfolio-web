@@ -6,6 +6,9 @@ return [
     'menu' => 'Menu',
     'intro' => 'Portfolio',
     'intro_skip' => 'Click or press Esc to skip',
+    'lang' => [
+        'label' => 'Language',
+    ],
     'not_found' => [
         'eyebrow' => 'Error 404',
         'title' => "This page doesn't exist",
