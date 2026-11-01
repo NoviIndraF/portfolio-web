@@ -76,6 +76,24 @@ class CustomizableContentTest extends TestCase
         $this->get('/')->assertSee('Flutter')->assertDontSee('Hidden skill')->assertDontSee('Hidden group')->assertDontSee('Cobol');
     }
 
+    public function test_hero_3d_gets_icons_of_visible_skills_once_each(): void
+    {
+        $mobile = SkillGroup::create(['name' => 'Mobile', 'sort_order' => 1]);
+        $mobile->skills()->create(['name' => 'Flutter', 'sort_order' => 1]);
+        $mobile->skills()->create(['name' => 'Clean Architecture', 'sort_order' => 2]);
+        $mobile->skills()->create(['name' => 'Firebase', 'sort_order' => 3]);
+        $mobile->skills()->create(['name' => 'Cloud Firestore', 'sort_order' => 4]);
+        $mobile->skills()->create(['name' => 'Laravel', 'is_visible' => false, 'sort_order' => 5]);
+        $devops = SkillGroup::create(['name' => 'DevOps', 'sort_order' => 2]);
+        $devops->skills()->create(['name' => 'C#', 'sort_order' => 1]);
+        $devops->skills()->create(['name' => 'GitHub', 'sort_order' => 2]);
+
+        $icons = json_decode(html_entity_decode(str($this->get('/')->getContent())->match('/data-tech-icons="([^"]+)"/')->toString()), true);
+
+        // In turns per group, one tile per icon (Firestore shares Firebase's), hidden skills left out, C# as .NET.
+        $this->assertSame(['/icons/simple/flutter.svg', '/icons/simple/dotnet.svg', '/icons/simple/firebase.svg', '/icons/simple/github.svg'], $icons);
+    }
+
     public function test_home_shows_featured_projects_and_all_projects_page_shows_every_published_one(): void
     {
         $this->project(['title' => 'Featured One']);

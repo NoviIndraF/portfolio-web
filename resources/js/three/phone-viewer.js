@@ -171,6 +171,7 @@ export class PhoneViewer3D {
             reduced: this.reduced,
             mobile: this.mobile,
             webScreens: JSON.parse(this.root.dataset.webScreens || '[]'),
+            techIcons: JSON.parse(this.root.dataset.techIcons || '[]'),
             pivot: this.pivot,
             model,
         };

@@ -5,7 +5,7 @@ import { roundedBox, std, textTexture, float } from '../three/helpers';
 
 const SCREEN = { w: 1.42, h: 0.86 };
 
-export default function create({ group, accent, reduced, webScreens, pivot }) {
+export default function create({ group, accent, reduced, webScreens, techIcons = [], pivot }) {
     const accentCss = `#${accent.getHexString()}`;
 
     // ---------- Browser window ----------
@@ -100,7 +100,23 @@ export default function create({ group, accent, reduced, webScreens, pivot }) {
     const tag = symbol('</>');
     const braces = symbol('{ }');
 
-    group.add(browser, ai, tag, braces);
+    // ---------- Tech tiles ----------
+    // One small dark tile per skill icon from the CV (Admin → Skills), logo in the accent color.
+    const tileMat = std('#101612', { metalness: 0.35, roughness: 0.45 });
+    const tiles = techIcons.slice(0, TILE_SLOTS.length).map((url, i) => {
+        const tile = new THREE.Group();
+        tile.add(roundedBox(0.3, 0.3, 0.05, 0.07, tileMat));
+        const face = new THREE.Mesh(
+            new THREE.PlaneGeometry(0.19, 0.19),
+            new THREE.MeshBasicMaterial({ map: iconTexture(url, accentCss), transparent: true, toneMapped: false }),
+        );
+        face.position.z = 0.04; // just in front of the bevelled box (about 0.07 deep)
+        tile.add(face);
+        tile.userData.slot = TILE_SLOTS[i];
+        return tile;
+    });
+
+    group.add(browser, ai, tag, braces, ...tiles);
 
     const place = (obj, x, y, z) => {
         obj.position.set(x, y, z);
@@ -172,6 +188,16 @@ export default function create({ group, accent, reduced, webScreens, pivot }) {
             place(ai, Math.min(right * 0.66, right - 0.52 * kr), 0.8, 0.1);
             place(tag, -(left - 0.28 * kl), -0.84, 0.25);
             place(braces, right - 0.26 * kr, -0.56, 0.15);
+            tiles.forEach((tile) => {
+                const [side, fx, y, z] = tile.userData.slot;
+                const k = side < 0 ? kl : kr;
+                const room = side < 0 ? left : right;
+                // Pulled in to stay inside the canvas; hidden only when there is no room beside the phone (phones).
+                const x = Math.min(Math.max(0.72, room * fx), room - 0.16 * k);
+                tile.scale.setScalar(k);
+                tile.visible = x >= 0.72;
+                place(tile, side * x, y, z);
+            });
 
             // Back: behind the phone, sticking out on the left.
             Object.assign(back, { x: -Math.max(0.35, left - 0.72 * kl), s: kl });
@@ -238,6 +264,11 @@ export default function create({ group, accent, reduced, webScreens, pivot }) {
             float(ai, t, { base: ai.userData.base ?? 0, amp: 0.05 * m, speed: 0.9, phase: 1 });
             float(tag, t, { base: tag.userData.base ?? 0, amp: 0.05 * m, speed: 1.1, phase: 2 });
             float(braces, t, { base: braces.userData.base ?? 0, amp: 0.05 * m, speed: 1, phase: 3 });
+            tiles.forEach((tile, i) => {
+                float(tile, t, { base: tile.userData.base ?? 0, amp: 0.06 * m, speed: 0.7 + i * 0.06, phase: i * 1.3 });
+                // Faces the camera, turned slightly toward the phone, with a gentle wobble.
+                tile.rotation.set(Math.cos(t * 0.4 + i) * 0.08 * m, tile.userData.slot[0] * 0.22 + Math.sin(t * 0.5 + i) * 0.12 * m, 0);
+            });
 
             core.rotation.set(t * 0.4 * m, t * 0.6 * m, 0);
             shell.rotation.set(-t * 0.2 * m, -t * 0.3 * m, 0);
@@ -252,6 +283,44 @@ export default function create({ group, accent, reduced, webScreens, pivot }) {
             linkGeo.attributes.position.needsUpdate = true;
         },
     };
+}
+
+/** Tile spots around the phone: [side (-1 left, 1 right), share of that side's room, y, z]. */
+// The phone is 1 unit wide, so tiles stay at least 0.72 from the center to remain visible.
+const TILE_SLOTS = [
+    [-1, 0.62, 0.85, 0.05],
+    [1, 0.6, 0.25, 0.05],
+    [-1, 0.92, 0.95, -0.2],
+    [1, 0.92, 0, -0.1],
+    [-1, 0.55, -0.5, 0.1],
+    [1, 0.62, -0.92, 0],
+    [-1, 0.95, -0.2, -0.15],
+    [1, 0.95, 0.45, -0.25],
+    [-1, 0.78, 0.3, 0.12],
+    [1, 0.6, -0.42, 0.12],
+];
+
+/** Canvas texture with a simple-icons SVG drawn in one color. Fetched as text so the SVG gets a size (Firefox can't draw size-less SVGs). */
+function iconTexture(url, color) {
+    const c = document.createElement('canvas');
+    c.width = c.height = 256;
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    fetch(url)
+        .then((r) => (r.ok ? r.text() : Promise.reject(new Error(r.statusText))))
+        .then((svg) => {
+            const src = URL.createObjectURL(new Blob([svg.replace('<svg ', `<svg width="256" height="256" fill="${color}" `)], { type: 'image/svg+xml' }));
+            const img = new Image();
+            img.onload = () => {
+                c.getContext('2d').drawImage(img, 0, 0, 256, 256);
+                tex.needsUpdate = true;
+                URL.revokeObjectURL(src);
+            };
+            img.src = src;
+        })
+        .catch(() => {}); // a missing icon just leaves an empty tile
+    return tex;
 }
 
 /** Soft additive glow sprite behind the orb. */

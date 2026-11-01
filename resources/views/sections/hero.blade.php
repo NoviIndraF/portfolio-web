@@ -12,6 +12,14 @@
     $reelLabels = $reelProjects->map(fn ($p) => ['title' => $p->title, 'href' => route('projects.show', $p)]);
     // "Web" images (Admin → project images) rotate in the 3D browser window next to the phone.
     $webScreens = $projects->flatMap(fn ($p) => $p->webShots)->map(fn ($s) => $s->screen()['url'])->values();
+    // Skills with a brand icon float as 3D tiles around the phone (resources/js/scenes/hero-stack.js).
+    // Taken in turns from each skill group (Admin → Skills order), so every group is represented.
+    // Relative URLs: the icons are drawn into a WebGL canvas, which must stay same-origin.
+    $iconsPerGroup = $skillGroups->map(fn ($g) => $g->skills->map(fn ($s) => \App\Support\Icon::slugFor($s->name, $s->icon))->filter()->values());
+    $techIcons = collect(range(0, max(0, (int) $iconsPerGroup->max(fn ($icons) => $icons->count()) - 1)))
+        ->flatMap(fn ($i) => $iconsPerGroup->map(fn ($icons) => $icons[$i] ?? null))
+        ->filter()->unique()->take(10)
+        ->map(fn ($slug) => '/icons/simple/'.$slug.'.svg')->values();
 @endphp
 <section class="relative isolate overflow-hidden" aria-labelledby="hero-title">
     {{-- Background + 3D particles mount (stage 4) --}}
@@ -68,7 +76,7 @@
         </div>
 
         <div class="flex flex-col items-center">
-            <x-site.phone scene="hero" :screens="$reel" width="min(16rem, 62vw)" data-hero-phone :data-web-screens="$webScreens->isNotEmpty() ? $webScreens->toJson() : null" />
+            <x-site.phone scene="hero" :screens="$reel" width="min(16rem, 62vw)" data-hero-phone :data-web-screens="$webScreens->isNotEmpty() ? $webScreens->toJson() : null" :data-tech-icons="$techIcons->isNotEmpty() ? $techIcons->toJson() : null" />
             @if ($reelLabels->isNotEmpty())
                 <a href="{{ $reelLabels[0]['href'] }}" class="group relative z-10 mt-3 inline-flex items-center gap-1.5 rounded-sm border border-line bg-surface/80 px-4 py-2 text-sm backdrop-blur transition hover:border-primary/60"
                    data-hero-label data-items="{{ $reelLabels->toJson() }}">
