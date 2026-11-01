@@ -1,5 +1,7 @@
 # Novi Indra Fanani – Interactive Portfolio
 
+[![tests](https://github.com/NoviIndraF/portfolio-web/actions/workflows/tests.yml/badge.svg)](https://github.com/NoviIndraF/portfolio-web/actions/workflows/tests.yml)
+
 Laravel 13 portfolio for a Mobile App Developer, aimed at recruiters: the key message (role, stats, Download CV / Contact Me) is on the first screen, each project has an interactive 3D phone with a themed scene, and all content is edited in an admin panel.
 
 ![Home page](docs/images/home-desktop.png)
