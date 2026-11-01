@@ -216,10 +216,14 @@
     </div>
 
     @php
-        $contactSection = app(\App\Support\Site::class)->sections()->firstWhere('type', 'contact');
+        $homeSections = app(\App\Support\Site::class)->sections();
+        $contactSection = $homeSections->firstWhere('type', 'contact');
     @endphp
     @if ($contactSection)
-        @include('sections.contact', ['section' => $contactSection])
+        {{-- Same number as on the home page and in the header menu, not the next one after this page's sections. --}}
+        <div style="counter-set: section {{ $homeSections->search(fn ($s) => $s->is($contactSection)) }}">
+            @include('sections.contact', ['section' => $contactSection])
+        </div>
     @endif
     <x-site.lightbox />
 </x-layouts.site>

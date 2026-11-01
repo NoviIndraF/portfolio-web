@@ -78,6 +78,7 @@ return [
     'hero' => [
         'now_showing' => 'Now showing',
         'scroll' => 'Scroll',
+        'stack' => 'Tech stack',
     ],
     'skills' => [
         'hint' => 'Tap a skill to see the projects that use it.',

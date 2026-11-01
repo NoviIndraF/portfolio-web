@@ -88,10 +88,13 @@ class CustomizableContentTest extends TestCase
         $devops->skills()->create(['name' => 'C#', 'sort_order' => 1]);
         $devops->skills()->create(['name' => 'GitHub', 'sort_order' => 2]);
 
-        $icons = json_decode(html_entity_decode(str($this->get('/')->getContent())->match('/data-tech-icons="([^"]+)"/')->toString()), true);
+        $response = $this->get('/');
+        $icons = json_decode(html_entity_decode(str($response->getContent())->match('/data-tech-icons="([^"]+)"/')->toString()), true);
 
         // In turns per group, one tile per icon (Firestore shares Firebase's), hidden skills left out, C# as .NET.
         $this->assertSame(['/icons/simple/flutter.svg', '/icons/simple/dotnet.svg', '/icons/simple/firebase.svg', '/icons/simple/github.svg'], $icons);
+        // Small screens get the same stack as a row of icons with names for screen readers.
+        $response->assertSeeInOrder(['aria-label="Tech stack"', 'sr-only">Flutter<', 'sr-only">C#<', 'sr-only">Firebase<', 'sr-only">GitHub<'], false);
     }
 
     public function test_home_shows_featured_projects_and_all_projects_page_shows_every_published_one(): void

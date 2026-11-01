@@ -15,11 +15,13 @@
     // Skills with a brand icon float as 3D tiles around the phone (resources/js/scenes/hero-stack.js).
     // Taken in turns from each skill group (Admin → Skills order), so every group is represented.
     // Relative URLs: the icons are drawn into a WebGL canvas, which must stay same-origin.
-    $iconsPerGroup = $skillGroups->map(fn ($g) => $g->skills->map(fn ($s) => \App\Support\Icon::slugFor($s->name, $s->icon))->filter()->values());
-    $techIcons = collect(range(0, max(0, (int) $iconsPerGroup->max(fn ($icons) => $icons->count()) - 1)))
+    $iconsPerGroup = $skillGroups->map(fn ($g) => $g->skills
+        ->map(fn ($s) => ['name' => $s->name, 'slug' => \App\Support\Icon::slugFor($s->name, $s->icon)])
+        ->filter(fn ($t) => $t['slug'])->values());
+    $techStack = collect(range(0, max(0, (int) $iconsPerGroup->max(fn ($icons) => $icons->count()) - 1)))
         ->flatMap(fn ($i) => $iconsPerGroup->map(fn ($icons) => $icons[$i] ?? null))
-        ->filter()->unique()->take(10)
-        ->map(fn ($slug) => '/icons/simple/'.$slug.'.svg')->values();
+        ->filter()->unique('slug')->take(10)->values();
+    $techIcons = $techStack->map(fn ($t) => '/icons/simple/'.$t['slug'].'.svg');
 @endphp
 <section class="relative isolate overflow-hidden" aria-labelledby="hero-title">
     {{-- Background + 3D particles mount (stage 4) --}}
@@ -84,6 +86,16 @@
                     <span class="font-semibold" data-hero-label-title aria-live="polite">{{ $reelLabels[0]['title'] }}</span>
                     <x-heroicon-o-arrow-right class="size-4 text-primary-fg transition group-hover:translate-x-0.5" aria-hidden="true" />
                 </a>
+            @endif
+            {{-- Small screens: the 3D tiles don't fit beside the phone there, so the same stack shows as a row. --}}
+            @if ($techStack->isNotEmpty())
+                <ul class="mt-5 flex max-w-xs flex-wrap justify-center gap-2 min-[30rem]:hidden" aria-label="{{ __('site.hero.stack') }}">
+                    @foreach ($techStack as $tech)
+                        <li class="grid size-11 place-items-center rounded-md border border-line bg-surface text-accent-fg" title="{{ $tech['name'] }}">
+                            {{ \App\Support\Icon::svg($tech['slug'], 'size-5') }}<span class="sr-only">{{ $tech['name'] }}</span>
+                        </li>
+                    @endforeach
+                </ul>
             @endif
         </div>
     </div>
