@@ -13,13 +13,14 @@
                         <p class="eyebrow">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }} &middot; {{ trans_choice('site.skills.count', $group->skills->count()) }}</p>
                         <h3 class="item-title mt-2">{{ $group->name }}</h3>
                     </div>
-                    <ul class="grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-2">
+                    {{-- Phones: one swipeable row per category (keeps the page short); larger screens: a wrapping grid. --}}
+                    <ul class="no-scrollbar -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] sm:overflow-visible sm:px-0 sm:pb-0">
                         @foreach ($group->skills as $skill)
                             @php
                                 $svg = \App\Support\Icon::svg(\App\Support\Icon::slugFor($skill->name, $skill->icon), 'size-6 sm:size-7');
                                 $linked = isset($skillProjects[$skill->id]);
                             @endphp
-                            <li class="h-full">
+                            <li class="h-full w-[6.5rem] shrink-0 snap-start sm:w-auto">
                                 {{-- Linked to projects: resources/js/ui/interactions.js (initSkillLinks) --}}
                                 <{{ $linked ? 'button' : 'div' }} @class(['skill-tile', 'is-linked' => $linked])
                                     @if ($linked) type="button" aria-pressed="false" data-skill="{{ $skill->name }}" data-skill-projects="{{ json_encode($skillProjects[$skill->id]) }}" @endif>

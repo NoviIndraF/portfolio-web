@@ -2,7 +2,6 @@
     $parts = str($profile->tagline)->explode('|')->map(fn ($p) => trim($p))->filter()->values();
     $role = $parts->first();
     $highlights = $parts->slice(1);
-    $intro = str($profile->bio)->before('. ')->append('.')->toString();
     // One screen per project for the hero phone reel.
     $contactHref = ($c = $sections->firstWhere('type', 'contact')) ? '#'.$c->anchor : 'mailto:'.$profile->email;
     $projectsHref = ($p = $sections->firstWhere('type', 'projects')) ? '#'.$p->anchor : route('projects.index');
@@ -49,7 +48,7 @@
                 @endforeach
             </h1>
 
-            @if ($profile->bio)
+            @if ($intro = $profile->bioIntro())
                 <p class="mt-6 max-w-xl text-base text-muted text-pretty sm:text-lg">{{ $intro }}</p>
             @endif
 

@@ -10,7 +10,7 @@
             <ul class="mt-4 grid gap-3 {{ in_array($kind, ['screenshot', 'hardware', 'certificate']) ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5' : 'sm:grid-cols-2' }}">
                 @foreach ($images as $img)
                     <li>
-                        <a href="{{ $img->url() }}" target="_blank" rel="noopener" class="group block w-full overflow-hidden rounded-2xl border border-line bg-surface text-left transition hover:border-accent/60"
+                        <a href="{{ $img->url() }}" target="_blank" rel="noopener" class="group block w-full overflow-hidden rounded-md border border-line bg-surface text-left transition hover:border-accent/60"
                                 data-lightbox-item data-kind="{{ $kind }}" data-src="{{ $img->url() }}" data-caption="{{ $img->caption }}"
                                 data-w="{{ $img->width }}" data-h="{{ $img->height }}">
                             <img src="{{ $img->url() }}" alt="{{ $project->title }} – {{ $img->caption }}" loading="lazy" decoding="async"

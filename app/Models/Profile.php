@@ -44,6 +44,26 @@ class Profile extends Model
     }
 
     /** Null when no CV is uploaded, so the "Download CV" button can hide itself. */
+    /** First sentence of the bio, shown in the hero. */
+    public function bioIntro(): ?string
+    {
+        $bio = trim((string) $this->bio);
+        if ($bio === '') {
+            return null;
+        }
+
+        return str_contains($bio, '. ') ? str($bio)->before('. ')->append('.')->toString() : $bio;
+    }
+
+    /** The bio after its first sentence, shown in About so it doesn't repeat the hero; the whole bio when it is one sentence. */
+    public function bioRest(): ?string
+    {
+        $bio = trim((string) $this->bio);
+        $rest = trim(str($bio)->after('. ')->toString());
+
+        return str_contains($bio, '. ') && $rest !== '' ? $rest : ($bio ?: null);
+    }
+
     public function cvUrl(): ?string
     {
         return $this->cv_pdf && Storage::disk('public')->exists($this->cv_pdf)
