@@ -322,6 +322,31 @@ class CustomizableContentTest extends TestCase
             ->assertSee('linkedin.com/in/example');
     }
 
+    public function test_bio_splits_into_hero_intro_and_about_rest(): void
+    {
+        $profile = new Profile(['bio' => 'Developer in Jakarta. I build mobile apps. And web apps.']);
+        $this->assertSame('Developer in Jakarta.', $profile->bioIntro());
+        $this->assertSame('I build mobile apps. And web apps.', $profile->bioRest());
+
+        // One sentence: the hero shows it as written (no double period), About keeps it so it isn't empty.
+        $single = new Profile(['bio' => 'Developer in Jakarta.']);
+        $this->assertSame('Developer in Jakarta.', $single->bioIntro());
+        $this->assertSame('Developer in Jakarta.', $single->bioRest());
+
+        $this->assertNull((new Profile(['bio' => '']))->bioIntro());
+        $this->assertNull((new Profile(['bio' => null]))->bioRest());
+    }
+
+    public function test_home_shows_the_bio_once_hero_intro_then_about_rest(): void
+    {
+        Profile::query()->first()->update(['bio' => 'Developer in Jakarta. I build mobile apps.']);
+
+        $html = $this->get('/')->getContent();
+
+        $this->assertSame(1, substr_count($html, 'Developer in Jakarta.'));
+        $this->assertSame(1, substr_count($html, 'I build mobile apps.'));
+    }
+
     public function test_built_in_sections_cannot_be_deleted(): void
     {
         PageSection::where('type', 'about')->first()->delete();
