@@ -24,6 +24,7 @@ erDiagram
 | Column | Notes |
 |---|---|
 | `name`, `tagline`, `bio` | Hero and About. The tagline is split at `\|`: first part = headline, rest = tags. |
+| `availability`, `show_availability` | Badge with a green dot above the hero title (e.g. "Open to work · Remote"). Hidden when the toggle is off or the text is empty. |
 | `stats` | JSON array `[{label, value}]`, max 4 in the admin. |
 | `photo`, `photo_original` | Display WebP and the uploaded original. |
 | `cv_pdf` | Nullable. No file = no "Download CV" buttons (`Profile::cvUrl()`). |
@@ -33,13 +34,13 @@ erDiagram
 Personal gallery in the About section (`Profile::photos()`, ordered by `sort_order`). Columns: `path` + `original_path` (auto WebP via `OptimizesImages`), `caption`, `width`, `height`, `is_visible`, `sort_order`. Deleting the profile deletes the photos and their files. No visible photo = About shows the single profile `photo`.
 
 ### `settings` (single row) – `App\Models\Setting`
-`site_title`, `meta_description`, `primary_color`, `background_color`, `text_color` (become CSS variables), `toggle_3d` (exposed as `<html data-3d="on|off">`), `og_image` (share image, kept as PNG/JPG).
+`site_title`, `meta_description`, `primary_color`, `background_color`, `text_color` (become CSS variables), `toggle_3d` (exposed as `<html data-3d="on|off">`), `og_image` (share image, kept as PNG/JPG), `show_language_switch` (ID / EN switch in the header; `App\Http\Middleware\SetLocale` picks the visitor's choice or browser language from `lang/{en,id}/site.php`), `analytics_script_url` + `analytics_site_id` (Umami / Plausible script; nothing loads while the URL is empty).
 
 ### `projects` – `App\Models\Project`
 | Column | Notes |
 |---|---|
 | `slug` | Unique, used in `/projects/{slug}` (route key). |
-| `title`, `short_description`, `impact_line`, `problem`, `solution` | Texts. `problem`/`solution` are optional. |
+| `title`, `short_description`, `impact_line`, `problem`, `solution`, `role`, `outcome` | Texts. The last four are optional and form the case study on the project page (problem, my role, solution, outcome). |
 | `type`, `year` | Free text. `type` drives the filter on `/projects`; known types are translated in `lang/en/site.php`, others are title-cased (`Project::typeLabel()`). |
 | `accent_color` | `#RRGGBB`, used for cards, page glow and the 3D scene. |
 | `scene_type` | `learning`, `donation`, `shoe-store`, `chat`, `health-iot`, `hydroponic`, `analytics`, `generic` or `none` (`Project::SCENE_TYPES`). |
@@ -67,12 +68,12 @@ Sections of the home page below the hero.
 
 | Column | Notes |
 |---|---|
-| `type` | Built-in: `projects`, `skills`, `about`, `contact` (cannot be deleted). Custom: `text`, `timeline`, `logos`. |
+| `type` | Built-in: `projects`, `skills`, `about`, `contact` (cannot be deleted). Custom: `text`, `timeline`, `logos`, `testimonials`. |
 | `anchor` | Unique; the `#id` of the section and the menu link. |
 | `nav_label` | Menu label; empty = not in the menu. |
 | `eyebrow`, `title`, `intro` | Empty values on built-in sections fall back to `lang/en/site.php` (`PageSection::text()`). |
 | `body` | Rich text for `text` sections (sanitized on output). |
-| `items` | JSON for `timeline` sections: `[{period, title, subtitle, description, url, link_label, is_visible}]`. A multi-line `description` renders as a bullet list (one point per line; leading `-`, `•` or `*` is stripped). For `logos` sections: `[{name, logo, url, is_visible}]`; `logo` is a path on the public disk (`sections/logos/…`), copied by export/import. |
+| `items` | JSON for `timeline` sections: `[{period, title, subtitle, description, url, link_label, is_visible}]`. A multi-line `description` renders as a bullet list (one point per line; leading `-`, `•` or `*` is stripped). For `logos` sections: `[{name, logo, url, is_visible}]`; `logo` is a path on the public disk (`sections/logos/…`), copied by export/import. For `testimonials`: `[{quote, name, role, url, is_visible}]`. |
 | `is_visible`, `sort_order` | Visibility and order on the page and in the menu. |
 
 The four built-in rows are inserted by the second migration.

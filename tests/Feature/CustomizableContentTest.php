@@ -227,6 +227,16 @@ class CustomizableContentTest extends TestCase
         $this->withCookie('locale', 'id')->get('/')->assertSee('Built with Laravel')->assertDontSee('href="'.route('lang', 'id').'"', false);
     }
 
+    public function test_analytics_script_loads_only_when_configured(): void
+    {
+        $this->get('/')->assertDontSee('data-website-id', false);
+
+        Setting::query()->first()->update(['analytics_script_url' => 'https://stats.test/script.js', 'analytics_site_id' => 'abc-123']);
+        app()->forgetInstance(Site::class);
+
+        $this->get('/')->assertSee('<script defer src="https://stats.test/script.js" data-website-id="abc-123"', false);
+    }
+
     public function test_built_in_sections_cannot_be_deleted(): void
     {
         PageSection::where('type', 'about')->first()->delete();

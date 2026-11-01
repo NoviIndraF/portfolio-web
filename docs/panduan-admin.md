@@ -42,6 +42,7 @@ Menu **Content → Profile**.
 | Bagian | Isi | Catatan |
 |---|---|---|
 | Hero | Name, Tagline, Bio, Stats | Tagline dipisah dengan tanda `\|`: bagian pertama jadi judul besar (mis. *Mobile App Developer*), sisanya jadi label kecil. Kalimat pertama Bio tampil di bagian atas, Bio lengkap di bagian *About*. Stats maksimal 4 (mis. `4+` / *Years of experience*). |
+| Availability badge | Teks + tombol tampil/sembunyi | Label kecil dengan titik hijau di atas judul hero, mis. *Open to work · Mobile & Fullstack · Remote / Jakarta*. Matikan tombolnya atau kosongkan teks untuk menyembunyikan. |
 | Photo & CV | Foto profil, CV (PDF) | Foto otomatis diperkecil dan dikonversi ke WebP. Jika CV kosong, semua tombol *Download CV* otomatis disembunyikan. |
 | Contact | Email, Phone, GitHub, LinkedIn | Phone dan LinkedIn yang kosong tidak ditampilkan. |
 | Gallery | Beberapa foto pribadi + caption | Tampil sebagai carousel di bagian *About* (geser, tombol panah, titik, berganti otomatis tiap 5 detik, klik untuk memperbesar). Urutkan dengan drag, sembunyikan dengan **Show on website**, hapus dengan ikon tempat sampah. Jika galeri kosong, *About* memakai foto profil. |
@@ -78,7 +79,7 @@ Ada dua cara:
 | Published / Featured on home | Lihat penjelasan di atas. |
 | Impact line | Satu kalimat di kartu project. Tulis hasil nyata jika ada (jumlah pengguna, unduhan, nilai). |
 | Short description | Ringkasan. Tampil sebagai *Overview* jika Problem/Solution kosong. |
-| Problem / Solution | Opsional. Jika diisi, tampil sebagai dua kartu. |
+| Problem / Solution / My role / Outcome | Opsional. Tampil sebagai studi kasus: masalah, peran Anda, solusi, lalu hasil (pakai angka bila ada: pengguna, unduhan, waktu yang dihemat). |
 
 **Features** – tambah, ubah, urutkan (drag), atau sembunyikan fitur dengan tombol **Show on website**. Kolom *Icon* opsional (nama ikon Heroicons, mis. `heroicon-o-chat-bubble-left-right`); jika kosong, tampil nomor urut. Kolom *Screen* opsional: pilih screenshot yang menampilkan fitur itu. Di halaman project, kartu fitur lalu punya tombol **See this screen** yang memindahkan HP ke layar tersebut (unggah gambarnya dulu di bagian Images dan simpan).
 
@@ -131,6 +132,7 @@ Menu **Site → Home sections**. Mengatur bagian-bagian beranda di bawah hero.
 - **Add section** untuk membuat section baru:
   - **Text block** – teks bebas dengan format (tebal, miring, link, judul, daftar).
   - **Timeline** – daftar berurutan seperti **Pengalaman kerja, Pendidikan, Sertifikat, Penghargaan, Organisasi**. Tiap item: Period (mis. `2022 – Present`), Title, Subtitle (perusahaan/sekolah), Description, Link opsional, dan tombol tampil/sembunyi. Description yang ditulis beberapa baris tampil sebagai daftar poin (satu poin per baris).
+  - **Testimonials** – rekomendasi dari atasan, rekan, atau klien (mis. dari LinkedIn, dengan izin). Tiap item: Quote, Name, Role, Link opsional, dan tombol tampil/sembunyi.
   - **Logo strip** – deretan logo perusahaan atau klien yang bergerak. Tiap item: Name (wajib, tampil sebagai teks bila tanpa logo), Logo (SVG/PNG/WebP transparan, maks 1 MB), Link opsional, dan tombol tampil/sembunyi.
 - Section bawaan (Featured projects, Skills, About, Contact) bisa disembunyikan tetapi tidak bisa dihapus. Section buatan sendiri bisa dihapus.
 
@@ -143,6 +145,8 @@ Menu **Site → Settings**.
 | SEO & sharing | *Site title* (judul di tab browser dan Google), *Meta description* (deskripsi di Google dan saat link dibagikan), *Share image* (gambar saat link dibagikan di WhatsApp/LinkedIn; PNG/JPG 1200×630; jika kosong memakai foto profil). |
 | Theme | Warna utama, latar belakang dan teks. Pastikan teks tetap kontras dengan latar. |
 | 3D effects | Matikan untuk menampilkan gambar biasa tanpa 3D (berguna untuk HP lama). |
+| Language | *Show the ID / EN switch*: tombol bahasa di header. Menu, tombol, dan label ikut bahasa pilihan pengunjung (atau bahasa browser-nya). Teks yang Anda tulis di admin tetap seperti yang ditulis. |
+| Analytics | Statistik pengunjung ramah privasi (Umami atau Plausible). Isi *Script URL* (https://…) dan *Website ID / domain*. Kosongkan URL untuk mematikan. |
 
 ## 9. Akun dan password
 

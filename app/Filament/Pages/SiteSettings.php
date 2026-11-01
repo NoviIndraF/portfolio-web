@@ -81,6 +81,8 @@ class SiteSettings extends SingleRecordPage
                     TextInput::make('analytics_script_url')
                         ->label('Script URL')
                         ->url()
+                        ->regex('/^https:\/\//')
+                        ->validationMessages(['regex' => 'Use an https:// address.'])
                         ->maxLength(255)
                         ->placeholder('https://cloud.umami.is/script.js'),
                     TextInput::make('analytics_site_id')

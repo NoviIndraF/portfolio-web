@@ -93,6 +93,10 @@
             --c-text: {{ $settings->light_text_color }};
         }
     </style>
+    {{-- Privacy-friendly analytics (Admin → Settings → Analytics): Umami reads data-website-id, Plausible data-domain. --}}
+    @if (filled($settings->analytics_script_url))
+        <script defer src="{{ $settings->analytics_script_url }}" data-website-id="{{ $settings->analytics_site_id }}" data-domain="{{ $settings->analytics_site_id }}"></script>
+    @endif
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
