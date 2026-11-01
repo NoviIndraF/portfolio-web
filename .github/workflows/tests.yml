@@ -28,8 +28,10 @@ jobs:
 
       # Builds the CSS/JS and copies the simple-icons SVGs that the hero and skills use.
       - name: Install and build frontend
+        # npm install, not npm ci: on Linux the optional @laravel/multiplex tree wants a react peer
+        # that the lockfile (made on macOS) doesn't list. shortcut: sync the lockfile on Linux to go back to npm ci.
         run: |
-          npm ci
+          npm install --no-audit --no-fund
           npm run build
 
       - name: Prepare app
