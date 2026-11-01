@@ -5,6 +5,16 @@ return [
     'skip_to_content' => 'Skip to content',
     'menu' => 'Menu',
     'intro' => 'Portfolio',
+    'intro_skip' => 'Click or press Esc to skip',
+    'not_found' => [
+        'eyebrow' => 'Error 404',
+        'title' => "This page doesn't exist",
+        'text' => 'The link may be old or the project may have been moved.',
+    ],
+    'motion' => [
+        'pause' => 'Pause moving text',
+        'play' => 'Play moving text',
+    ],
     'header' => [
         'place' => 'Jakarta',
         'timezone' => 'Asia/Jakarta',

@@ -155,6 +155,21 @@ class CustomizableContentTest extends TestCase
             ->assertSee('href="https://acme.test"', false);
     }
 
+    public function test_project_page_describes_the_app_for_search_engines(): void
+    {
+        $this->project(['title' => 'Schema App', 'slug' => 'schema-app', 'year' => '2024']);
+
+        $this->get('/projects/schema-app')
+            ->assertSee('"@type":"SoftwareApplication"', false)
+            ->assertSee('"name":"Schema App"', false)
+            ->assertSee('"dateCreated":"2024"', false);
+    }
+
+    public function test_unknown_page_shows_the_styled_not_found_page(): void
+    {
+        $this->get('/projects/does-not-exist')->assertNotFound()->assertSee(__('site.not_found.title'));
+    }
+
     public function test_built_in_sections_cannot_be_deleted(): void
     {
         PageSection::where('type', 'about')->first()->delete();

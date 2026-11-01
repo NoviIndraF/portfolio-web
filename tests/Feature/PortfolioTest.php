@@ -104,7 +104,7 @@ class PortfolioTest extends TestCase
     {
         $this->project(['is_published' => false]);
 
-        $this->get('/projects/codelytic')->assertNotFound()->assertSee("This page doesn't exist", false);
+        $this->get('/projects/codelytic')->assertNotFound()->assertSee(__('site.not_found.title'));
         $this->actingAs(User::factory()->create())->get('/projects/codelytic')->assertOk();
     }
 

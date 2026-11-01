@@ -235,8 +235,16 @@ a:hover .arrow-shift {
     width: max-content;
     animation: marquee 32s linear infinite;
 }
-.marquee:hover .marquee-track {
+.marquee:hover .marquee-track,
+.marquee-paused .marquee-track {
     animation-play-state: paused;
+}
+.marquee-toggle .icon-play,
+.marquee-paused .marquee-toggle .icon-pause {
+    display: none;
+}
+.marquee-paused .marquee-toggle .icon-play {
+    display: block;
 }
 @keyframes marquee {
     to {
@@ -267,6 +275,7 @@ a:hover .arrow-shift {
 }
 .intro-on .intro {
     display: flex;
+    cursor: pointer;
     animation: intro-out 0.5s ease 2.6s forwards;
 }
 .intro.is-done {

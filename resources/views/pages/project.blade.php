@@ -5,9 +5,22 @@
     $shareImage = $screens->first() ?? $project->images->whereIn('kind', ['web', 'admin'])->first();
     $shareUrl = $shareImage ? asset('storage/'.($shareImage->original_path ?: $shareImage->path)) : null;
     $rec = $project->recognition;
+    // Search engines: what this page is about (schema.org SoftwareApplication).
+    $profileName = app(\App\Support\Site::class)->profile()->name;
+    $schema = array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'SoftwareApplication',
+        'name' => $project->title,
+        'description' => $project->impact_line ?: $project->short_description,
+        'url' => route('projects.show', $project),
+        'image' => $shareUrl,
+        'dateCreated' => $project->year ?: null,
+        'keywords' => $project->tech->pluck('name')->implode(', ') ?: null,
+        'author' => ['@type' => 'Person', 'name' => $profileName, 'url' => route('home')],
+    ]);
 @endphp
 <x-layouts.site :title="$project->title" :description="$project->impact_line ?: $project->short_description"
-                :image="$shareUrl" :accent="$project->accent_color">
+                :image="$shareUrl" :accent="$project->accent_color" :schema="$schema">
 
     {{-- Header + phone viewer --}}
     <section class="relative isolate overflow-hidden" aria-labelledby="project-title">

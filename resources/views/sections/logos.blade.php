@@ -14,7 +14,9 @@
                 <li>{{ $item['name'] }}</li>
             @endforeach
         </ul>
-        <div class="marquee mt-10 border-y border-line py-8" aria-hidden="true">
+        <div class="relative mt-10">
+        <x-site.marquee-toggle />
+        <div class="marquee border-y border-line py-8" aria-hidden="true">
             <div class="marquee-track items-center">
                 @foreach ([1, 2] as $copy)
                     @foreach ($items->count() < 6 ? $items->concat($items) : $items as $item)
@@ -30,6 +32,7 @@
                     @endforeach
                 @endforeach
             </div>
+        </div>
         </div>
     </section>
 @endif

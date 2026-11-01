@@ -103,6 +103,8 @@
     {{-- v2: highlights from the tagline as a looping strip --}}
     @if ($highlights->isNotEmpty())
         <p class="sr-only">{{ $highlights->implode(', ') }}</p>
+        <div class="relative">
+        <x-site.marquee-toggle />
         <div class="marquee border-y border-line py-4" aria-hidden="true">
             <div class="marquee-track">
                 @foreach ([1, 2] as $copy)
@@ -111,6 +113,7 @@
                     @endforeach
                 @endforeach
             </div>
+        </div>
         </div>
     @endif
 
