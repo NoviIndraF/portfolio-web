@@ -17,9 +17,10 @@ jobs:
           extensions: gd, pdo_sqlite, intl
           coverage: none
 
+      # Node 24 ships npm 11, like local development; npm 10 rejects the lockfile's optional peers.
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
           cache: npm
 
       - name: Install PHP dependencies
