@@ -26,7 +26,7 @@ Laravel 13 portfolio for a Mobile App Developer, aimed at recruiters: the key me
 
 ## 1. Run it locally
 
-Requirements: PHP 8.3+ (with `gd`, `pdo_sqlite`, `intl`, `zip`), Composer 2, Node.js 20+.
+Requirements: PHP 8.3+ (with `gd`, `pdo_sqlite`, `intl`, `zip`), Composer 2, Node.js 24+ (npm 11; npm 10 rejects the lockfile).
 
 ```bash
 composer install
@@ -117,7 +117,7 @@ The site must be online (HTTPS) so the link / QR code in your slides works. Pick
 ```bash
 # On the server (once)
 sudo apt install nginx php8.4-fpm php8.4-{cli,gd,sqlite3,intl,zip,mbstring,xml,curl} unzip git
-# Install Composer (getcomposer.org) and Node.js 20+ (nodejs.org or nvm)
+# Install Composer (getcomposer.org) and Node.js 24+ (nodejs.org or nvm)
 
 sudo mkdir -p /var/www/portfolio && sudo chown $USER:www-data /var/www/portfolio
 git clone <your-repo-url> /var/www/portfolio     # or upload the project folder
