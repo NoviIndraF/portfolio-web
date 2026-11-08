@@ -144,7 +144,7 @@ export default function mountScrollOrnament(el, { mobile = false, color = '#4c8d
         }
         geo.attributes.position.needsUpdate = true;
 
-        const opacity = lerp(a.opacity, b.opacity, e) * (mobile ? 0.6 : 1) * (light ? 0.8 : 1);
+        const opacity = lerp(a.opacity, b.opacity, e) * (mobile ? 0.3 : 1) * (light ? 0.8 : 1);
         mat.opacity += (opacity - mat.opacity) * 0.1;
         group.scale.setScalar(lerp(a.scale, b.scale, e));
         group.position.x += (lerp(sideX(i), sideX(i + 1), e) - group.position.x) * 0.08;

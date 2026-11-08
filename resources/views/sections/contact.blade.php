@@ -13,7 +13,7 @@
 
         @if ($profile->email)
             <div class="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-fg/25 pt-8">
-                <a href="mailto:{{ $profile->email }}" class="group inline-flex min-w-0 items-center gap-3 display text-[clamp(1.5rem,6.8vw,7rem)] leading-none hover:underline hover:decoration-2 hover:underline-offset-8">
+                <a href="mailto:{{ $profile->email }}" class="group inline-flex min-w-0 items-center gap-3 display normal-case text-[clamp(1.5rem,6.8vw,7rem)] leading-none hover:underline hover:decoration-2 hover:underline-offset-8">
                     <span class="sr-only">{{ __('site.contact.email') }}:</span>{{-- Narrow screens: break only after "@" --}}<span>{{ str($profile->email)->before('@') }}@<wbr>{{ str($profile->email)->after('@') }}</span>
                     <x-heroicon-o-arrow-up-right class="arrow-shift size-[0.6em] shrink-0" aria-hidden="true" />
                 </a>

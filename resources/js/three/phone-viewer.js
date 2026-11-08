@@ -212,7 +212,7 @@ export class PhoneViewer3D {
         const phoneRect = this.staticEl.getBoundingClientRect();
         const rootRect = this.root.getBoundingClientRect();
         if (!phoneRect.height) return;
-        const pad = 40;
+        const pad = this.isHero ? 110 : 40; // hero: extra height so the tech tiles can spread out
         const h = phoneRect.height + pad * 2;
         let w = Math.min(window.innerWidth, 736);
         let full = w;

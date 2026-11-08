@@ -27,6 +27,19 @@ export function initCarousel3d({ reduced }) {
         rail.querySelectorAll('[style*="view-transition-name"]').forEach((el) => el.style.removeProperty('view-transition-name'));
     });
 
+    // Home rail: the card under the pointer (or keyboard focus) widens and shows a second phone; the others stay narrow.
+    // It stays open after the pointer leaves, so moving across the gaps between cards doesn't make the row jump.
+    const expandable = cards.filter((c) => c.hasAttribute('data-expandable'));
+    const expand = (card) => {
+        if (card.hasAttribute('data-expanded')) return;
+        expandable.forEach((c) => c.toggleAttribute('data-expanded', c === card));
+        rail.dispatchEvent(new Event('cards:resize'));
+    };
+    expandable.forEach((card) => {
+        card.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && expand(card));
+        card.addEventListener('focusin', () => expand(card));
+    });
+
     if (reduced) return;
 
     // Coverflow: cards rotate and shrink slightly with distance from the rail's center.
@@ -51,6 +64,16 @@ export function initCarousel3d({ reduced }) {
     rail.addEventListener('scroll', queue, { passive: true });
     window.addEventListener('resize', queue);
     queue();
+    // Card widths animate when one expands: follow the layout until the transition (0.5s) ends.
+    let followUntil = 0;
+    const follow = () => {
+        update();
+        if (performance.now() < followUntil) requestAnimationFrame(follow);
+    };
+    rail.addEventListener('cards:resize', () => {
+        followUntil = performance.now() + 600;
+        requestAnimationFrame(follow);
+    });
 
     // Tilt the inner card toward the mouse (desktop), with a soft glare.
     cards.forEach((card) => {

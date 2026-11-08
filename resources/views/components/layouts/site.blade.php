@@ -8,7 +8,7 @@
 ])
 @php
     $pageTitle = $title ? $title.' | '.$profile->name : $settings->site_title;
-    $metaDescription = str($description ?: $settings->meta_description ?: $profile->tagline)->squish()->limit(160);
+    $metaDescription = str($description ?: $settings->meta_description ?: $profile->tagline)->squish()->limit(160, preserveWords: true);
     $ogImage = $image ?: $site->defaultOgImage();
     $defaultTheme = array_key_exists($settings->default_theme, \App\Models\Setting::THEMES) ? $settings->default_theme : 'system';
     $sameAs = array_values(array_filter([$profile->github, $profile->linkedin]));
@@ -107,6 +107,13 @@
             --accent: {{ $settings->onPrimaryColor() }};
             --c-mix: {{ $settings->onPrimaryColor() === '#0E0E0E' ? 'black' : 'white' }};
             --fg-mix: 90%;
+        }
+        /* Surface band: a slightly lighter (dark theme) or darker (light theme) tint, so long dark stretches get a rhythm. */
+        .band-surface {
+            --c-bg: color-mix(in oklab, {{ $settings->text_color }} 7%, {{ $settings->background_color }});
+        }
+        :root[data-theme="light"] .band-surface {
+            --c-bg: color-mix(in oklab, {{ $settings->light_text_color }} 7%, {{ $settings->light_background_color }});
         }
         :root[data-theme="light"] .band-inverse {
             --c-bg: {{ $settings->light_text_color }};

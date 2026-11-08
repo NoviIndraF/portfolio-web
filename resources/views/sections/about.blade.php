@@ -1,4 +1,4 @@
-<section id="{{ $section->anchor }}" class="py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
+<section id="{{ $section->anchor }}" class="band-surface py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
     <div class="container-site grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
         @php($gallery = $profile->photos()->visible()->get())
         @if ($gallery->isNotEmpty())
@@ -51,7 +51,7 @@
             </div>
         @endif
         <div>
-            <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->text('eyebrow')" :title="$section->text('title')" :intro="$section->text('intro')" />
+            <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->text('eyebrow')" :title="$section->text('title')" :intro="$section->text('intro')" size="md" />
             {{-- The hero already shows the bio's first sentence and the CV / contact buttons; About continues from there. --}}
             @if ($rest = $profile->bioRest())
                 <p class="mt-5 max-w-[65ch] text-base leading-relaxed text-muted text-pretty sm:text-lg">{{ $rest }}</p>

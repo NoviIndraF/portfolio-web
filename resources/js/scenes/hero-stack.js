@@ -290,16 +290,16 @@ export default function create({ group, accent, reduced, webScreens, techIcons =
 /** Tile spots around the phone: [side (-1 left, 1 right), share of that side's room, y, z]. */
 // The phone is 1 unit wide, so tiles stay at least 0.72 from the center to remain visible.
 const TILE_SLOTS = [
-    [-1, 0.62, 0.85, 0.05],
-    [1, 0.6, 0.25, 0.05],
-    [-1, 0.92, 0.95, -0.2],
-    [1, 0.92, 0, -0.1],
-    [-1, 0.55, -0.5, 0.1],
-    [1, 0.62, -0.92, 0],
-    [-1, 0.95, -0.2, -0.15],
-    [1, 0.95, 0.45, -0.25],
-    [-1, 0.78, 0.3, 0.12],
-    [1, 0.6, -0.42, 0.12],
+    [-1, 0.55, 1.2, 0.05],
+    [1, 0.55, 0.35, 0.05],
+    [-1, 0.9, 0.65, -0.1],
+    [1, 0.92, -0.05, -0.15],
+    [-1, 0.55, 0, 0.1],
+    [1, 0.55, -0.6, 0.1],
+    [-1, 0.9, -0.65, -0.15],
+    [1, 0.92, -1.0, -0.05],
+    [-1, 0.55, -1.2, 0.12],
+    [1, 0.55, -1.25, 0.05],
 ];
 
 /** Canvas texture with a simple-icons SVG drawn in one color. Fetched as text so the SVG gets a size (Firefox can't draw size-less SVGs). */

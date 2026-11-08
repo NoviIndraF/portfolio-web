@@ -45,6 +45,7 @@ return [
         'prev' => 'Project sebelumnya',
         'next' => 'Project berikutnya',
         'no_screens' => 'Screenshot tidak dipublikasikan',
+        'featured' => 'Unggulan',
         'all' => 'Lihat semua :count project',
     ],
     'all_projects' => [
@@ -97,6 +98,7 @@ return [
     ],
     'timeline' => [
         'view' => 'Lihat',
+        'kinds' => ['education' => 'Pendidikan', 'certificate' => 'Sertifikasi', 'award' => 'Penghargaan'],
     ],
     'skills' => [
         'hint' => 'Ketuk sebuah keahlian untuk melihat project yang memakainya.',
@@ -131,6 +133,8 @@ return [
     ],
     'chat' => [
         'open' => 'Tanya tentang saya',
+        'teaser' => 'Hai! Saya asisten AI. Tanya saya soal project dan pengalaman di sini.',
+        'teaser_close' => 'Tutup sapaan',
         'title' => 'Tanya tentang pekerjaan saya',
         'subtitle' => 'Asisten AI · menjawab dari isi portofolio ini',
         'welcome' => 'Halo! Tanyakan apa saja tentang project, keahlian, atau pengalaman di situs ini. Boleh pakai Bahasa Indonesia atau Inggris.',

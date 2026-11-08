@@ -107,10 +107,15 @@ class PageSectionForm
                             Grid::make(['default' => 1, 'sm' => 3])->schema([
                                 TextInput::make('period')->maxLength(60)->placeholder('2022 – Present'),
                                 TextInput::make('title')->required()->maxLength(150)->placeholder('Software Developer'),
-                                TextInput::make('subtitle')->maxLength(150)->placeholder('Company / school / issuer'),
+                                TextInput::make('subtitle')->maxLength(150)->placeholder('Company / school / issuer')
+                                    ->helperText('A company name that matches the logo strip shows its logo: "Company · City".'),
                             ]),
-                            Textarea::make('description')->rows(4)->helperText('One point per line shows as a bullet list.'),
-                            Grid::make(['default' => 1, 'sm' => 3])->schema([
+                            Textarea::make('description')->rows(4)->helperText('One point per line shows as a bullet list; a single paragraph is split into sentences.'),
+                            Grid::make(['default' => 1, 'sm' => 4])->schema([
+                                Select::make('kind')
+                                    ->label('Kind (optional)')
+                                    ->options(['education' => 'Education', 'certificate' => 'Certification', 'award' => 'Award'])
+                                    ->helperText('Items without a description are grouped by kind, with an icon.'),
                                 TextInput::make('url')->url()->maxLength(255)->label('Link (optional)'),
                                 TextInput::make('link_label')->maxLength(40)->placeholder('View'),
                                 Toggle::make('is_visible')->label('Show on website')->default(true)->inline(false),
@@ -133,7 +138,7 @@ class PageSectionForm
                         ->schema([
                             Grid::make(['default' => 1, 'sm' => 2])->schema([
                                 TextInput::make('name')->required()->maxLength(80)->placeholder('PT Panasonic Manufacturing Indonesia')
-                                    ->helperText('Shown as text when there is no logo, and used as the image description.'),
+                                    ->helperText('Shown next to the logo.'),
                                 FileUpload::make('logo')
                                     ->image()
                                     ->disk('public')

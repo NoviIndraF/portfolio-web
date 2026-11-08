@@ -40,7 +40,7 @@ class SiteSettings extends SingleRecordPage
                 Textarea::make('meta_description')
                     ->rows(2)
                     ->maxLength(300)
-                    ->helperText('Shown in Google results and link previews.'),
+                    ->helperText('Shown in Google results and link previews. Keep it under 160 characters, or it is cut.'),
                 FileUpload::make('og_image')
                     ->label('Share image (Open Graph)')
                     ->image()

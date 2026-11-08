@@ -158,6 +158,29 @@ class CustomizableContentTest extends TestCase
             ->assertSee('href="https://acme.test" target="_blank" rel="noopener" class="underline">Acme Corp</a>', false);
     }
 
+    public function test_timeline_reuses_strip_logos_splits_paragraphs_and_groups_by_kind(): void
+    {
+        $logo = Storage::disk('public')->putFileAs('sections/logos', UploadedFile::fake()->image('acme.png', 200, 80), 'acme.png');
+        (new PageSection(['type' => 'logos', 'anchor' => 'clients', 'title' => 'Clients', 'sort_order' => 100, 'items' => [
+            ['name' => 'Acme Corp', 'logo' => $logo],
+        ]]))->save();
+        (new PageSection(['type' => 'timeline', 'anchor' => 'work', 'title' => 'Work', 'sort_order' => 101, 'items' => [
+            ['period' => '2024', 'title' => 'Developer', 'subtitle' => 'Acme Corp · Jakarta', 'description' => 'Built the ASP.NET API. Led two releases.'],
+        ]]))->save();
+        (new PageSection(['type' => 'timeline', 'anchor' => 'edu', 'title' => 'Education', 'sort_order' => 102, 'items' => [
+            ['title' => 'Bachelor of Informatics', 'kind' => 'education'],
+            ['title' => 'Bronze Medal', 'kind' => 'award'],
+        ]]))->save();
+
+        $html = $this->get('/')->getContent();
+        $work = (string) str($html)->after('id="work"')->before('id="edu"');
+
+        $this->assertStringContainsString(Storage::disk('public')->url($logo), $work);
+        $this->assertStringContainsString('>Built the ASP.NET API.</li>', $work);
+        $this->assertStringContainsString('>Led two releases.</li>', $work);
+        $this->assertStringContainsString('Awards', (string) str($html)->after('id="edu"'));
+    }
+
     public function test_project_page_describes_the_app_for_search_engines(): void
     {
         $this->project(['title' => 'Schema App', 'slug' => 'schema-app', 'year' => '2024']);

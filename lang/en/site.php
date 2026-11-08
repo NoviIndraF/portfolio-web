@@ -45,6 +45,7 @@ return [
         'prev' => 'Previous projects',
         'next' => 'Next projects',
         'no_screens' => 'Screenshots not public',
+        'featured' => 'Featured',
         'all' => 'See all :count projects',
     ],
     'all_projects' => [
@@ -97,6 +98,7 @@ return [
     ],
     'timeline' => [
         'view' => 'View',
+        'kinds' => ['education' => 'Education', 'certificate' => 'Certifications', 'award' => 'Awards'],
     ],
     'skills' => [
         'hint' => 'Tap a skill to see the projects that use it.',
@@ -131,6 +133,8 @@ return [
     ],
     'chat' => [
         'open' => 'Ask about me',
+        'teaser' => 'Hi! I\'m the AI assistant. Ask me about the projects and experience here.',
+        'teaser_close' => 'Dismiss greeting',
         'title' => 'Ask about my work',
         'subtitle' => 'AI assistant · answers from this portfolio',
         'welcome' => 'Hi! Ask me anything about the projects, skills or experience on this site. You can write in English or Indonesian.',

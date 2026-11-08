@@ -5,7 +5,7 @@
 @if ($items->isNotEmpty())
     <section id="{{ $section->anchor }}" class="band-inverse py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
         <div class="container-site">
-            <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->eyebrow" :title="$section->title" :intro="$section->intro" />
+            <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->eyebrow" :title="$section->title" :intro="$section->intro" size="md" center />
         </div>
 
         {{-- Screen readers and keyboard users get this list (with the links); the moving strip is decorative.
@@ -29,12 +29,11 @@
                     @foreach ($items->count() < 6 ? $items->concat($items) : $items as $item)
                         @php($tag = filled($item['url'] ?? null) ? 'a' : 'span')
                         <{{ $tag }} @if ($tag === 'a') href="{{ $item['url'] }}" target="_blank" rel="noopener" tabindex="-1" @endif
-                            class="logo-item flex h-12 shrink-0 items-center px-8 sm:px-12">
+                            class="logo-item flex shrink-0 flex-col items-center justify-center gap-3 px-8 sm:px-12">
                             @if ($src = \App\Support\Img::url($item['logo'] ?? null))
-                                <img src="{{ $src }}" alt="" loading="lazy" class="h-full w-auto max-w-40 object-contain">
-                            @else
-                                <span class="font-item text-2xl font-black whitespace-nowrap">{{ $item['name'] }}</span>
+                                <img src="{{ $src }}" alt="" loading="lazy" class="h-10 w-auto max-w-40 object-contain">
                             @endif
+                            <span class="font-item text-2xl font-black whitespace-nowrap">{{ $item['name'] }}</span>
                         </{{ $tag }}>
                     @endforeach
                 @endforeach

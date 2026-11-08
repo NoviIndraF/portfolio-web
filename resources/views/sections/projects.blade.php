@@ -17,7 +17,7 @@
     <div id="projects-rail" class="no-scrollbar mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-px-4 px-4 pb-6 sm:scroll-px-6 sm:px-6 lg:px-[max(2rem,calc((100vw-72rem)/2+2rem))] lg:scroll-px-[max(2rem,calc((100vw-72rem)/2+2rem))]"
          data-rail data-project-carousel data-reveal>
         @foreach ($projects as $project)
-            <x-site.project-card :project="$project" />
+            <x-site.project-card :project="$project" :featured="$loop->first" expandable />
         @endforeach
     </div>
 
