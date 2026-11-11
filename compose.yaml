@@ -1,0 +1,45 @@
+# Home server (private, Tailscale only). See docs/deploy-home-server.md.
+# Docker-published ports bypass ufw, so the app binds only to the Tailscale IP.
+
+services:
+  app:
+    build: .
+    image: portofolio-app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+    ports:
+      - "${APP_BIND:-100.76.192.19}:${APP_PORT:-8080}:80"
+    volumes:
+      - storage:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "php artisan migrate --force &&
+             php artisan optimize &&
+             php artisan filament:optimize &&
+             exec frankenphp run --config /etc/frankenphp/Caddyfile"
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    volumes:
+      - mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    # No ports: MySQL is reachable only from the app container.
+
+volumes:
+  storage:
+  mysql:
