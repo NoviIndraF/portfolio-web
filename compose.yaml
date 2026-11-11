@@ -3,8 +3,9 @@
 
 services:
   app:
+    # CD pushes this image from GitHub Actions; `docker compose up -d --build` still builds locally.
+    image: ghcr.io/noviindraf/portfolio-web:latest
     build: .
-    image: portofolio-app
     restart: unless-stopped
     env_file: .env
     environment:

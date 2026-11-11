@@ -24,12 +24,28 @@ docker compose exec app php artisan portfolio:import /tmp/import --force
 ```
 Login admin: `/admin`, email `ADMIN_EMAIL`, password `ADMIN_PASSWORD` di `.env` server. Ganti password setelah login pertama.
 
-## Update kode
+## Update kode (otomatis, CI/CD)
+Push ke `master` → job `tests` → `image` (build, push ke `ghcr.io/noviindraf/portfolio-web`) → `deploy`.
+Job `deploy` masuk ke tailnet sebagai node sementara `tag:ci`, lalu SSH ke server dengan deploy key yang
+dikunci ke `deploy/server-deploy.sh` (pull image, `up -d`, cek situs menjawab). Lihat `.github/workflows/tests.yml`.
+
+Migrasi jalan otomatis saat container start. Konten dan upload aman di volume.
+`compose.yaml` dan `.env` di server tidak ikut CD: kalau berubah, rsync manual (perintah di atas).
+
+### Setup sekali
+1. Tailscale admin → Access controls: tambahkan `"tagOwners": {"tag:ci": ["autogroup:admin"]}` dan grant
+   `{"src": ["tag:ci"], "dst": ["100.76.192.19"], "ip": ["tcp:22"]}`. Pastikan tidak ada rule `"src": ["*"]`
+   (ganti dengan `autogroup:member`), supaya `tag:ci` hanya bisa ke SSH server.
+2. Tailscale admin → Settings → OAuth clients: scope Auth Keys (write), tag `tag:ci`.
+3. GitHub secrets: `TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`, `SSH_DEPLOY_KEY` (private key ed25519 khusus).
+4. Public key deploy di server `~/.ssh/authorized_keys` dengan awalan
+   `restrict,command="/srv/apps/portofolio/deploy/server-deploy.sh"`.
+
+## Update manual (tanpa CI)
 ```bash
 rsync ... (perintah yang sama)      # di Mac
 ssh myhome 'cd /srv/apps/portofolio && docker compose up -d --build'
 ```
-Migrasi jalan otomatis saat container start. Konten dan upload aman di volume.
 
 ## Perintah berguna
 ```bash
