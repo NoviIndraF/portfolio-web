@@ -116,8 +116,8 @@ return [
     ],
     'contact' => [
         'eyebrow' => 'Contact',
-        'title' => 'Let\'s talk about your team',
-        'intro' => 'The fastest way to reach me is by email.',
+        'title' => 'Let\'s work together',
+        'intro' => 'Open to full-time roles, freelance projects, and collaboration. Email is the fastest way to reach me.',
         'email' => 'Email',
         'copy_email' => 'Copy email address',
         'copied' => 'Copied',
