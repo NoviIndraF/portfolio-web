@@ -39,9 +39,15 @@ class AppServiceProvider extends ServiceProvider
             $view->with(['settings' => $site->settings(), 'profile' => $site->profile(), 'site' => $site]);
         });
 
-        // Chatbot: max messages per visitor per hour.
-        RateLimiter::for('chat', fn (Request $request) => Limit::perHour(config('chatbot.per_hour'))->by($request->ip())
-            ->response(fn () => response()->json(['reply' => __('site.chat.rate_limited')], 429)));
+        // Chatbot: max messages per visitor per hour and per day (each limit needs its own key).
+        RateLimiter::for('chat', function (Request $request) {
+            $limited = fn () => response()->json(['reply' => __('site.chat.rate_limited')], 429);
+
+            return [
+                Limit::perHour(config('chatbot.per_hour'))->by('hour:'.$request->ip())->response($limited),
+                Limit::perDay(config('chatbot.per_day'))->by('day:'.$request->ip())->response($limited),
+            ];
+        });
 
         // Chatbot: rebuild the portfolio text as soon as content is edited in the admin panel.
         $contentModels = [

@@ -56,6 +56,7 @@ CHATBOT_GEMINI_MODEL=gemini-3.5-flash
 CHATBOT_GEMINI_BACKUP_MODEL=gemini-3.1-flash-lite
 CHATBOT_GROQ_MODEL=             # empty = Groq's default model
 CHATBOT_PER_HOUR=20             # questions per visitor (IP) per hour
+CHATBOT_PER_DAY=40              # questions per visitor (IP) per day
 CHATBOT_DAILY_LIMIT=300         # questions for the whole site per day
 ```
 
@@ -176,7 +177,7 @@ Notes:
 | Empty or cut-off answers | Reasoning used the token budget. Keep `thinking_level` low or raise `#[MaxTokens]` in the agent. |
 | `RequestException` right away | The model name doesn't exist for your key. List the models (command above). |
 | Answers show old content | The cached text is cleared on save; if you changed the database directly, run `php artisan cache:forget chatbot.portfolio_context`. |
-| "You've asked a lot of questions" | The per-visitor limit (`CHATBOT_PER_HOUR`). |
+| "You've asked a lot of questions" | The per-visitor limit (`CHATBOT_PER_HOUR`, `CHATBOT_PER_DAY`). |
 | "The assistant is resting for today" | The site-wide daily cap (`CHATBOT_DAILY_LIMIT`) was reached; it resets at midnight (app timezone). |
 
 ## Ideas for later

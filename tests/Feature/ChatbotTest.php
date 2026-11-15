@@ -110,6 +110,15 @@ class ChatbotTest extends TestCase
         $this->postJson('/chat', ['message' => 'Three'])->assertStatus(429)->assertJsonStructure(['reply']);
     }
 
+    public function test_visitor_daily_limit_applies_below_the_hourly_limit(): void
+    {
+        config(['chatbot.per_hour' => 10, 'chatbot.per_day' => 1]);
+        PortfolioAssistant::fake(['A', 'B']);
+
+        $this->postJson('/chat', ['message' => 'One'])->assertOk();
+        $this->postJson('/chat', ['message' => 'Two'])->assertStatus(429)->assertJsonStructure(['reply']);
+    }
+
     public function test_job_description_mode_takes_a_long_text_and_compares_it_with_the_portfolio(): void
     {
         PortfolioAssistant::fake(['Strong fit.', 'Short answer.']);

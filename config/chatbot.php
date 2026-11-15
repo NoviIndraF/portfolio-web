@@ -17,6 +17,9 @@ return [
     // Max chat messages per visitor (IP) per hour.
     'per_hour' => (int) env('CHATBOT_PER_HOUR', 20),
 
+    // Max chat messages per visitor (IP) per day, so one visitor cannot use up the site-wide daily limit.
+    'per_day' => (int) env('CHATBOT_PER_DAY', 40),
+
     // Max chat messages for the whole site per day, to stay inside free quotas.
     'daily_limit' => (int) env('CHATBOT_DAILY_LIMIT', 300),
 
