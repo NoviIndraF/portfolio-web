@@ -22,6 +22,11 @@
 	@www header_regexp www Host ^www\.(.+)$
 	redir @www https://{re.www.1}{uri} permanent
 
+	# http:// -> https://. The public proxy (Cloudflare) tells us the visitor's scheme; requests
+	# without the header (Tailscale, the watchdog, health checks) are left alone.
+	@plainHttp header X-Forwarded-Proto http
+	redir @plainHttp https://{host}{uri} permanent
+
 	root public/
 	encode zstd br gzip
 
