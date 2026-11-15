@@ -128,6 +128,11 @@
     @endif
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Speculation Rules: Chrome and Edge fetch a project page as soon as its link is hovered, so it opens at once; other browsers ignore this.
+         shortcut: prefetch, not prerender (a prerendered page would start its 3D scene before anyone looks at it); switch if the pages get lighter. --}}
+    <script type="speculationrules">
+        {"prefetch": [{"where": {"href_matches": "/projects*"}, "eagerness": "moderate"}]}
+    </script>
 </head>
 <body class="min-h-dvh font-sans antialiased" @if ($accent) style="--accent: {{ $accent }}" @endif>
     {{-- v2 intro counter (resources/js/ui/v2.js) --}}
@@ -149,6 +154,8 @@
     <footer class="border-t border-line py-8 text-sm text-muted">
         <div class="container-site flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p>&copy; {{ date('Y') }} {{ $profile->name }}</p>
+            {{-- Printable one-page résumé, built from the same admin content (pages/resume) --}}
+            <a href="{{ route('resume') }}" class="font-medium text-fg underline decoration-line underline-offset-4 hover:text-accent-fg">{{ __('site.resume.link') }}</a>
             <p>{{ __('site.footer') }}</p>
         </div>
     </footer>

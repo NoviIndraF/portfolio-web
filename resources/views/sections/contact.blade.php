@@ -9,7 +9,7 @@
 {{-- v2: the closing section as an accent band (primary color) with the email in big type, like the reference's "get in touch". --}}
 <section id="{{ $section->anchor }}" class="band-accent py-16 sm:py-24" aria-labelledby="{{ $section->anchor }}-title">
     <div class="container-site">
-        <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->text('eyebrow')" :title="$section->text('title')" :intro="$section->text('intro')" />
+        <x-site.section-heading id="{{ $section->anchor }}-title" :eyebrow="$section->text('eyebrow')" :title="$section->text('title')" :intro="$section->text('intro')" one-line />
 
         @if ($profile->email)
             <div class="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-fg/25 pt-8">

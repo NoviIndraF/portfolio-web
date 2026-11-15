@@ -127,7 +127,7 @@ body {
 
 /* ---------- v2 redesign ---------- */
 
-/* Section numbers (01, 02, …) follow the order of home sections; the header menu uses the same order. */
+/* Section numbers (01, 02, …) follow the order of the home sections in the header menu; a section without a menu label has none. */
 main {
     counter-reset: section;
 }
@@ -136,6 +136,13 @@ main {
 }
 .section-index::before {
     content: counter(section, decimal-leading-zero);
+}
+.no-index .section-heading {
+    counter-increment: none;
+}
+.no-index .section-index,
+.no-index .section-index + span {
+    display: none;
 }
 
 /* A section in swapped colors (light band on the dark theme), to break the rhythm like the reference's client strip.

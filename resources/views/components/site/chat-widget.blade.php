@@ -43,11 +43,22 @@
                 @endforeach
             </div>
 
-            <form data-chat-form class="flex items-center gap-2 border-t border-line p-3">
+            {{-- "JD Match": swaps the question box for a large one, to paste a job description (chat.js sends it with mode=jd) --}}
+            <div class="px-4 pb-3">
+                <button type="button" class="chip transition hover:border-primary/60 hover:text-primary-fg aria-pressed:border-primary aria-pressed:text-primary-fg" data-chat-jd-toggle aria-pressed="false">
+                    <x-heroicon-o-briefcase class="size-3.5 text-primary-fg" aria-hidden="true" />
+                    {{ __('site.chat.jd_toggle') }}
+                </button>
+            </div>
+
+            <form data-chat-form class="flex items-end gap-2 border-t border-line p-3">
                 <label for="chat-input" class="sr-only">{{ __('site.chat.placeholder') }}</label>
                 <input id="chat-input" name="message" type="text" required autocomplete="off"
                        maxlength="{{ config('chatbot.max_length') }}" placeholder="{{ __('site.chat.placeholder') }}"
                        class="min-h-11 flex-1 rounded-full border border-line bg-bg px-4 text-sm transition placeholder:text-muted focus:border-primary focus:ring-4 focus:ring-primary/15 focus:outline-none">
+                <textarea name="job" rows="5" required hidden disabled data-chat-jd
+                          maxlength="{{ config('chatbot.jd_max_length') }}" placeholder="{{ __('site.chat.jd_placeholder') }}" aria-label="{{ __('site.chat.jd_placeholder') }}"
+                          class="min-w-0 flex-1 resize-none rounded-2xl border border-line bg-bg px-4 py-3 text-sm transition placeholder:text-muted focus:border-primary focus:ring-4 focus:ring-primary/15 focus:outline-none"></textarea>
                 <button type="submit" class="btn-primary chat-gradient size-11 rounded-full px-0" aria-label="{{ __('site.chat.send') }}">
                     <x-heroicon-o-paper-airplane class="size-5" aria-hidden="true" />
                 </button>

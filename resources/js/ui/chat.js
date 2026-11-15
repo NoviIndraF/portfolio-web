@@ -1,4 +1,4 @@
-// "Ask about me" AI chatbot: sends the question to POST /chat and shows the answer.
+// "Ask about me" AI chatbot: sends the question to POST /chat and shows the answer while the AI writes it.
 export function initChat() {
     const root = document.querySelector('[data-chat]');
     if (!root) return;
@@ -8,9 +8,10 @@ export function initChat() {
     const log = root.querySelector('[data-chat-log]');
     const form = root.querySelector('[data-chat-form]');
     const input = form.querySelector('input');
+    const jobInput = form.querySelector('[data-chat-jd]');
+    const jobToggle = root.querySelector('[data-chat-jd-toggle]');
     const quick = root.querySelector('[data-chat-quick]');
     const avatar = root.querySelector('[data-chat-avatar]');
-    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
     let busy = false;
 
@@ -28,7 +29,10 @@ export function initChat() {
     } catch {}
     if (!teaserSeen) {
         setTimeout(() => {
-            if (panel.hidden) teaser.hidden = false;
+            if (!panel.hidden) return;
+            teaser.hidden = false;
+            // Closes itself, so it does not sit on top of the page content.
+            setTimeout(hideTeaser, 8000);
         }, 4000);
     }
 
@@ -67,30 +71,6 @@ export function initChat() {
         log.appendChild(row);
         log.scrollTop = log.scrollHeight;
         return el;
-    };
-
-    // Types the formatted answer out a few characters per frame, like a streaming AI reply (about 3 s at most).
-    const typeOut = async (el) => {
-        if (reduceMotion.matches) {
-            log.scrollTop = log.scrollHeight;
-            return;
-        }
-        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-        const parts = [];
-        while (walker.nextNode()) parts.push([walker.currentNode, walker.currentNode.data]);
-        const step = Math.max(2, Math.ceil(el.textContent.length / 180));
-        parts.forEach(([node]) => (node.data = ''));
-        el.classList.add('chat-caret');
-        for (const [node, full] of parts) {
-            for (let i = step; i < full.length + step; i += step) {
-                // Follow the text only while the reader stays at the bottom, so scrolling up to reread works.
-                const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 48;
-                node.data = full.slice(0, i);
-                if (atBottom) log.scrollTop = log.scrollHeight;
-                await new Promise(requestAnimationFrame);
-            }
-        }
-        el.classList.remove('chat-caret');
     };
 
     // Light formatting for an answer: links, e-mail addresses and **bold**.
@@ -153,11 +133,23 @@ export function initChat() {
     });
     if (history.length) quick.hidden = true;
 
-    async function send(message) {
+    // "JD Match": the question box becomes a large one for a pasted job description. Only the visible box is enabled,
+    // so the hidden one (also "required") does not block sending.
+    const setJobMode = (on) => {
+        jobToggle.setAttribute('aria-pressed', String(on));
+        input.hidden = input.disabled = on;
+        jobInput.hidden = jobInput.disabled = !on;
+        (on ? jobInput : input).focus();
+    };
+    jobToggle.addEventListener('click', () => setJobMode(jobToggle.getAttribute('aria-pressed') !== 'true'));
+
+    async function send(message, mode) {
         if (busy || !message) return;
         busy = true;
         quick.hidden = true;
-        bubble('user', message);
+        // A job description is long: the chat shows only its start.
+        const shown = message.length > 160 ? `${message.slice(0, 160)}…` : message;
+        bubble('user', shown);
         const answer = bubble('assistant', '');
         answer.innerHTML = '<span class="chat-typing"><i></i><i></i><i></i></span>'; // static markup, no AI text
         // Busy on the live region, so screen readers read the answer once it is fully typed.
@@ -168,14 +160,34 @@ export function initChat() {
             const res = await fetch(root.dataset.chatUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
-                body: JSON.stringify({ message }),
+                body: JSON.stringify(mode ? { message, mode } : { message }),
             });
-            const data = await res.json().catch(() => ({}));
-            format(answer, data.reply || data.message || root.dataset.chatError);
-            // Only real answers are kept; errors and limits are not worth restoring on the next page.
-            if (data.reply) remember({ role: 'user', text: message }, { role: 'assistant', text: data.reply });
+            // Limits, offline and validation errors come as JSON; an answer comes as plain text, piece by piece.
+            if (!res.ok || !res.body) {
+                const data = await res.json().catch(() => ({}));
+                format(answer, data.reply || data.message || root.dataset.chatError);
+                return;
+            }
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let text = '';
             root.dataset.state = 'talking';
-            await typeOut(answer);
+            for (;;) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                text += decoder.decode(value, { stream: true });
+                // Follow the text only while the reader stays at the bottom, so scrolling up to reread works.
+                const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 48;
+                try {
+                    format(answer, text);
+                    answer.classList.add('chat-caret');
+                } catch {} // a link that is only half received; the next piece completes it
+                if (atBottom) log.scrollTop = log.scrollHeight;
+            }
+            answer.classList.remove('chat-caret');
+            format(answer, text.trim() || root.dataset.chatError);
+            // Only real answers are kept; errors and limits are not worth restoring on the next page.
+            if (text.trim()) remember({ role: 'user', text: shown }, { role: 'assistant', text: text.trim() });
         } catch {
             answer.classList.remove('chat-caret');
             answer.textContent = root.dataset.chatError;
@@ -188,9 +200,12 @@ export function initChat() {
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const message = input.value.trim();
-        input.value = '';
-        send(message);
+        const job = jobToggle.getAttribute('aria-pressed') === 'true';
+        const field = job ? jobInput : input;
+        const message = field.value.trim();
+        field.value = '';
+        if (job) setJobMode(false);
+        send(message, job ? 'jd' : undefined);
     });
 
     quick.addEventListener('click', (e) => {

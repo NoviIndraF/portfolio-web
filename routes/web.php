@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SeoController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Http\Request;
@@ -13,10 +14,12 @@ Route::middleware(SetLocale::class)->group(function () {
     Route::get('/', HomeController::class)->name('home');
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
+    Route::get('/resume', ResumeController::class)->name('resume');
     Route::post('/chat', ChatController::class)->middleware('throttle:chat')->name('chat');
 });
 Route::get('/robots.txt', [SeoController::class, 'robots']);
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
+Route::get('/llms.txt', [SeoController::class, 'llms']);
 // ID / EN switch: remembers the choice for a year and goes back to the same page.
 // Only back to this site: the Referer header comes from the visitor (no open redirect).
 Route::get('/lang/{locale}', function (Request $request, string $locale) {

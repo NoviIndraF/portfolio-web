@@ -156,6 +156,39 @@ class PortfolioTest extends TestCase
         $this->get('/robots.txt')->assertOk()->assertSee('Disallow: /admin')->assertSee('sitemap.xml');
     }
 
+    public function test_llms_txt_has_the_public_content_as_markdown(): void
+    {
+        $this->project();
+        $this->project(['title' => 'Draft', 'slug' => 'draft', 'is_published' => false]);
+
+        $this->get('/llms.txt')->assertOk()->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+            ->assertSee('## PROJECTS')->assertSee('### Codelytic')->assertSee('/projects/codelytic')
+            ->assertDontSee('/projects/draft');
+    }
+
+    public function test_resume_page_is_built_from_the_public_content(): void
+    {
+        $this->project();
+        $this->project(['title' => 'Draft', 'slug' => 'draft', 'is_published' => false]);
+
+        $this->get('/resume')->assertOk()
+            ->assertSee('Novi Indra Fanani')->assertSee('novi@example.com')->assertSee('Mobile App Developer')
+            ->assertSee('Codelytic')->assertSee('Problem-based learning on mobile and web.')
+            ->assertDontSee('Draft')
+            ->assertSee('window.print()', false);
+    }
+
+    public function test_resume_is_linked_from_the_footer_and_the_sitemap(): void
+    {
+        $this->get('/')->assertSee('href="'.route('resume').'"', false);
+        $this->get('/sitemap.xml')->assertSee(route('resume'));
+    }
+
+    public function test_project_links_are_prefetched_on_hover(): void
+    {
+        $this->get('/')->assertSee('<script type="speculationrules">', false)->assertSee('"href_matches": "/projects*"', false);
+    }
+
     public function test_hero_browser_rotates_through_web_images_only(): void
     {
         $project = $this->project();

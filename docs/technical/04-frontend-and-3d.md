@@ -14,6 +14,7 @@
 | `sections/*.blade.php` | `hero` (always first) and one partial per section type: `projects`, `skills`, `about`, `contact`, `text`, `timeline`. `pages/home` loops over `$sections` and `@includeIf('sections.'.$type)`. |
 | `pages/home`, `pages/projects`, `pages/project` | The three public pages. |
 | `errors/404.blade.php`, `seo/sitemap.blade.php` | 404 page and sitemap. |
+| `pages/resume.blade.php`, `pages/partials/resume-item.blade.php` | One-page résumé for printing or "Save as PDF" (`/resume`, linked in the footer). Stands alone: white page, no site JS, built from the same admin content (profile, timelines, skills, first four projects). Sized to fit one A4 page; long work-history texts push it to a second page. |
 
 All interface text uses `__('site.*')` from `lang/en/site.php`.
 
@@ -114,3 +115,5 @@ Existing scenes: `learning` (books, code blocks, clickable quiz cube), `donation
 ## Page transitions
 
 `@view-transition { navigation: auto; }` in CSS. When a card link is clicked, `carousel3d.js` names the card's phone `project-phone` and its title `project-title`; the project page uses the same names, so supporting browsers morph them. Disabled for reduced motion.
+
+Speculation Rules (`<script type="speculationrules">` in `layouts/site`): Chrome and Edge prefetch a `/projects*` page when its link is hovered, so it opens at once. It is prefetch, not prerender, so the 3D scene of a page nobody opened never starts. Other browsers ignore the script.

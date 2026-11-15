@@ -24,4 +24,7 @@ return [
     'history' => 10,
 
     'max_length' => 500,
+
+    // Max characters of a pasted job description ("Match a job description" in the chat).
+    'jd_max_length' => 4000,
 ];

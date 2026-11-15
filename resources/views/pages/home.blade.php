@@ -7,6 +7,9 @@
 
     {{-- Sections are managed in Admin → Home sections (order, visibility, texts). --}}
     @foreach ($sections as $section)
-        @includeIf('sections.'.$section->type, ['section' => $section])
+        {{-- No menu label = no section number (.no-index in app.css), so the menu starts at 01. --}}
+        <div @class(['contents', 'no-index' => blank($section->nav_label)])>
+            @includeIf('sections.'.$section->type, ['section' => $section])
+        </div>
     @endforeach
 </x-layouts.site>

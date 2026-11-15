@@ -8,8 +8,10 @@
 | `GET /projects` | `ProjectController@index` | `pages/projects` |
 | `GET /projects/{project:slug}` | `ProjectController@show` | `pages/project` |
 | `POST /chat` (`throttle:chat`) | `ChatController` | JSON – see [AI chatbot](08-ai-chatbot.md) |
+| `GET /resume` | `ResumeController` | `pages/resume` |
 | `GET /robots.txt` | `SeoController@robots` | text |
 | `GET /sitemap.xml` | `SeoController@sitemap` | `seo/sitemap` |
+| `GET /llms.txt` | `SeoController@llms` | text (Markdown) |
 | `/admin/*` | Filament panel | – |
 
 ## Controllers
@@ -17,7 +19,7 @@
 - **`HomeController`** loads published projects with `Project::publicRelations()` (visible screenshots, certificates and tech), picks the featured ones for the carousel (falls back to all published), visible skill groups with visible skills, and the visible sections from `Site`.
 - **`ProjectController@index`** lists all published projects and the distinct types for the filter chips.
 - **`ProjectController@show`** returns 404 for drafts unless a user is logged in (preview), loads only visible links/features/tech/images, and finds the previous/next published project.
-- **`SeoController`** generates `robots.txt` (disallows `/admin`, points to the sitemap) and `sitemap.xml` with the live domain.
+- **`SeoController`** generates `robots.txt` (disallows `/admin`, points to the sitemap) and `sitemap.xml` with the live domain, and `llms.txt`: the public content as Markdown for AI tools, built from the same `PortfolioContext` text the chatbot uses (so hidden and unpublished content stays out).
 - **`ChatController`** answers one chatbot question with the `PortfolioAssistant` AI agent and returns `{"reply": "..."}`. Details in [AI chatbot](08-ai-chatbot.md).
 
 ## Support classes (`app/Support`)

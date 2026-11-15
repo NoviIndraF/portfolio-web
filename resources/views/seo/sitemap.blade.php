@@ -8,6 +8,10 @@
         <loc>{{ route('projects.index') }}</loc>
         <priority>0.9</priority>
     </url>
+    <url>
+        <loc>{{ route('resume') }}</loc>
+        <priority>0.7</priority>
+    </url>
     @foreach ($projects as $project)
         <url>
             <loc>{{ route('projects.show', $project) }}</loc>

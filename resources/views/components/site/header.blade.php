@@ -4,8 +4,8 @@
     $home = request()->routeIs('home') ? '' : route('home');
     // Menu = visible home sections with a menu label (Admin → Home sections).
     $links = $site->nav()->mapWithKeys(fn ($s) => [$s->anchor => $s->nav_label]);
-    // Menu numbers match the section numbers on the page (position among all visible sections).
-    $numbers = $site->sections()->pluck('anchor')->flip()->map(fn ($i) => str_pad($i + 1, 2, '0', STR_PAD_LEFT));
+    // Menu numbers match the section numbers on the page (position among the sections in the menu).
+    $numbers = $site->nav()->pluck('anchor')->flip()->map(fn ($i) => str_pad($i + 1, 2, '0', STR_PAD_LEFT));
 @endphp
 <header class="sticky top-0 z-40 border-b border-line/60 bg-bg/80 backdrop-blur-md" data-header>
     <nav class="container-site flex h-16 items-center justify-between gap-4" aria-label="Main">
@@ -16,7 +16,7 @@
             <span class="sr-only 2xl:not-sr-only">{{ $profile->name }}</span>
         </a>
 
-        <ul class="hidden items-center gap-1 md:flex" data-scrollspy>
+        <ul class="hidden items-center gap-1 xl:flex" data-scrollspy>
             @foreach ($links as $id => $label)
                 <li><a href="{{ $home }}#{{ $id }}" class="link-line rounded-sm px-3 py-2 font-mono text-[11px] whitespace-nowrap font-medium tracking-[0.14em] text-muted uppercase transition aria-[current=true]:text-fg"><span class="text-accent-fg">{{ $numbers[$id] ?? '' }}</span> {{ $label }}</a></li>
             @endforeach
@@ -46,7 +46,7 @@
                     {{ __('site.cta.download_cv') }}
                 </a>
             @endif
-            <button type="button" class="btn-ghost min-h-10 px-3 md:hidden" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu">
+            <button type="button" class="btn-ghost min-h-10 px-3 xl:hidden" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu">
                 <x-heroicon-o-bars-3 class="size-5" aria-hidden="true" />
                 <span class="sr-only">{{ __('site.menu') }}</span>
             </button>
@@ -54,7 +54,7 @@
     </nav>
     <div class="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-primary" data-scroll-progress aria-hidden="true"></div>
 
-    <div id="mobile-menu" class="hidden border-t border-line md:hidden" data-menu>
+    <div id="mobile-menu" class="hidden border-t border-line xl:hidden" data-menu>
         <ul class="container-site flex flex-col py-3">
             @foreach ($links as $id => $label)
                 <li><a href="{{ $home }}#{{ $id }}" class="block rounded-xl px-3 py-3 text-base font-medium hover:bg-surface">{{ $label }}</a></li>

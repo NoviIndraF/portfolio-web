@@ -27,7 +27,7 @@
     <div class="absolute inset-0 -z-10 bg-[radial-gradient(70%_60%_at_80%_20%,color-mix(in_oklab,var(--c-primary)_22%,transparent),transparent),radial-gradient(50%_50%_at_0%_100%,color-mix(in_oklab,var(--c-primary)_12%,transparent),transparent)]" aria-hidden="true"></div>
     <div class="absolute inset-0 -z-10" data-scene="hero-particles" aria-hidden="true"></div>
 
-    <div class="container-site grid items-center gap-12 pt-10 pb-16 sm:pt-14 lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
+    <div class="container-site grid items-center gap-12 min-[30rem]:max-lg:gap-28 pt-10 pb-16 sm:pt-14 lg:grid-cols-[1.15fr_0.85fr] lg:py-10">
         <div>
             {{-- Availability badge (Admin → Profile) --}}
             @if ($profile->show_availability && filled($profile->availability))
@@ -41,8 +41,9 @@
             @endif
             <p class="eyebrow eyebrow-lg">{{ $role }}</p>
 
-            {{-- v2: name in big condensed type, one word per line --}}
-            <h1 id="hero-title" class="display mt-4 text-[clamp(4.25rem,15vw,8rem)] text-fg lg:text-[clamp(8rem,11.5vw,14rem)]">
+            {{-- v2: name in big condensed type, one word per line. Large screens: also capped by the screen height
+                 (32rem = everything else in this column, 2.7 = three lines), so the CTAs and stats stay in view. --}}
+            <h1 id="hero-title" class="display mt-4 text-[clamp(4.25rem,15vw,8rem)] text-fg lg:text-[clamp(5rem,min(11.5vw,calc((100svh_-_32rem)_/_2.7)),14rem)]">
                 @foreach (str($profile->name)->explode(' ')->filter() as $word)
                     <span class="reveal-line"><span @class(['text-accent-fg' => $loop->index === 1]) style="--i: {{ $loop->index }}">{{ $word }}</span></span>
                 @endforeach
@@ -74,6 +75,17 @@
                 </a>
             </div>
 
+            {{-- Stats right under the CTAs, so a recruiter sees them without scrolling (count up once visible, resources/js/ui/interactions.js) --}}
+            @if ($profile->stats)
+                <dl class="mt-6 grid border-t border-line" style="grid-template-columns: repeat({{ count($profile->stats) }}, minmax(0, 1fr))">
+                    @foreach ($profile->stats as $stat)
+                        <div class="flex flex-col gap-1.5 border-line pt-4 [&:not(:first-child)]:border-l [&:not(:first-child)]:pl-4">
+                            <dt class="eyebrow text-muted [overflow-wrap:anywhere]">{{ $stat['label'] }}</dt>
+                            <dd class="display order-first text-[clamp(2.25rem,4vw,3.5rem)] leading-none text-fg tabular-nums" data-countup>{{ $stat['value'] }}</dd>
+                        </div>
+                    @endforeach
+                </dl>
+            @endif
         </div>
 
         <div class="flex flex-col items-center">
@@ -114,18 +126,6 @@
             </div>
         </div>
         </div>
-    @endif
-
-    {{-- v2: stats as a full-width band of big numbers (count up once visible, resources/js/ui/interactions.js) --}}
-    @if ($profile->stats)
-        <dl class="container-site grid border-b border-line" style="grid-template-columns: repeat({{ count($profile->stats) }}, minmax(0, 1fr))">
-            @foreach ($profile->stats as $stat)
-                <div class="flex flex-col gap-2 border-line py-6 sm:py-10 [&:not(:first-child)]:border-l [&:not(:first-child)]:pl-4 sm:[&:not(:first-child)]:pl-8">
-                    <dt class="eyebrow text-muted">{{ $stat['label'] }}</dt>
-                    <dd class="display order-first text-[clamp(3rem,9vw,8rem)] leading-none text-fg tabular-nums" data-countup>{{ $stat['value'] }}</dd>
-                </div>
-            @endforeach
-        </dl>
     @endif
 
     <a href="{{ $projectsHref }}" class="container-site flex items-center gap-2 py-4 font-mono text-[11px] tracking-[0.2em] text-muted uppercase hover:text-fg max-lg:hidden">

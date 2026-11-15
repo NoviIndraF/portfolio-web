@@ -144,6 +144,8 @@ return [
             'Apa pengalaman Flutter-nya?',
         ],
         'placeholder' => 'Tulis pertanyaan…',
+        'jd_toggle' => 'Cocokkan dengan lowongan',
+        'jd_placeholder' => 'Tempel deskripsi lowongan di sini…',
         'send' => 'Kirim',
         'close' => 'Tutup obrolan',
         'disclaimer' => 'Jawaban dibuat oleh AI dan bisa keliru. Jangan bagikan data pribadi.',
@@ -153,4 +155,10 @@ return [
         'rate_limited' => 'Anda sudah bertanya cukup banyak. Coba lagi beberapa saat lagi.',
     ],
     'footer' => 'Dibangun dengan Laravel dan Three.js.',
+    'resume' => [
+        'title' => 'Resume',
+        'link' => 'Resume satu halaman',
+        'print' => 'Cetak / Simpan PDF',
+        'back' => 'Kembali ke situs',
+    ],
 ];

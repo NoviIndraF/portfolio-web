@@ -29,7 +29,7 @@ flowchart LR
     B[Browser] -->|GET /, /projects, /projects/slug| R[routes/web.php]
     R --> HC[HomeController]
     R --> PC[ProjectController]
-    R --> SC[SeoController<br/>robots.txt, sitemap.xml]
+    R --> SC[SeoController<br/>robots.txt, sitemap.xml, llms.txt]
     HC & PC --> M[(Eloquent models)]
     HC & PC --> V[Blade pages + sections]
     V --> L[components/layouts/site<br/>SEO, Open Graph, JSON-LD, theme colors]
