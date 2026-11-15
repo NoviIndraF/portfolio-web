@@ -85,13 +85,16 @@ jobs:
 
       # The deploy key is locked on the server to deploy/server-deploy.sh (no shell).
       # stdin carries a short-lived GHCR token so the server can pull without stored credentials.
+      # Server address, user and host key are secrets so they stay out of this public repo and its logs.
       - name: Deploy to home server
         env:
           SSH_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_TARGET: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           install -m 700 -d ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
-          echo "100.76.192.19 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOs13ZxvbcooszHARmyYbPxAR+rH3xdtHt4RxcptDM0y" > ~/.ssh/known_hosts
+          echo "$KNOWN_HOSTS" > ~/.ssh/known_hosts
           printf '%s\n%s\n' "${{ github.actor }}" "$GHCR_TOKEN" \
-            | ssh -i ~/.ssh/deploy novi-indra-fanani@100.76.192.19
+            | ssh -i ~/.ssh/deploy "$DEPLOY_TARGET"

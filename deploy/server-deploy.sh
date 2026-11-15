@@ -3,7 +3,10 @@
 # Reads "<github user>\n<token>" on stdin, pulls the new image and restarts the app.
 # shortcut: compose.yaml/.env on the server are not updated by CD; rsync them by hand when they change.
 set -eu
-cd /srv/apps/portofolio
+cd "$(dirname "$0")/.."
+bind="$(sed -n 's/^APP_BIND=//p' .env)"
+port="$(sed -n 's/^APP_PORT=//p' .env)"
+url="http://${bind:?APP_BIND missing in .env}:${port:-8080}/"
 
 read -r user
 read -r token
@@ -17,7 +20,7 @@ docker image prune -f >/dev/null
 
 # Wait for migrations + boot, then fail the job if the site is not answering.
 for i in $(seq 1 30); do
-  if curl -fsS -o /dev/null http://100.76.192.19:8080/; then echo "deploy ok"; exit 0; fi
+  if curl -fsS -o /dev/null "$url"; then echo "deploy ok"; exit 0; fi
   sleep 3
 done
 echo "site not answering after deploy" >&2
