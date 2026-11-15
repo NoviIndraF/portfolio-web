@@ -53,6 +53,7 @@ php artisan optimize:clear
 | Admin changes not visible | `php artisan optimize:clear` (in production, run `php artisan optimize` again afterwards). |
 | "Content already exists: skipped" when seeding | Expected. Use `portfolio:import` or `SEED_FORCE=true php artisan db:seed` to replace content on purpose. |
 | Forgot admin password | `php artisan tinker --execute="App\Models\User::first()->update(['password' => 'new-password'])"` |
+| Lost the authenticator app and the recovery codes | `php artisan tinker --execute='$u = App\Models\User::first(); $u->saveAppAuthenticationRecoveryCodes(null); $u->saveAppAuthenticationSecret(null);'` then log in with the password and set up two-factor again. |
 | Upload fails on the server | Raise `upload_max_filesize` / `post_max_size` in PHP and `client_max_body_size` in Nginx (25 MB). |
 | Small images missing after restoring files | `php artisan portfolio:images` |
 | Chatbot says "offline" or "something went wrong" | See the troubleshooting table in [AI chatbot](08-ai-chatbot.md#troubleshooting). |

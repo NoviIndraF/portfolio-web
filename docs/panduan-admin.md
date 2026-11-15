@@ -25,6 +25,7 @@ Panduan ini menjelaskan cara mengelola seluruh isi website lewat panel admin, ta
 
 1. Buka `https://domain-anda/admin` (di laptop: `http://127.0.0.1:8000/admin`).
 2. Masukkan email dan password admin, lalu klik **Sign in**.
+   - Setelah password, masukkan **kode 6 digit** dari aplikasi authenticator di HP (verifikasi dua langkah, lihat [bagian 9](#9-akun-dan-password)).
 3. Menu ada di sebelah kiri (di HP: tombol ☰ kiri atas):
    - **Content:** Profile, Projects, Skills
    - **Site:** Home sections, Settings, View website
@@ -151,6 +152,15 @@ Menu **Site → Settings**.
 ## 9. Akun dan password
 
 Klik avatar di kanan atas → **Profile** (`/admin/profile`) untuk mengganti nama, email atau password akun admin. **Ganti password sementara saat pertama kali login.**
+
+### Verifikasi dua langkah (2FA)
+
+Admin wajib memakai verifikasi dua langkah: selain password, login meminta kode 6 digit dari aplikasi authenticator (Google Authenticator, Microsoft Authenticator, Authy, 1Password, dan sejenisnya).
+
+- **Pertama kali login** Anda langsung diarahkan ke halaman penyiapan: klik **Set up**, scan QR code dengan aplikasi authenticator, lalu masukkan kode 6 digit yang muncul.
+- **Simpan recovery codes** yang ditampilkan (misalnya di password manager). Setiap kode bisa dipakai satu kali untuk login kalau HP hilang atau rusak: di halaman kode, klik **Use a recovery code**.
+- Ganti HP atau membuat recovery codes baru: **Profile** → bagian *Authenticator app*.
+- HP **dan** recovery codes hilang: 2FA hanya bisa di-reset dari server, lihat `docs/technical/07-operations.md` (Troubleshooting).
 
 ## 10. Backup dan pindah database
 

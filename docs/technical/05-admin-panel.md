@@ -42,3 +42,5 @@ Filament 5 conventions used: resources split into `Schemas/*Form.php` and `Table
 ## Access
 
 Every user in `users` may log in (`User::canAccessPanel()` returns true) because there is no registration. Create another admin with `php artisan make:filament-user`, or set `ADMIN_EMAIL`/`ADMIN_PASSWORD` before the first `db:seed`.
+
+Two-factor login is required (`->multiFactorAuthentication([AppAuthentication::make()->recoverable()], isRequired: true)` in the panel provider, Filament's built-in app authentication). An admin without it is redirected to `/admin/multi-factor-authentication/set-up` until an authenticator app is linked. The secret and the hashed recovery codes live encrypted in `users.app_authentication_secret` and `users.app_authentication_recovery_codes`; reset them with the command in [Operations](07-operations.md). Tests: `tests/Feature/AdminTwoFactorTest.php` (`User::factory()` creates an admin with two-factor set up, `->withoutTwoFactor()` one without).

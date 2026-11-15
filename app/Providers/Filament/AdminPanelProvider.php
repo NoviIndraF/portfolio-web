@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Resources\PageSections\PageSectionResource;
 use App\Models\PageSection;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -64,6 +65,11 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile(isSimple: false) // lets the admin change name, email and password
+            // The panel is public, so a password alone is not enough: every admin must set up
+            // an authenticator app (with recovery codes) before using the panel.
+            ->multiFactorAuthentication([
+                AppAuthentication::make()->recoverable(),
+            ], isRequired: true)
             ->brandName('Portfolio Admin')
             ->colors([
                 'primary' => Color::Blue,

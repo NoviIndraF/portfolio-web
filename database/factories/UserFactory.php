@@ -30,7 +30,18 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'app_authentication_secret' => 'JBSWY3DPEHPK3PXP',
         ];
+    }
+
+    /**
+     * An admin who has not set up two-factor authentication yet.
+     */
+    public function withoutTwoFactor(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'app_authentication_secret' => null,
+        ]);
     }
 
     /**
