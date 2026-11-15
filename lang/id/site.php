@@ -116,8 +116,8 @@ return [
     ],
     'contact' => [
         'eyebrow' => 'Kontak',
-        'title' => 'Mari bekerja sama',
-        'intro' => 'Terbuka untuk posisi full-time, project freelance, dan kolaborasi. Cara tercepat menghubungi saya adalah lewat email.',
+        'title' => 'Hubungi saya',
+        'intro' => 'Senang berdiskusi soal project, kolaborasi, atau teknologi. Cara tercepat menghubungi saya adalah lewat email.',
         'email' => 'Email',
         'copy_email' => 'Salin alamat email',
         'copied' => 'Tersalin',
