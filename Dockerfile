@@ -24,6 +24,7 @@ COPY --from=assets /app/public/icons/simple public/icons/simple
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress \
     && php artisan storage:link
 
-# Plain HTTP on :80 inside the container; HTTPS comes later from the public proxy.
-ENV SERVER_NAME=:80
+# Plain HTTP on :80 inside the container; HTTPS comes from the public proxy in front of it.
+# Security headers, the www redirect and the trusted-proxy rules live in deploy/Caddyfile.
+COPY deploy/Caddyfile /etc/frankenphp/Caddyfile
 EXPOSE 80

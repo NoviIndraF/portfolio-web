@@ -1,0 +1,52 @@
+# Web server config of the production image (FrankenPHP = Caddy + PHP), copied to
+# /etc/frankenphp/Caddyfile by the Dockerfile. The container speaks plain HTTP on :80;
+# TLS ends at the public proxy in front of it (Cloudflare Tunnel on the home server).
+#
+# Server-specific values come from the environment (see .env.example):
+#   CADDY_TRUSTED_PROXIES  addresses of the proxy that may send X-Forwarded-For
+#   CADDY_HTTPS            "on" when visitors only reach the site over HTTPS
+{
+	skip_install_trust
+	auto_https off
+	servers {
+		# Only the trusted proxy may tell us the visitor's IP; anyone else's header is ignored.
+		trusted_proxies static {$CADDY_TRUSTED_PROXIES:127.0.0.1/32}
+		trusted_proxies_strict
+		client_ip_headers X-Forwarded-For
+	}
+	frankenphp
+}
+
+:80 {
+	# www.example.com -> example.com
+	@www header_regexp www Host ^www\.(.+)$
+	redir @www https://{re.www.1}{uri} permanent
+
+	root public/
+	encode zstd br gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+		Cross-Origin-Opener-Policy "same-origin"
+		-Server
+		-X-Powered-By
+	}
+
+	# Hidden files (.env, .git, ...) are never served, except .well-known
+	@hidden {
+		path */.*
+		not path /.well-known/*
+	}
+	respond @hidden 404
+
+	php_server {
+		# Laravel builds https:// links and sets Secure cookies when this is "on".
+		env HTTPS {$CADDY_HTTPS:off}
+		# The visitor's real IP, for the login and chatbot rate limits.
+		env REMOTE_ADDR {client_ip}
+	}
+}

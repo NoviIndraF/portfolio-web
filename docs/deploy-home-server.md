@@ -59,4 +59,4 @@ docker compose exec app php artisan portfolio:export /app/storage/app/exports/ba
   ```bash
   echo 'net.ipv4.ip_nonlocal_bind=1' | sudo tee /etc/sysctl.d/99-nonlocal-bind.conf && sudo sysctl --system
   ```
-- Belum publik. Langkah berikutnya: Caddy di `/srv/apps/proxy` + Tailscale Funnel/Cloudflare Tunnel, lalu ganti `APP_URL` ke domain HTTPS.
+- Publik lewat Cloudflare Tunnel (`https://noviindra.dev`). Header keamanan, redirect `www`, blok file tersembunyi dan aturan proxy tepercaya ada di `deploy/Caddyfile` (ikut di image). Di `.env` server: `APP_URL=https://noviindra.dev`, `SESSION_SECURE_COOKIE=true`, `CADDY_HTTPS=on`, `CADDY_TRUSTED_PROXIES=100.76.192.19/32` (alamat cloudflared di host). Service tunnel dan kredensialnya ada di luar repo, di `/srv/apps/portofolio-public` (lihat README di sana).
